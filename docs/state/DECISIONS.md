@@ -30,3 +30,8 @@ Options considered: Couple retrieval directly to Chroma; use an in-memory-only i
 Decision: Define a small `VectorStore` protocol, use Chroma's persistent client with cosine space for the default adapter, and retain an in-memory cosine implementation for small tests. Keep the Qdrant class as an explicit unimplemented placeholder.
 Consequences / how to reverse: Chroma is the default storage dependency and local persistence format; retrieval callers can switch implementations through the protocol if later evaluations justify a different store.
 
+## ADR-006: Implement BM25 locally and persist its source chunks as versioned JSON [ASSUMPTION] Date: 2026-10-22 Status: active
+Context: Phase 1 needs a portable persisted lexical index, while package-index access is currently unavailable.
+Options considered: Add a third-party BM25 package; store only serialized posting lists; persist chunks and rebuild lexical statistics on load.
+Decision: Implement the standard BM25 scoring formula with case-folded Unicode word tokens, and save chunk records plus `k1`/`b` parameters in a versioned JSON file using an atomic same-directory rename. Rebuild postings and term statistics when loading.
+Consequences / how to reverse: No extra runtime dependency is needed, and the persisted format is inspectable. Large corpora will use more disk and load time than compact posting-list serialization; retrieval evaluation can justify a later format change.

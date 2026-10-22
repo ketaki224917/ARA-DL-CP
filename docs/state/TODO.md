@@ -17,7 +17,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [!] P1.2 Chunking (recursive + optional semantic; configurable) + metadata + tests (implementation and tests written; test run blocked by PyPI)
 - [!] P1.3 Embeddings wrapper (cached, batched; implementation and tests written, test run blocked by PyPI)
 - [!] P1.4 Vector store interface + Chroma impl (+ Qdrant stub; implementation/tests drafted, pytest blocked by PyPI)
-- [ ] P1.5 BM25 index (persisted)
+- [!] P1.5 BM25 index (persisted; implementation/tests drafted, pytest blocked by PyPI)
 - [ ] P1.6 Hybrid retriever with RRF
 - [ ] P1.7 Reranker
 - [ ] P1.8 answer() with citations + abstention
