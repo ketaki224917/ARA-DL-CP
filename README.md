@@ -8,3 +8,16 @@ Python 3.11+ and `uv` are required. Once dependencies are locked, use `make setu
 
 See [`AGENTS.md`](AGENTS.md) for the project specification and [`docs/state/TODO.md`](docs/state/TODO.md) for implementation status.
 
+## Local retrieval commands
+
+After installing the project dependencies and starting Ollama with the configured chat and embedding models:
+
+```powershell
+uv run ara ingest
+uv run ara ingest --source path\to\your\documents
+uv run ara ask "How does reciprocal rank fusion combine results?"
+uv run ara ask "How does reciprocal rank fusion combine results?" --rerank
+```
+
+The default ingestion source and index paths are in `config.yaml`. Repeating `ara ingest` with unchanged sources, chunk settings, and embedding model skips indexing work. Changed chunks replace old IDs in the dense collection and BM25 index. `--rerank` requires the optional `rerank` extra and locally available model weights.
+

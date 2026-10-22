@@ -8,6 +8,10 @@ embeddings:
   cache_path: data/indexes/embeddings.sqlite3
 paths:
   data_dir: data
+  ingest_source_dir: data/sample_corpus
+  vector_store_dir: data/indexes/chroma
+  bm25_index_path: data/indexes/bm25.json
+  ingest_manifest_path: data/indexes/ingest_manifest.json
   output_dir: outputs
   trace_dir: traces
 retrieval:

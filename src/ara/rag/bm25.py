@@ -67,6 +67,11 @@ class BM25Index:
         """Return the number of indexed chunks."""
         return len(self._chunks)
 
+    @property
+    def chunk_ids(self) -> tuple[str, ...]:
+        """Return the indexed chunk IDs in index order."""
+        return tuple(chunk.chunk_id for chunk in self._chunks)
+
     def search(
         self,
         query: str,

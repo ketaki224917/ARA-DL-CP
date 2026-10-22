@@ -45,6 +45,12 @@ class VectorStore(Protocol):
     def get(self, chunk_ids: Sequence[str]) -> list[DocumentChunk]:
         """Fetch stored chunks by stable IDs, preserving requested order."""
 
+    def ids(self) -> list[str]:
+        """Return all stored chunk IDs in deterministic order."""
+
+    def delete(self, chunk_ids: Sequence[str]) -> None:
+        """Remove the supplied IDs if they exist."""
+
 
 class InMemoryVectorStore:
     """Simple cosine-similarity store useful for small corpora and unit tests."""
@@ -86,7 +92,20 @@ class InMemoryVectorStore:
 
     def get(self, chunk_ids: Sequence[str]) -> list[DocumentChunk]:
         """Return only existing chunks, in the order requested by the caller."""
-        return [self._records[chunk_id][0] for chunk_id in dict.fromkeys(chunk_ids) if chunk_id in self._records]
+        return [
+            self._records[chunk_id][0]
+            for chunk_id in dict.fromkeys(chunk_ids)
+            if chunk_id in self._records
+        ]
+
+    def ids(self) -> list[str]:
+        """Return all stored chunk IDs in sorted order."""
+        return sorted(self._records)
+
+    def delete(self, chunk_ids: Sequence[str]) -> None:
+        """Remove stored chunks and vectors by ID."""
+        for chunk_id in chunk_ids:
+            self._records.pop(chunk_id, None)
 
 
 class ChromaVectorStore:
@@ -199,6 +218,27 @@ class ChromaVectorStore:
             records[key] = _chunk_from_record(key, str(text), metadata)
         return [records[chunk_id] for chunk_id in requested if chunk_id in records]
 
+    def ids(self) -> list[str]:
+        """Return all stored chunk IDs in sorted order."""
+        try:
+            result = self._collection.get(include=["metadatas"])
+            ids = result["ids"]
+        except (KeyError, TypeError) as exc:
+            raise VectorStoreError("Chroma returned a malformed ID response.") from exc
+        if not isinstance(ids, list):
+            raise VectorStoreError("Chroma returned malformed chunk IDs.")
+        return sorted(str(chunk_id) for chunk_id in ids)
+
+    def delete(self, chunk_ids: Sequence[str]) -> None:
+        """Delete stored chunks by ID, ignoring duplicate and empty requests."""
+        ids = list(dict.fromkeys(chunk_ids))
+        if not ids:
+            return
+        try:
+            self._collection.delete(ids=ids)
+        except Exception as exc:
+            raise VectorStoreError(f"Chroma delete failed: {exc}") from exc
+
 
 class QdrantVectorStore:
     """Reserved Qdrant adapter slot; implement against the shared protocol when selected."""
@@ -231,7 +271,9 @@ def _chunk_from_record(chunk_id: str, text: str, metadata: Mapping[str, Any]) ->
             char_end=int(metadata["char_end"]),
         )
     except (KeyError, TypeError, ValueError) as exc:
-        raise VectorStoreError(f"Stored chunk {chunk_id!r} has invalid provenance metadata.") from exc
+        raise VectorStoreError(
+            f"Stored chunk {chunk_id!r} has invalid provenance metadata."
+        ) from exc
 
 
 def _metadata_matches(chunk: DocumentChunk, conditions: Mapping[str, Any]) -> bool:

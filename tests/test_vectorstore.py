@@ -14,7 +14,12 @@ from ara.rag.vectorstore import (
 )
 
 
-def chunk(chunk_id: str, text: str, source: str = "a.txt", page: int | None = None) -> DocumentChunk:
+def chunk(
+    chunk_id: str,
+    text: str,
+    source: str = "a.txt",
+    page: int | None = None,
+) -> DocumentChunk:
     return DocumentChunk(
         chunk_id=chunk_id,
         text=text,
@@ -30,6 +35,7 @@ class FakeCollection:
         self.upsert_args: dict[str, Any] = {}
         self.query_args: dict[str, Any] = {}
         self.get_args: dict[str, Any] = {}
+        self.delete_args: dict[str, Any] = {}
 
     def upsert(self, **kwargs: Any) -> None:
         self.upsert_args = kwargs
@@ -59,6 +65,9 @@ class FakeCollection:
             ],
         }
 
+    def delete(self, **kwargs: Any) -> None:
+        self.delete_args = kwargs
+
 
 def test_memory_store_ranks_cosine_and_applies_metadata_filters() -> None:
     store = InMemoryVectorStore()
@@ -78,6 +87,25 @@ def test_memory_store_get_preserves_requested_order() -> None:
     store.upsert([chunk("a", "first"), chunk("b", "second")], [[1], [0]])
 
     assert [item.chunk_id for item in store.get(["b", "missing", "a"])] == ["b", "a"]
+
+
+def test_memory_store_lists_and_deletes_ids() -> None:
+    store = InMemoryVectorStore()
+    store.upsert([chunk("b", "second"), chunk("a", "first")], [[1], [0]])
+
+    assert store.ids() == ["a", "b"]
+    store.delete(["b", "missing"])
+    assert store.ids() == ["a"]
+
+
+def test_chroma_store_lists_and_deletes_ids() -> None:
+    collection = FakeCollection()
+    store = ChromaVectorStore(Path("unused"), collection=collection)
+
+    assert store.ids() == ["a", "b"]
+    store.delete(["b", "b"])
+
+    assert collection.delete_args == {"ids": ["b"]}
 
 
 def test_memory_store_validates_dimensions_and_count() -> None:

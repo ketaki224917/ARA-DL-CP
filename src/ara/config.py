@@ -28,6 +28,10 @@ _ENV_FIELDS = {
     "ARA_RERANKER_MODEL": "reranker_model",
     "ARA_ANSWER_MINIMUM_EVIDENCE_SCORE": "answer_minimum_evidence_score",
     "ARA_ANSWER_MAX_EVIDENCE_CHUNKS": "answer_max_evidence_chunks",
+    "ARA_INGEST_SOURCE_DIR": "ingest_source_dir",
+    "ARA_VECTOR_STORE_DIR": "vector_store_dir",
+    "ARA_BM25_INDEX_PATH": "bm25_index_path",
+    "ARA_INGEST_MANIFEST_PATH": "ingest_manifest_path",
 }
 
 
@@ -43,6 +47,10 @@ class Settings(BaseSettings):
     embedding_model: str = "embeddinggemma"
     embedding_cache_path: Path = Path("data/indexes/embeddings.sqlite3")
     data_dir: Path = Path("data")
+    ingest_source_dir: Path = Path("data/sample_corpus")
+    vector_store_dir: Path = Path("data/indexes/chroma")
+    bm25_index_path: Path = Path("data/indexes/bm25.json")
+    ingest_manifest_path: Path = Path("data/indexes/ingest_manifest.json")
     output_dir: Path = Path("outputs")
     trace_dir: Path = Path("traces")
     retrieval_chunk_size: int = Field(default=900, ge=1)
@@ -85,6 +93,10 @@ def load_settings(
         "embedding_model": embeddings.get("model"),
         "embedding_cache_path": embeddings.get("cache_path"),
         "data_dir": paths.get("data_dir"),
+        "ingest_source_dir": paths.get("ingest_source_dir"),
+        "vector_store_dir": paths.get("vector_store_dir"),
+        "bm25_index_path": paths.get("bm25_index_path"),
+        "ingest_manifest_path": paths.get("ingest_manifest_path"),
         "output_dir": paths.get("output_dir"),
         "trace_dir": paths.get("trace_dir"),
         "retrieval_chunk_size": retrieval.get("chunk_size"),

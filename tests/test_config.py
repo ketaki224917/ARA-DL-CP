@@ -29,6 +29,8 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
             "ARA_RERANKER_MODEL": "local-cross-encoder",
             "ARA_ANSWER_MINIMUM_EVIDENCE_SCORE": "0.03",
             "ARA_ANSWER_MAX_EVIDENCE_CHUNKS": "5",
+            "ARA_INGEST_SOURCE_DIR": "private_docs",
+            "ARA_VECTOR_STORE_DIR": "indexes/vectors",
         },
     )
 
@@ -39,6 +41,9 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
     assert settings.reranker_model == "local-cross-encoder"
     assert settings.answer_minimum_evidence_score == pytest.approx(0.03)
     assert settings.answer_max_evidence_chunks == 5
+    assert settings.ingest_source_dir == Path("private_docs")
+    assert settings.vector_store_dir == Path("indexes/vectors")
+    assert settings.bm25_index_path == Path("data/indexes/bm25.json")
 
 
 def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
@@ -49,6 +54,8 @@ def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
     assert settings.reranker_model == "cross-encoder/ms-marco-MiniLM-L6-v2"
     assert settings.answer_minimum_evidence_score == pytest.approx(0.012)
     assert settings.answer_max_evidence_chunks == 8
+    assert settings.ingest_source_dir == Path("data/sample_corpus")
+    assert settings.vector_store_dir == Path("data/indexes/chroma")
     assert settings.llm_request_timeout_seconds == 120
 
 
