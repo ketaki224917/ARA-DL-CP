@@ -21,7 +21,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [!] P1.6 Hybrid retriever with RRF (implementation/tests drafted; pytest blocked by PyPI)
 - [!] P1.7 Reranker (lazy CrossEncoder adapter/tests drafted; pytest blocked by PyPI)
 - [!] P1.8 answer() with citations + abstention (implementation/tests drafted; pytest blocked by PyPI)
-- [ ] P1.9 Eval set ≥ 40 Q/A (gold chunk IDs; mix of factoid, multi-hop, unanswerable)
+- [x] P1.9 Eval set ≥ 40 Q/A (52 rows; factoid, multi-hop, and unanswerable with validated gold chunk IDs)
 - [ ] P1.10 Eval harness + comparison table; record in PROGRESS.md
 - [ ] P1.11 `make ingest` idempotent; CLI `ara ingest`/`ara ask`
 

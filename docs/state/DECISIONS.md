@@ -53,3 +53,9 @@ Context: Fluent answers can state unsupported facts even when retrieval returned
 Options considered: Ask the model for a free-form answer and parse inline citations; require structured atomic claims with evidence IDs; always answer and rely on a later critic.
 Decision: Generate validated structured claims, append citations in code, reject any claim citing an ID outside the retrieved candidate set, and abstain before generation when no candidate meets the score floor. Use a configurable default floor of `0.012` with equal-weight RRF `k=60`; a one-source rank-1 contribution is `1/61` and passes, while sufficiently low-ranked single-source results can be filtered. The floor is a baseline heuristic to tune against evaluation data, not a measured relevance guarantee.
 Consequences / how to reverse: Output has machine-checkable citations and fails closed on unknown IDs. A poor score threshold can create false abstentions or admit weak evidence; tune it and report the trade-off during retrieval evaluation.
+
+## ADR-010: Pin evaluation gold IDs to the default chunking of the sample corpus [ASSUMPTION] Date: 2026-10-22 Status: active
+Context: Retrieval metrics require stable relevance labels that point to real indexed passages.
+Options considered: Store document-level answers only; manually write opaque chunk IDs; derive chunk IDs from the checked-in notes using the production chunker.
+Decision: Store 52 questions as JSONL and derive every answerable gold ID from `data/sample_corpus` with the current default chunk size (900) and overlap (120). Include 34 factoid, 10 multi-hop, and 8 unanswerable queries; validate IDs against recomputed corpus chunks. Treat the binary labels as a baseline set, not a broad benchmark.
+Consequences / how to reverse: Corpus edits or chunking/source-name changes require regenerating and reviewing the gold IDs. The small, single-topic sample supports project comparisons but does not establish general retrieval quality.

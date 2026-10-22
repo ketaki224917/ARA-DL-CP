@@ -83,3 +83,9 @@ Done: Added structured atomic claim generation, code-rendered chunk citations, v
 Evidence: `compileall -q src tests` → passed. pytest/ruff/mypy and runtime answer checks → NOT RUN because Pydantic and other declared packages are not installed; official PyPI resolution stalled.
 Files: `src/ara/rag/answer.py`, `src/ara/config.py`, `config.yaml`, `.env.example`, `tests/test_answer.py`, `tests/test_config.py`, `docs/state/DECISIONS.md`, `docs/state/TODO.md`.
 Notes: P1.8 remains blocked until its tests run successfully. The default evidence floor is an RRF heuristic; it must be calibrated during P1.10 evaluation.
+
+### 2026-10-22 — P1.9 — Build the retrieval evaluation set
+Done: Added 52 labeled questions over the 19-note corpus: 34 factoid, 10 multi-hop with multiple gold IDs, and 8 unanswerable. Added a schema/source note, an integrity test, and ADR-010.
+Evidence: A standard-library validation using the production `chunk_document` defaults found 52 unique records, category counts 34/10/8, 27 corpus chunks, and no missing or invalid gold chunk IDs. Every multi-hop item has multiple gold IDs. `compileall -q src tests` → passed. pytest for the integrity test → NOT RUN because pytest is unavailable while PyPI resolution is blocked.
+Files: `data/eval_sets/rag_eval.jsonl`, `data/eval_sets/README.md`, `tests/test_eval_set.py`, `docs/state/DECISIONS.md`, `docs/state/TODO.md`.
+Notes: The integrity checks were run directly with CPython and the repository chunker; metric comparisons have not yet run.
