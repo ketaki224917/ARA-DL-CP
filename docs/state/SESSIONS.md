@@ -7,3 +7,4 @@
 - 2026-10-22 — Session 1 checkpoint — P0.8 committed as `521114b`; P0.1 and P0.4-P0.7 remain uncommitted pending PyPI-backed checks.
 - 2026-10-22 — Session 1 checkpoint — P1.4 vector-store code and tests drafted; compileall, TOML parsing, and a dependency-free chunk/store smoke check passed. Pytest remains blocked by PyPI timeout; next task is persisted BM25.
 - 2026-10-22 — Session 1 checkpoint — P1.4 committed as `4c4d783`; P1.5 BM25 implementation and tests drafted. Compileall and a dependency-free ranking/filter/persistence smoke check passed; pytest remains blocked by PyPI. Next task is hybrid RRF retrieval.
+- 2026-10-22 — Session 1 checkpoint — P1.5 committed as `6aee9eb`; P1.6 hybrid RRF implementation and tests drafted. Compileall and a dependency-free dense/lexical fusion smoke check passed. Escalated PyPI resolution stalled after downloading Python; pytest remains blocked. Next task is the reranker.

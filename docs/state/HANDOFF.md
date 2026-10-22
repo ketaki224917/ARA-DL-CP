@@ -1,23 +1,23 @@
 # HANDOFF (overwritten after every task)
 
 Updated: 2026-10-22 | Session #: 1  
-Current phase/task: Phase 1 / P1.5 — persisted BM25 | Status: implementation and tests drafted; pytest blocked by PyPI (P0.1/P0.4-P0.7 and P1.1-P1.4 checks also blocked)
+Current phase/task: Phase 1 / P1.6 — hybrid RRF retrieval | Status: implementation and tests drafted; pytest blocked by PyPI (P0.1/P0.4-P0.7 and P1.1-P1.5 checks also blocked)
 
-Last task commit: 4c4d783 — [P1.4] Add vector store adapters
+Last task commit: 6aee9eb — [P1.5] Add persisted BM25 retrieval
 
 ## Do next (exact)
-1. Retry `.tools/uv/uv.exe lock --verbose` against the official PyPI index when network access is available; the user has no trusted internal mirror.
+1. Retry `$env:UV_SYSTEM_CERTS='true'; .tools/uv/uv.exe lock --verbose` when official PyPI access is responsive; the user has no trusted internal mirror.
 2. Run `.tools/uv/uv.exe sync --extra dev`, then `.tools/uv/uv.exe run pytest`, `.tools/uv/uv.exe run ruff check .`, and `.tools/uv/uv.exe run mypy src` once package resolution succeeds; fix failures before marking blocked tasks complete.
-3. Implement hybrid reciprocal-rank fusion retrieval in `src/ara/rag/retriever.py` with tests and update the state files for P1.6.
+3. Implement the optional lazy cross-encoder reranker in `src/ara/rag/reranker.py` with tests and update the state files for P1.7.
 
 ## Environment state
 Windows 10; PowerShell; Git 2.55.0 available. Python 3.12.15 and uv 0.13.4 are installed under ignored `.tools/`; Python packages are not installed because PyPI timed out. `make` and Ollama are unavailable. CPU identifier is Intel64 Family 6 Model 170 Stepping 4; 18 logical processors. RAM and GPU/VRAM could not be queried because WMI access was denied. No models pulled and no services running. Git initialized on `master`; the workspace `.git` directory is read-only to the sandbox and requires approved escalation to write commits.
 
 ## WIP / uncommitted
-P0.2, P0.3, and P0.8 are committed as `21354d1`, `f178f8c`, and `521114b`. P0.1 packaging/scaffold and P0.4-P0.7 source/tests are uncommitted and blocked on package access; no dependency-backed tests have run. P1.1 loaders, P1.2 chunking, and P1.3 cached embeddings are drafted with tests blocked. P1.4 is committed as `4c4d783`, with the vector-store protocol, in-memory adapter, persistent Chroma adapter, Qdrant stub, and isolated tests; tests remain blocked. P1.5 has a local BM25 implementation, atomic JSON persistence, and tests; pytest remains blocked. The 19-note corpus is committed.
+P0.2, P0.3, and P0.8 are committed as `21354d1`, `f178f8c`, and `521114b`. P0.1 packaging/scaffold and P0.4-P0.7 source/tests are uncommitted and blocked on package access; no dependency-backed tests have run. P1.1 loaders, P1.2 chunking, and P1.3 cached embeddings are drafted with tests blocked. P1.4 is committed as `4c4d783`; P1.5 is committed as `6aee9eb`. P1.6 hybrid RRF code and tests are drafted; pytest remains blocked. The 19-note corpus is committed.
 
 ## Known failing tests / issues
-`python -m compileall -q src tests` passed. Corpus integrity check → 19 numbered notes, all have a reference line, license and sources manifest present. `uv lock` did not complete: the official PyPI index HEAD request timed out. `make test` initially failed because GNU Make is unavailable. Git repository was absent at start; Git escalation was approved for task commits.
+`python -m compileall -q src tests` passed; TOML parsed; dependency-free smoke checks passed for RRF, BM25 round-trip, chunking, and in-memory vector ranking. pytest/ruff/mypy have not run because `uv lock` stalled during PyPI resolution after the managed interpreter download; `uv.lock` is unavailable. Corpus integrity check: 19 numbered notes, each with a reference line, plus license and source manifest. `make test` failed because GNU Make is unavailable.
 
 ## Gotchas learned
 - Use PowerShell commands or install/use a compatible `make` implementation in this Windows environment.

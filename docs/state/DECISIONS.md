@@ -35,3 +35,9 @@ Context: Phase 1 needs a portable persisted lexical index, while package-index a
 Options considered: Add a third-party BM25 package; store only serialized posting lists; persist chunks and rebuild lexical statistics on load.
 Decision: Implement the standard BM25 scoring formula with case-folded Unicode word tokens, and save chunk records plus `k1`/`b` parameters in a versioned JSON file using an atomic same-directory rename. Rebuild postings and term statistics when loading.
 Consequences / how to reverse: No extra runtime dependency is needed, and the persisted format is inspectable. Large corpora will use more disk and load time than compact posting-list serialization; retrieval evaluation can justify a later format change.
+
+## ADR-007: Fuse dense and lexical retrieval with weighted RRF [ASSUMPTION] Date: 2026-10-22 Status: active
+Context: Dense cosine scores and BM25 scores have different scales, so direct addition needs calibration.
+Options considered: Normalize and add raw scores; train a fusion model; fuse the candidate ranks without score calibration.
+Decision: Use weighted reciprocal-rank fusion with equal default weights and `k=60`; retain each source rank and score for evaluation. The original RRF paper defines the reciprocal-rank sum and reports fixing `k=60` in its pilot investigation ([Cormack, Clarke, and Büttcher, 2009](https://cormack.uwaterloo.ca/cormacksigir09-rrf.pdf)). Treat equal weights and the constant as a baseline to evaluate on ARA's own corpus.
+Consequences / how to reverse: Fusion does not require dense and lexical scores to share a scale. The chosen weights and candidate depth can be tuned or replaced after retrieval metrics are collected.
