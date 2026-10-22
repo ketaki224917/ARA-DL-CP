@@ -10,7 +10,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [>] P0.5 logging_setup.py (implementation and tests written; awaiting test run)
 - [>] P0.6 Hardware detection + ENVIRONMENT.md + model choice ADR (probe implementation written; RAM/GPU inventory unavailable here)
 - [>] P0.7 llm/client.py (chat, structured-output w/ pydantic retry, streaming, tool-call helper) + tests (implementation and tests written; awaiting dependency access)
-- [ ] P0.8 Build/choose sample corpus (15–30 open-licensed docs on ONE niche topic; record sources & licenses in `data/sample_corpus/SOURCES.md`)
+- [x] P0.8 Build/choose sample corpus (15–30 open-licensed docs on ONE niche topic; record sources & licenses in `data/sample_corpus/SOURCES.md`)
 
 ## Phase 1 — RAG
 - [ ] P1.1 Loaders (pdf, docx, md, txt, html) + tests
