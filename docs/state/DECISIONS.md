@@ -59,3 +59,9 @@ Context: Retrieval metrics require stable relevance labels that point to real in
 Options considered: Store document-level answers only; manually write opaque chunk IDs; derive chunk IDs from the checked-in notes using the production chunker.
 Decision: Store 52 questions as JSONL and derive every answerable gold ID from `data/sample_corpus` with the current default chunk size (900) and overlap (120). Include 34 factoid, 10 multi-hop, and 8 unanswerable queries; validate IDs against recomputed corpus chunks. Treat the binary labels as a baseline set, not a broad benchmark.
 Consequences / how to reverse: Corpus edits or chunking/source-name changes require regenerating and reviewing the gold IDs. The small, single-topic sample supports project comparisons but does not establish general retrieval quality.
+
+## ADR-011: Use macro answerable-query retrieval metrics and micro citation precision [ASSUMPTION] Date: 2026-10-22 Status: active
+Context: Evaluation needs consistent treatment of answerable and unanswerable questions, retrieval rankings, and generated citations.
+Options considered: Include unanswerable questions as retrieval misses; exclude them from retrieval metrics and score abstention separately; macro- or micro-average the retrieval measures.
+Decision: Compute recall@k, MRR over the full returned ranking, and binary nDCG@k as macro averages over answerable queries only. Compute citation precision as a micro average over emitted citations across all queries, counting citations on unanswerable cases as incorrect. Report answerable response rate and unanswerable abstention rate separately. Missing predictions count as empty rankings and no citations.
+Consequences / how to reverse: Metric definitions are explicit and repeatable across retrievers. The corpus has binary relevance labels, so graded relevance and broader confidence intervals require additional labels and queries.

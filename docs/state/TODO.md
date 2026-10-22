@@ -22,7 +22,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [!] P1.7 Reranker (lazy CrossEncoder adapter/tests drafted; pytest blocked by PyPI)
 - [!] P1.8 answer() with citations + abstention (implementation/tests drafted; pytest blocked by PyPI)
 - [x] P1.9 Eval set ≥ 40 Q/A (52 rows; factoid, multi-hop, and unanswerable with validated gold chunk IDs)
-- [ ] P1.10 Eval harness + comparison table; record in PROGRESS.md
+- [!] P1.10 Eval harness + comparison table (metrics implemented; real four-system comparison blocked by unavailable dependencies/services/models)
 - [ ] P1.11 `make ingest` idempotent; CLI `ara ingest`/`ara ask`
 
 ## Phase 2 — MCP

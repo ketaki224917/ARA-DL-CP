@@ -89,3 +89,9 @@ Done: Added 52 labeled questions over the 19-note corpus: 34 factoid, 10 multi-h
 Evidence: A standard-library validation using the production `chunk_document` defaults found 52 unique records, category counts 34/10/8, 27 corpus chunks, and no missing or invalid gold chunk IDs. Every multi-hop item has multiple gold IDs. `compileall -q src tests` → passed. pytest for the integrity test → NOT RUN because pytest is unavailable while PyPI resolution is blocked.
 Files: `data/eval_sets/rag_eval.jsonl`, `data/eval_sets/README.md`, `tests/test_eval_set.py`, `docs/state/DECISIONS.md`, `docs/state/TODO.md`.
 Notes: The integrity checks were run directly with CPython and the repository chunker; metric comparisons have not yet run.
+
+### 2026-10-22 — P1.10 — Implement retrieval evaluation harness
+Done: Added JSONL loading/validation, per-run recall@k, MRR, binary nDCG@k, citation precision, answer-rate and abstention metrics, named-run comparison, Markdown tables, and atomic JSON output. Documented metric definitions and the four-system comparison table, explicitly marked NOT RUN. Logged ADR-011.
+Evidence: `compileall -q src tests` → passed; all 52 evaluation records loaded; synthetic three-query metric smoke check returned recall@2=0.750, MRR=0.750, nDCG@2=0.693, citation precision=0.750. These values validate formulas only. pytest/ruff/mypy and real dense/BM25/hybrid/hybrid+reranker runs → NOT RUN because dependencies, Ollama, and model weights are unavailable.
+Files: `src/ara/rag/eval.py`, `tests/test_eval.py`, `docs/evaluation.md`, `docs/state/DECISIONS.md`, `docs/state/TODO.md`.
+Notes: P1.10 remains blocked until the four actual retriever runs and metric table are recorded. Do not copy the synthetic smoke values into the comparison table.
