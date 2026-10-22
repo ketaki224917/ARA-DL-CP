@@ -18,3 +18,15 @@ Options considered: Bundle upstream docs verbatim; use a third-party dataset; wr
 Decision: Write 19 original notes about local retrieval and evidence grounding, license those notes CC BY 4.0, and record the official references and upstream project licenses in `data/sample_corpus/SOURCES.md`. Do not redistribute upstream page text.
 Consequences / how to reverse: The corpus is a curated instructional fixture rather than a snapshot of complete upstream documents. To replace it, add a source with explicit redistribution terms and update the manifest and license notice.
 
+## ADR-004: Use Ollama's local embedding endpoint with a configurable model [ASSUMPTION] Date: 2026-10-22 Status: active
+Context: Phase 1 needs batched dense embeddings that run locally and can be cached without a remote API.
+Options considered: Sentence Transformers in-process; Ollama `/api/embed`; hosted embedding API.
+Decision: Use Ollama `/api/embed` behind `OllamaEmbeddings`, default the configurable model name to `embeddinggemma`, and cache vectors by model plus text hash in SQLite. No source text is stored in the embedding cache.
+Consequences / how to reverse: Ollama and the selected model must be installed for real embedding runs. A Sentence Transformers implementation can be added behind the same retriever-facing interface if local endpoint constraints or evaluations justify it.
+
+## ADR-005: Use persistent Chroma with cosine distance behind a vector-store protocol [ASSUMPTION] Date: 2026-10-22 Status: active
+Context: The RAG layer needs persistent dense retrieval and a replaceable backend; tests should not require a Chroma database or server.
+Options considered: Couple retrieval directly to Chroma; use an in-memory-only index; define a protocol with a persistent local adapter.
+Decision: Define a small `VectorStore` protocol, use Chroma's persistent client with cosine space for the default adapter, and retain an in-memory cosine implementation for small tests. Keep the Qdrant class as an explicit unimplemented placeholder.
+Consequences / how to reverse: Chroma is the default storage dependency and local persistence format; retrieval callers can switch implementations through the protocol if later evaluations justify a different store.
+

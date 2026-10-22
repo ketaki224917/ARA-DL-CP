@@ -4,4 +4,6 @@
 - 2026-10-22 — Session 1 checkpoint — scaffold, state, config/logging/LLM/hardware code and tests drafted; Python/uv installed; PyPI access and Git writes remain blocked.
 - 2026-10-22 — Session 1 end — P0.2 and P0.3 committed (`21354d1`, `f178f8c`); P0.4-P0.7 implementation remains untested while PyPI access is unavailable.
 - 2026-10-22 — Session 1 checkpoint — P0.8 corpus authored and checked (19 notes); PyPI access still prevents lock generation and pytest/ruff/mypy runs.
+- 2026-10-22 — Session 1 checkpoint — P0.8 committed as `521114b`; P0.1 and P0.4-P0.7 remain uncommitted pending PyPI-backed checks.
+- 2026-10-22 — Session 1 checkpoint — P1.4 vector-store code and tests drafted; compileall, TOML parsing, and a dependency-free chunk/store smoke check passed. Pytest remains blocked by PyPI timeout; next task is persisted BM25.
 
