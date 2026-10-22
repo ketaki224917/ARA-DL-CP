@@ -26,6 +26,8 @@ _ENV_FIELDS = {
     "ARA_RETRIEVAL_CHUNK_OVERLAP": "retrieval_chunk_overlap",
     "ARA_RETRIEVAL_TOP_K": "retrieval_top_k",
     "ARA_RERANKER_MODEL": "reranker_model",
+    "ARA_ANSWER_MINIMUM_EVIDENCE_SCORE": "answer_minimum_evidence_score",
+    "ARA_ANSWER_MAX_EVIDENCE_CHUNKS": "answer_max_evidence_chunks",
 }
 
 
@@ -47,6 +49,8 @@ class Settings(BaseSettings):
     retrieval_chunk_overlap: int = Field(default=120, ge=0)
     retrieval_top_k: int = Field(default=8, ge=1)
     reranker_model: str = "cross-encoder/ms-marco-MiniLM-L6-v2"
+    answer_minimum_evidence_score: float = Field(default=0.012, ge=0)
+    answer_max_evidence_chunks: int = Field(default=8, ge=1)
 
 
 def load_settings(
@@ -87,6 +91,8 @@ def load_settings(
         "retrieval_chunk_overlap": retrieval.get("chunk_overlap"),
         "retrieval_top_k": retrieval.get("top_k"),
         "reranker_model": retrieval.get("reranker_model"),
+        "answer_minimum_evidence_score": retrieval.get("min_evidence_score"),
+        "answer_max_evidence_chunks": retrieval.get("max_evidence_chunks"),
     }
     values = {key: value for key, value in values.items() if value is not None}
 

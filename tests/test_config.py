@@ -27,6 +27,8 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
             "ARA_EMBEDDING_MODEL": "environment-embedder",
             "ARA_RETRIEVAL_TOP_K": "4",
             "ARA_RERANKER_MODEL": "local-cross-encoder",
+            "ARA_ANSWER_MINIMUM_EVIDENCE_SCORE": "0.03",
+            "ARA_ANSWER_MAX_EVIDENCE_CHUNKS": "5",
         },
     )
 
@@ -35,6 +37,8 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
     assert settings.embedding_model == "environment-embedder"
     assert settings.retrieval_top_k == 4
     assert settings.reranker_model == "local-cross-encoder"
+    assert settings.answer_minimum_evidence_score == pytest.approx(0.03)
+    assert settings.answer_max_evidence_chunks == 5
 
 
 def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
@@ -43,6 +47,8 @@ def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
     assert settings.llm_model == "qwen2.5:1.5b"
     assert settings.embedding_model == "embeddinggemma"
     assert settings.reranker_model == "cross-encoder/ms-marco-MiniLM-L6-v2"
+    assert settings.answer_minimum_evidence_score == pytest.approx(0.012)
+    assert settings.answer_max_evidence_chunks == 8
     assert settings.llm_request_timeout_seconds == 120
 
 
