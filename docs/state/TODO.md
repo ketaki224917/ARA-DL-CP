@@ -19,7 +19,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [!] P1.4 Vector store interface + Chroma impl (+ Qdrant stub; implementation/tests drafted, pytest blocked by PyPI)
 - [!] P1.5 BM25 index (persisted; implementation/tests drafted, pytest blocked by PyPI)
 - [!] P1.6 Hybrid retriever with RRF (implementation/tests drafted; pytest blocked by PyPI)
-- [ ] P1.7 Reranker
+- [!] P1.7 Reranker (lazy CrossEncoder adapter/tests drafted; pytest blocked by PyPI)
 - [ ] P1.8 answer() with citations + abstention
 - [ ] P1.9 Eval set ≥ 40 Q/A (gold chunk IDs; mix of factoid, multi-hop, unanswerable)
 - [ ] P1.10 Eval harness + comparison table; record in PROGRESS.md
