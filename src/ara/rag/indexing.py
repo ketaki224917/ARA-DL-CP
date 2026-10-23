@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Protocol
 
 from ara.rag.bm25 import BM25Index, BM25IndexError
-from ara.rag.chunking import DocumentChunk, chunk_documents
+from ara.rag.chunking import chunk_documents
 from ara.rag.vectorstore import VectorStore
 
 if TYPE_CHECKING:

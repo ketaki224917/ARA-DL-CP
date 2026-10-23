@@ -111,7 +111,7 @@ def _recursive_boundary(
 
 def _chunk_id(source: str, page: int | None, start: int, end: int, text: str) -> str:
     """Build a stable chunk identifier from source coordinates and passage text."""
-    identity = f"{source}\0{page or 0}\0{start}\0{end}\0{text}".encode("utf-8")
+    identity = f"{source}\0{page or 0}\0{start}\0{end}\0{text}".encode()
     return f"chunk:{hashlib.sha256(identity).hexdigest()[:20]}"
 
 

@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 import yaml
 from dotenv import dotenv_values
 from pydantic import AnyHttpUrl, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
 
 _ENV_FIELDS = {
     "ARA_LLM_BASE_URL": "llm_base_url",
@@ -40,7 +40,7 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_prefix="ARA_", extra="ignore")
 
-    llm_base_url: AnyHttpUrl = "http://localhost:11434"
+    llm_base_url: AnyHttpUrl = AnyHttpUrl("http://localhost:11434")
     llm_model: str = "qwen2.5:1.5b"
     llm_request_timeout_seconds: float = Field(default=120, gt=0)
     llm_temperature: float = Field(default=0.0, ge=0, le=2)

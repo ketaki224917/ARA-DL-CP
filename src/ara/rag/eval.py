@@ -248,9 +248,13 @@ def _question_from_record(record: Any) -> EvaluationQuestion:
     answerable = record.get("answerable")
     gold_ids = record.get("gold_chunk_ids")
     answer = record.get("expected_answer")
-    if not all(
-        isinstance(value, str) and value.strip()
-        for value in (question_id, category, question)
+    if (
+        not isinstance(question_id, str)
+        or not question_id.strip()
+        or not isinstance(category, str)
+        or not category.strip()
+        or not isinstance(question, str)
+        or not question.strip()
     ):
         raise ValueError("id, category, and question must be non-empty strings")
     if category not in {"factoid", "multi_hop", "unanswerable"}:

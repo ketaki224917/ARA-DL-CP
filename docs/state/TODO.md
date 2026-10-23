@@ -3,31 +3,31 @@
 Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 
 ## Phase 0 — Foundations
-- [!] P0.1 Create repo skeleton, pyproject, uv lock, Makefile, ruff/mypy/pytest config (scaffold is present; uv lock is blocked by PyPI timeout)
+- [x] P0.1 Create repo skeleton, pyproject, uv lock, Makefile, ruff/mypy/pytest config (uv.lock created; full tests, Ruff, and mypy pass)
 - [x] P0.2 Create `docs/state/*` from templates; write `AGENTS.md` from supplied prompt
 - [x] P0.3 Write CONVENTIONS.md (style, naming, logging, error handling, commit format)
-- [!] P0.4 config.py (pydantic settings) + config.yaml + .env.example (code/tests written; pytest blocked by PyPI access)
-- [!] P0.5 logging_setup.py (code/tests written; pytest blocked by PyPI access)
-- [!] P0.6 Hardware detection + ENVIRONMENT.md + model choice ADR (probe code written; RAM/GPU inventory and dependency-backed check unavailable)
-- [!] P0.7 llm/client.py (chat, structured-output w/ pydantic retry, streaming, tool-call helper) + tests (code/tests written; pytest blocked by PyPI access)
+- [x] P0.4 config.py (pydantic settings) + config.yaml + .env.example (tests pass)
+- [x] P0.5 logging_setup.py (tests pass)
+- [!] P0.6 Hardware detection + ENVIRONMENT.md + model choice ADR (CPU and RAM detected; supported GPU not detected; VRAM details remain unknown)
+- [x] P0.7 llm/client.py (chat, structured-output w/ pydantic retry, streaming, tool-call helper) + tests (tests pass)
 - [x] P0.8 Build/choose sample corpus (15–30 open-licensed docs on ONE niche topic; record sources & licenses in `data/sample_corpus/SOURCES.md`)
 
 ## Phase 1 — RAG
-- [!] P1.1 Loaders (pdf, docx, md, txt, html) + tests (implementation and tests written; test run blocked by PyPI)
-- [!] P1.2 Chunking (recursive + optional semantic; configurable) + metadata + tests (implementation and tests written; test run blocked by PyPI)
-- [!] P1.3 Embeddings wrapper (cached, batched; implementation and tests written, test run blocked by PyPI)
-- [!] P1.4 Vector store interface + Chroma impl (+ Qdrant stub; implementation/tests drafted, pytest blocked by PyPI)
-- [!] P1.5 BM25 index (persisted; implementation/tests drafted, pytest blocked by PyPI)
-- [!] P1.6 Hybrid retriever with RRF (implementation/tests drafted; pytest blocked by PyPI)
-- [!] P1.7 Reranker (lazy CrossEncoder adapter/tests drafted; pytest blocked by PyPI)
-- [!] P1.8 answer() with citations + abstention (implementation/tests drafted; pytest blocked by PyPI)
+- [x] P1.1 Loaders (pdf, docx, md, txt, html) + tests (tests pass)
+- [x] P1.2 Chunking (recursive + optional semantic; configurable) + metadata + tests (tests pass)
+- [x] P1.3 Embeddings wrapper (cached, batched; tests pass; live Ollama call not run)
+- [x] P1.4 Vector store interface + Chroma impl (+ Qdrant stub; tests pass)
+- [x] P1.5 BM25 index (persisted; tests pass)
+- [x] P1.6 Hybrid retriever with RRF (tests pass)
+- [x] P1.7 Reranker (lazy CrossEncoder adapter; tests pass; model weights not installed)
+- [x] P1.8 answer() with citations + abstention (tests pass)
 - [x] P1.9 Eval set ≥ 40 Q/A (52 rows; factoid, multi-hop, and unanswerable with validated gold chunk IDs)
 - [!] P1.10 Eval harness + comparison table (metrics implemented; real four-system comparison blocked by unavailable dependencies/services/models)
-- [!] P1.11 `make ingest` idempotent; CLI `ara ingest`/`ara ask` (implementation and dependency-free smoke check passed; pytest/ruff/mypy blocked by unavailable PyPI packages; real Ollama/Chroma CLI run not available)
+- [x] P1.11 `make ingest` idempotent; CLI `ara ingest`/`ara ask` (tests pass; live Ollama CLI run not available)
 
 ## Phase 2 — MCP
-- [!] P2.1 mcp_servers/common.py (validation, errors, logging; implementation and dependency-free smoke passed, pytest blocked because dev dependencies cannot be installed from PyPI)
-- [ ] P2.2 rag_server + tests via MCP client
+- [x] P2.1 mcp_servers/common.py (validation, errors, logging; tests pass)
+- [x] P2.2 rag_server + tests via MCP client (official v2 in-memory client tests pass)
 - [ ] P2.3 web_search_server + sanitization + caching + tests
 - [ ] P2.4 dl_model_server stub
 - [ ] P2.5 mcp_client wrapper (spawn stdio servers, list tools, call, timeout/retry)

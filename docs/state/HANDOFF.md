@@ -1,25 +1,26 @@
 # HANDOFF (overwritten after every task)
 
 Updated: 2026-10-23 | Session #: 1  
-Current phase/task: Phase 2 / P2.1 — shared MCP server support | Status: implementation and dependency-free smoke checks complete; pytest/ruff/mypy blocked because dev packages are unavailable
+Current phase/task: Phase 2 / P2.2 — RAG MCP server | Status: implementation complete; in-memory MCP client tests pass; P2.2 commit and final state updates are pending
 
 Last completed task commit: `0bdbaf1` — [P2.1] Add shared MCP validation and errors.
 
 ## Do next (exact)
-1. When official PyPI access is responsive, retry `$env:UV_SYSTEM_CERTS='true'; .tools/uv/uv.exe lock --verbose`; the user confirmed no trusted internal mirror is available.
-2. If locking succeeds, run `.tools/uv/uv.exe sync --extra dev`, then `.tools/uv/uv.exe run pytest`, `.tools/uv/uv.exe run ruff check .`, and `.tools/uv/uv.exe run mypy src`; fix findings before clearing blocked statuses.
-3. Implement Phase 2 / P2.2 in `src/ara/mcp_servers/rag_server.py`: expose `search_knowledge_base` and `get_chunk`, with tests through an MCP client.
+1. Commit the P2.2 RAG MCP server, in-memory client tests, SDK dependency, README usage, and ADR-014 without staging unrelated prior work.
+2. Implement `src/ara/mcp_servers/web_search_server.py` for P2.3 with sanitization, bounded fetching, caching, and focused tests.
+3. Implement the P2.4 custom DL model MCP stub in `src/ara/mcp_servers/dl_model_server.py` after the web search task.
 
 ## Environment state
-Windows 10; PowerShell; Git 2.55.0. Python 3.12.15 and uv 0.13.4 are installed under ignored `.tools/`. Python project dependencies, pytest, Ruff, and mypy are not installed because PyPI timed out. `make` and Ollama are unavailable. CPU identifier is Intel64 Family 6 Model 170 Stepping 4 with 18 logical processors; RAM and GPU/VRAM queries were denied by WMI. No models are pulled and no services are running. Git is on `master`; writing `.git` requires approved escalation.
+Windows 11; PowerShell; Git 2.55.0. Python 3.12.15 and uv 0.13.4 are installed under ignored `.tools/`; `.venv` and `uv.lock` are present. `uv sync --extra dev` installed 111 packages including pytest 8.4.2, Ruff 0.17.2, mypy 1.20.2, MCP SDK 2.3.0, and ChromaDB 1.5.9. Set `UV_SYSTEM_CERTS=true` for PyPI TLS and `UV_CACHE_DIR=.tools/uv-cache` to avoid the default AppData cache lock error. GNU `make` and Ollama are unavailable. Hardware probing found 18 logical processors and 15.52 GiB RAM, but no supported CUDA/MPS adapter; exact display hardware/VRAM is unknown. No models are pulled and no services are running.
 
 ## WIP / uncommitted
-P2.1 code and tests are committed as `0bdbaf1`: SDK-independent validation, safe typed errors/payloads, and duration logging that omits tool arguments. Compileall and direct smoke checks passed; pytest is still blocked. P0.5-P0.7 implementations/tests and P1.3 embeddings remain uncommitted from earlier work; `docs/state/ENVIRONMENT.md` has a separate hardware update. Keep those files out of the P2.2 commit. P1.11 is committed as `cdcba25`; its handoff follow-up is `17b1052`.
+P2.2 server/tests and associated dependency/docs changes are uncommitted but validated. P0.1 lock/tool configuration, P0.5-P0.7 implementations/tests, P1.1/P1.3 tests, and small Ruff/mypy follow-ups across P0.4/P1.2/P1.6/P1.8/P1.10/P1.11 are also in the worktree; keep these in their task-specific commits. State updates record a 99-test pass, clean Ruff and mypy, and hardware findings. `docs/state/ENVIRONMENT.md` is updated but not yet committed.
 
 ## Known failing tests / issues
-No pytest, Ruff, or mypy runs are available yet; their packages are absent and there is no trusted internal mirror. P2.1's standard-library smoke passed, as did `python -m compileall -q src tests`. The real Ollama/Chroma CLI run and all four retrieval evaluation comparisons remain NOT RUN because Ollama, Chroma packages, and model weights are unavailable. RAM/VRAM remain unknown.
+No known pytest/Ruff/mypy failures: `uv run --locked pytest` → 99 passed; `ruff check .` → clean; `mypy src` → no issues in 22 files. The four real retrieval comparisons and live Ollama/Chroma CLI run are NOT RUN because Ollama and model weights are absent. The real MCP stdio/Claude Desktop check remains for P2.6. Exact GPU/VRAM remains unknown.
 
 ## Gotchas learned
-- Use PowerShell commands or install/use a compatible `make` implementation in this Windows environment.
-- Preserve the supplied prompt's UTF-8 punctuation by reading text with explicit UTF-8 encoding.
-- Retry package resolution only when official PyPI access is responsive; there is no trusted internal mirror.
+- Use `$env:UV_SYSTEM_CERTS='true'` and `$env:UV_CACHE_DIR='.tools/uv-cache'` before uv commands in this environment.
+- GNU Make is absent; invoke the matching `uv run` commands directly.
+- Preserve UTF-8 punctuation when reading or editing project state files.
+- The SDK's current stable v2 API uses `MCPServer` and supports `Client(server)` for in-memory protocol tests.

@@ -113,11 +113,11 @@ def fuse_ranked_results(
     """
     _validate_fusion_settings(top_k, rrf_k, dense_weight, bm25_weight)
     fused: dict[str, dict[str, Any]] = {}
-    for rank, result in enumerate(dense_results, start=1):
+    for rank, dense_result in enumerate(dense_results, start=1):
         record = fused.setdefault(
-            result.chunk.chunk_id,
+            dense_result.chunk.chunk_id,
             {
-                "chunk": result.chunk,
+                "chunk": dense_result.chunk,
                 "score": 0.0,
                 "dense_rank": None,
                 "bm25_rank": None,
@@ -125,16 +125,16 @@ def fuse_ranked_results(
                 "bm25_score": None,
             },
         )
-        record["chunk"] = result.chunk
+        record["chunk"] = dense_result.chunk
         record["score"] += dense_weight / (rrf_k + rank)
         record["dense_rank"] = rank
-        record["dense_score"] = result.score
+        record["dense_score"] = dense_result.score
 
-    for rank, result in enumerate(lexical_results, start=1):
+    for rank, lexical_result in enumerate(lexical_results, start=1):
         record = fused.setdefault(
-            result.chunk.chunk_id,
+            lexical_result.chunk.chunk_id,
             {
-                "chunk": result.chunk,
+                "chunk": lexical_result.chunk,
                 "score": 0.0,
                 "dense_rank": None,
                 "bm25_rank": None,
@@ -144,7 +144,7 @@ def fuse_ranked_results(
         )
         record["score"] += bm25_weight / (rrf_k + rank)
         record["bm25_rank"] = rank
-        record["bm25_score"] = result.score
+        record["bm25_score"] = lexical_result.score
 
     results = [HybridSearchResult(**record) for record in fused.values()]
     results.sort(key=lambda result: (-result.score, result.chunk.chunk_id))

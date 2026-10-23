@@ -1,6 +1,7 @@
 """Tests for evidence-grounded answer generation and citation validation."""
 
 from collections.abc import Mapping, Sequence
+
 import pytest
 
 from ara.rag.answer import AnswerDraft, AnswerGenerationError, ClaimDraft, EvidenceAnswerer

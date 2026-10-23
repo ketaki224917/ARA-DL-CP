@@ -107,3 +107,45 @@ Done: Added standard-library helpers to validate argument objects, bounded text,
 Evidence: `.tools/python/cpython-3.12.15-windows-x86_64-none/python.exe -m compileall -q src tests` → passed; a direct runtime smoke check exercised success/failure validation, timeout retryability, safe error conversion, and call logging → passed; touched P2.1 files have no lines over 100 characters. pytest/ruff/mypy → NOT RUN because packages are absent and there is no trusted internal mirror.
 Files: `src/ara/mcp_servers/__init__.py`, `src/ara/mcp_servers/common.py`, `tests/test_mcp_common.py`, `docs/state/DECISIONS.md`, and task state files.
 Notes: P2.1 implementation is ready; test acceptance remains blocked until dev dependencies can be installed.
+
+### 2026-10-23 — P2.2 — Add the RAG MCP server
+Done: Added `search_knowledge_base` and `get_chunk` MCP tools backed by the hybrid retriever and vector store, bounded strict input validation, structured citation/provenance output, safe tool errors, and the `ara-rag-mcp` stdio entry point. Added tests using the official SDK's in-memory Client and logged ADR-014.
+Evidence: `.tools/python/cpython-3.12.15-windows-x86_64-none/python.exe -m compileall -q src tests` → passed; `tomllib` confirmed the `mcp>=2,<3` dependency and script entry point; P2.1 stdlib validation/error/logging smoke check passed. SDK import, pytest, in-memory protocol tests, Ruff, and mypy → NOT RUN because the MCP/dev packages are not installed and PyPI access remains blocked.
+Files: `src/ara/mcp_servers/rag_server.py`, `src/ara/mcp_servers/common.py`, `tests/test_mcp_rag_server.py`, `tests/test_mcp_common.py`, `pyproject.toml`, README, and state files.
+Notes: The server implementation and protocol tests are drafted but remain blocked from runtime validation until the official SDK can be installed.
+
+### 2026-10-23 — ENV-004 — Restore package access and run the regression suite
+Done: Resolved the project with uv, created `uv.lock`, installed the dev environment and MCP SDK, and fixed the lint/type/test findings exposed by the first complete run.
+Evidence: `.tools/uv/uv.exe lock --verbose` with `UV_SYSTEM_CERTS=true` → 154 packages resolved; `.tools/uv/uv.exe sync --extra dev` → 111 packages installed; `.tools/uv/uv.exe run --locked pytest` → 99 passed; `ruff check .` → clean; `mypy src` → no issues in 22 source files.
+Files: `uv.lock`, `pyproject.toml`, settings, evaluation, retrieval, indexing, chunking, and test modules.
+Notes: A custom uv cache under `.tools/uv-cache` avoids an access-denied lock in the default AppData cache. Real Ollama retrieval runs remain unavailable.
+
+### 2026-10-23 — P0.5 — Validate application logging
+Done: The standard logging setup and its invalid-level/configuration tests run successfully in the installed environment.
+Evidence: Full `.tools/uv/uv.exe run --locked pytest` → logging tests passed as part of 99 passing tests; Ruff and mypy are clean.
+Files: `src/ara/logging_setup.py`, `tests/test_logging_setup.py`.
+Notes: Logging setup is complete; the module does not attach duplicate handlers.
+
+### 2026-10-23 — P0.6 — Record detected hardware and model choice
+Done: The hardware probe detected 18 logical processors, 15.52 GiB RAM, and no supported CUDA/MPS accelerator. Added ADR-015 selecting the CPU-friendly 1.5B Qwen default.
+Evidence: `.tools/uv/uv.exe run --locked python -c "from ara.hardware import detect_hardware; print(detect_hardware())"` → `Windows 11`, Intel64 Family 6 Model 170 Stepping 4, 18 processors, 16,660,357,120 RAM bytes, accelerator `cpu`, no GPU name/VRAM. Hardware unit tests passed in the 99-test suite.
+Files: `src/ara/hardware.py`, `tests/test_hardware.py`, `docs/state/ENVIRONMENT.md`, `docs/state/DECISIONS.md`.
+Notes: `nvidia-smi` and PyTorch are unavailable, so exact display adapter and VRAM remain unknown; neither selected model has been pulled or benchmarked.
+
+### 2026-10-23 — P0.7 — Validate the local Ollama client
+Done: The chat, streaming, tool-call, and structured-output client unit tests pass with mocked HTTP responses.
+Evidence: Full `.tools/uv/uv.exe run --locked pytest` → all six LLM client tests passed; Ruff and mypy are clean.
+Files: `src/ara/llm/client.py`, `tests/test_llm_client.py`.
+Notes: Ollama is not installed, so no live model request was made.
+
+### 2026-10-23 — Phase 1 — Validate RAG implementation tests
+Done: Dependency-backed tests now pass for loaders, chunking, embeddings/cache, vector stores, BM25, RRF, reranking, cited answers, evaluation metrics, and idempotent indexing.
+Evidence: Full `.tools/uv/uv.exe run --locked pytest` → all applicable tests passed; Ruff and mypy are clean. The changed-corpus indexing fixture was corrected to keep before/after passage lengths equivalent.
+Files: `tests/test_ingest.py`, `tests/test_indexing.py`, and RAG modules with lint/type fixes.
+Notes: The real four-way retrieval metric comparison is still NOT RUN because Ollama and model weights are unavailable.
+
+### 2026-10-23 — P2.1/P2.2 — Validate MCP tools through the SDK client
+Done: Shared MCP support and the RAG server passed dependency-backed tests; the in-memory SDK client successfully called search and chunk lookup and observed safe error results.
+Evidence: `pytest tests/test_mcp_common.py tests/test_mcp_rag_server.py` → 18 passed; full suite → 99 passed; `ruff check .` and `mypy src` → clean.
+Files: `src/ara/mcp_servers/common.py`, `src/ara/mcp_servers/rag_server.py`, `tests/test_mcp_common.py`, `tests/test_mcp_rag_server.py`.
+Notes: The stdio server process and Claude Desktop host have not yet been manually exercised; that check belongs to P2.6.

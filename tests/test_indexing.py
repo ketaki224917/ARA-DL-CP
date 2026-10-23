@@ -78,7 +78,7 @@ def test_ingest_replaces_changed_chunks_and_rebuilds_bm25(tmp_path: Path) -> Non
         embeddings=embeddings,
         vector_store=store,
     )
-    documents[:] = [LoadedDocument(source="notes.md", text="updated evidence " * 10)]
+    documents[:] = [LoadedDocument(source="notes.md", text="new content " * 10)]
     after = ingest_corpus(
         settings=settings,
         document_loader=lambda _: documents,
