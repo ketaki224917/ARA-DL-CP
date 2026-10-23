@@ -6,11 +6,17 @@ Options considered: Ollama HTTP API; direct Transformers integration; paid hoste
 Decision: Start with Ollama's local HTTP API behind `llm/client.py`; keep model/base URL configurable. No paid API is required.
 Consequences / how to reverse: The service must be installed separately and model smoke tests need a running local model. A different backend can be added behind the same client interface and logged as a superseding ADR.
 
-## ADR-002: Default to a small Qwen model pending hardware detection [ASSUMPTION] Date: 2026-10-22 Status: active
+## ADR-002: Default to a small Qwen model pending hardware detection [ASSUMPTION] Date: 2026-10-22 Status: superseded by ADR-015
 Context: No Python, Ollama, GPU query access, or RAM query access is available in the current environment; the project must remain laptop-CPU-demoable.
 Options considered: Defer model selection; default to a small CPU-feasible Qwen model; choose a larger model without confirmed hardware.
 Decision: Set `qwen2.5:1.5b` as the configurable initial default. This is provisional, not evidence that it has been downloaded or run.
 Consequences / how to reverse: Revisit after hardware access and model availability are checked. Record the final size/backend choice with measured environment evidence.
+
+## ADR-015: Use the 1.5B Qwen model on the detected CPU-only host [DECISION] Date: 2026-10-23 Status: active
+Context: P0.6 hardware probing now reports 18 logical processors and 15.52 GiB RAM, while finding no supported CUDA/MPS accelerator. Exact display hardware and VRAM remain unknown.
+Options considered: Keep the provisional 1.5B model; move to 3B using system RAM capacity; choose a GPU-oriented model without a detected supported accelerator.
+Decision: Keep `qwen2.5:1.5b` as the CPU default to stay laptop-demoable. Keep `embeddinggemma` configurable for embeddings. Neither model is installed or measured; the recommendation reflects the available CPU-only probe and project policy, not observed inference performance. This supersedes ADR-002.
+Consequences / how to reverse: Re-run the hardware probe after adding an accessible GPU/runtime or on another host, then select and benchmark a model suited to the detected accelerator and RAM.
 
 ## ADR-003: Use original CC BY 4.0 notes as the sample corpus [ASSUMPTION] Date: 2026-10-22 Status: active
 Context: P0.8 requires a small open-licensed corpus on one niche topic, and the constrained environment cannot download full upstream documents reliably.
@@ -77,3 +83,9 @@ Context: MCP servers need consistent argument checks, safe caller-facing failure
 Options considered: Couple shared helpers to SDK response classes; rely on server handlers to validate ad hoc; provide small standard-library helpers and map their error payloads into SDK results at the server boundary.
 Decision: Use standard-library validators for object keys, bounded text/integers/lists, a typed tool error carrying stable code/message/retryability, a sanitized generic error payload, and a call context that logs server/tool/duration without logging arguments. Keep SDK-specific protocol objects in each server adapter.
 Consequences / how to reverse: Helpers can be smoke-checked without the SDK and keep user input out of logs. The MCP SDK adapter must translate these payloads into the protocol's tool result/error form and add any SDK-specific validation before release.
+
+## ADR-014: Use the official MCP Python SDK v2 for the RAG stdio server [DECISION] Date: 2026-10-23 Status: active
+Context: Phase 2 requires an independently runnable RAG MCP server and client-level protocol tests; the SDK's stable API changed after v1.
+Options considered: Implement JSON-RPC and stdio manually; use the older SDK v1 API; depend on the current official SDK v2 high-level server and client.
+Decision: Add `mcp>=2,<3`, build tools with `mcp.server.MCPServer`, use typed Pydantic input/output models, and test through the SDK's in-memory `Client(server)` transport. Expose the default stdio runner as `ara-rag-mcp`. Translate shared ARA tool errors into the SDK's `ToolError` so callers receive safe, actionable tool failures.
+Consequences / how to reverse: The implementation follows the SDK's current stable v2 line and stays within the stated Python 3.11+ support. The dependency and protocol tests still need a successful package install and execution; before changing API lines, review the official [installation and migration documentation](https://py.sdk.modelcontextprotocol.io/get-started/installation/) and [client transport documentation](https://py.sdk.modelcontextprotocol.io/client/transports/).
