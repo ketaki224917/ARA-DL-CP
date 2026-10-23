@@ -161,3 +161,9 @@ Done: Added `score_chunks(query, chunk_ids)` to `ara-dl-model-mcp` with bounded 
 Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 118 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src` → no issues in 24 source files; `git diff --check` → passed.
 Files: `src/ara/mcp_servers/dl_model_server.py`, `tests/test_mcp_dl_model_server.py`, `pyproject.toml`, README, and state files.
 Notes: The response intentionally contains no synthetic or placeholder scores; training and loading remain part of P5.6.
+
+### 2026-10-23 — P2.5 — Add the stdio MCP client wrapper
+Done: Added an async wrapper for named stdio server connections, tool discovery, tool calls, bounded timeouts/retries, retryable MCP error payloads, and deterministic process cleanup. Added a local fixture server and subprocess tests for listing, calling, retry, timeout, continued connection use, and child exit. Logged ADR-018.
+Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 120 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src` → no issues in 26 source files; `git diff --check` → passed.
+Files: `src/ara/mcp_client/client.py`, `src/ara/mcp_client/__init__.py`, `tests/mcp_stdio_fixture.py`, `tests/test_mcp_client.py`, and state files.
+Notes: A protocol tool error is returned to the caller unless its JSON payload explicitly marks it retryable. Server subprocess stderr inherits the parent process as documented by the SDK.
