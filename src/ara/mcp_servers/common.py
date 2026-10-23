@@ -40,6 +40,13 @@ class ToolExecutionError(MCPToolError):
         super().__init__("backend_error", message, retryable=retryable)
 
 
+class ToolNotFoundError(MCPToolError):
+    """Raised when a caller references a valid identifier absent from the index."""
+
+    def __init__(self, message: str) -> None:
+        super().__init__("not_found", message)
+
+
 class ToolTimeoutError(ToolExecutionError):
     """Raised when an MCP tool exceeds its configured time limit."""
 

@@ -17,7 +17,8 @@ uv run ara ingest
 uv run ara ingest --source path\to\your\documents
 uv run ara ask "How does reciprocal rank fusion combine results?"
 uv run ara ask "How does reciprocal rank fusion combine results?" --rerank
+uv run ara-rag-mcp
 ```
 
-The default ingestion source and index paths are in `config.yaml`. Repeating `ara ingest` with unchanged sources, chunk settings, and embedding model skips indexing work. Changed chunks replace old IDs in the dense collection and BM25 index. `--rerank` requires the optional `rerank` extra and locally available model weights.
+The default ingestion source and index paths are in `config.yaml`. Repeating `ara ingest` with unchanged sources, chunk settings, and embedding model skips indexing work. Changed chunks replace old IDs in the dense collection and BM25 index. `--rerank` requires the optional `rerank` extra and locally available model weights. `ara-rag-mcp` starts the RAG MCP server over stdio.
 

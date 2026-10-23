@@ -7,6 +7,7 @@ import pytest
 from ara.mcp_servers.common import (
     MCPToolError,
     ToolInputError,
+    ToolNotFoundError,
     ToolTimeoutError,
     error_payload,
     get_server_logger,
@@ -61,6 +62,11 @@ def test_require_text_list_checks_limits_and_duplicates() -> None:
 
 
 def test_error_payload_does_not_leak_unexpected_exception_text() -> None:
+    assert error_payload(ToolNotFoundError("No matching chunk was found.")) == {
+        "code": "not_found",
+        "message": "No matching chunk was found.",
+        "retryable": False,
+    }
     assert error_payload(ToolTimeoutError()) == {
         "code": "timeout",
         "message": "The tool request timed out.",
