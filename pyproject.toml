@@ -37,6 +37,7 @@ rerank = ["sentence-transformers>=5,<7"]
 ara = "ara.cli:main"
 ara-rag-mcp = "ara.mcp_servers.rag_server:main"
 ara-web-search-mcp = "ara.mcp_servers.web_search_server:main"
+ara-dl-model-mcp = "ara.mcp_servers.dl_model_server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ara"]

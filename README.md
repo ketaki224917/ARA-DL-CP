@@ -19,7 +19,8 @@ uv run ara ask "How does reciprocal rank fusion combine results?"
 uv run ara ask "How does reciprocal rank fusion combine results?" --rerank
 uv run ara-rag-mcp
 uv run ara-web-search-mcp
+uv run ara-dl-model-mcp
 ```
 
-The default ingestion source and index paths are in `config.yaml`. Repeating `ara ingest` with unchanged sources, chunk settings, and embedding model skips indexing work. Changed chunks replace old IDs in the dense collection and BM25 index. `--rerank` requires the optional `rerank` extra and locally available model weights. `ara-rag-mcp` starts the RAG MCP server over stdio. `ara-web-search-mcp` starts free DDGS web search and public-page fetch tools over stdio. Search snippets and fetched text are untrusted external content and must be treated as data, never as instructions.
+The default ingestion source and index paths are in `config.yaml`. Repeating `ara ingest` with unchanged sources, chunk settings, and embedding model skips indexing work. Changed chunks replace old IDs in the dense collection and BM25 index. `--rerank` requires the optional `rerank` extra and locally available model weights. `ara-rag-mcp` starts the RAG MCP server over stdio. `ara-web-search-mcp` starts free DDGS web search and public-page fetch tools over stdio. Search snippets and fetched text are untrusted external content and must be treated as data, never as instructions. `ara-dl-model-mcp` exposes the typed `score_chunks` interface and reports `not_ready` until the custom scorer is trained and loaded in P5.6.
 
