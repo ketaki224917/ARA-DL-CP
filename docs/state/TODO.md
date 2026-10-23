@@ -34,7 +34,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P2.6 Claude Desktop sample config + stdio verification note (all three subprocess servers launch; 121 tests pass)
 
 ## Phase 3 — Orchestration
-- [ ] P3.1 AgentState (pydantic): topic, plan, evidence store, draft, critiques, revision count, run metadata
+- [x] P3.1 AgentState (Pydantic): typed plan/evidence/draft/critique/run state, validation and JSON round-trip tests
 - [ ] P3.2 Planner + prompts + JSON validation/retry + tests
 - [ ] P3.3 Researcher (tool selection via LLM tool-calling through MCP client; dedupe; budget limits) + tests
 - [ ] P3.4 Orchestrator graph + trace JSONL

@@ -173,3 +173,9 @@ Done: Added a portable three-server Claude Desktop JSON sample with absolute-pat
 Evidence: `uv run --locked --no-sync pytest tests/test_mcp_stdio_servers.py` → 1 passed; full suite → 121 passed; JSON sample parsed with `python -m json.tool`; Ruff and mypy clean; `git diff --check` passed.
 Files: `docs/claude_desktop_config.example.json`, `docs/stdio_verification.md`, `tests/test_mcp_stdio_servers.py`, and state files.
 Notes: Claude Desktop itself was not launched in this environment; the protocol-level stdio checks do not claim UI integration.
+
+### 2026-10-23 — P3.1 — Add typed orchestration state
+Done: Added shared Pydantic models for planner subtasks, citation-ready local/web evidence, critiques, run metadata, and `AgentState`. Added cross-field validation, JSON round-trip, evidence deduplication/conflict detection, atomic batch insertion, and revision-cap tests. Logged ADR-020.
+Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 141 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src` → no issues in 28 source files; `git diff --check` → passed.
+Files: `src/ara/agents/state.py`, `src/ara/agents/__init__.py`, `tests/test_agent_state.py`, and state files.
+Notes: Plan is empty before planning and must contain 3-8 tasks once populated. All evidence is marked untrusted regardless of local or web provenance.
