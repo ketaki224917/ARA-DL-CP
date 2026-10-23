@@ -28,7 +28,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 ## Phase 2 — MCP
 - [x] P2.1 mcp_servers/common.py (validation, errors, logging; tests pass)
 - [x] P2.2 rag_server + tests via MCP client (official v2 in-memory client tests pass)
-- [ ] P2.3 web_search_server + sanitization + caching + tests
+- [x] P2.3 web_search_server + sanitization + caching + tests (115 tests pass; Ruff and mypy pass)
 - [ ] P2.4 dl_model_server stub
 - [ ] P2.5 mcp_client wrapper (spawn stdio servers, list tools, call, timeout/retry)
 - [ ] P2.6 Claude Desktop sample config + manual verification note

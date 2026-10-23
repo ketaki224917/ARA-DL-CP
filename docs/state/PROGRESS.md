@@ -149,3 +149,9 @@ Done: Shared MCP support and the RAG server passed dependency-backed tests; the 
 Evidence: `pytest tests/test_mcp_common.py tests/test_mcp_rag_server.py` → 18 passed; full suite → 99 passed; `ruff check .` and `mypy src` → clean.
 Files: `src/ara/mcp_servers/common.py`, `src/ara/mcp_servers/rag_server.py`, `tests/test_mcp_common.py`, `tests/test_mcp_rag_server.py`.
 Notes: The stdio server process and Claude Desktop host have not yet been manually exercised; that check belongs to P2.6.
+
+### 2026-10-23 — P2.3 — Add web search MCP tools
+Done: Added the free DDGS search backend, `web_search` and `fetch_page` MCP tools, stable `web:<hash>` IDs, bounded public-page fetching, redirect and URL checks, HTML sanitization, explicit untrusted-content markers, and a bounded TTL/LRU cache. Added offline MCP-client and safety tests, the `ara-web-search-mcp` entry point, README usage, and ADR-016.
+Evidence: `.tools/uv/uv.exe run --locked pytest` → 115 passed; `.tools/uv/uv.exe run --locked ruff check .` → clean; `.tools/uv/uv.exe run --locked mypy src` → no issues in 23 source files; `git diff --check` → passed.
+Files: `src/ara/mcp_servers/web_search_server.py`, `tests/test_mcp_web_search_server.py`, `pyproject.toml`, `uv.lock`, README, and state files.
+Notes: Tests use an injected search backend and HTTP mock transport; a live metasearch request and stdio/Claude Desktop check were not run. Search snippets and fetched content are external untrusted data.
