@@ -155,3 +155,9 @@ Done: Added the free DDGS search backend, `web_search` and `fetch_page` MCP tool
 Evidence: `.tools/uv/uv.exe run --locked pytest` → 115 passed; `.tools/uv/uv.exe run --locked ruff check .` → clean; `.tools/uv/uv.exe run --locked mypy src` → no issues in 23 source files; `git diff --check` → passed.
 Files: `src/ara/mcp_servers/web_search_server.py`, `tests/test_mcp_web_search_server.py`, `pyproject.toml`, `uv.lock`, README, and state files.
 Notes: Tests use an injected search backend and HTTP mock transport; a live metasearch request and stdio/Claude Desktop check were not run. Search snippets and fetched content are external untrusted data.
+
+### 2026-10-23 — P2.4 — Add the typed custom-model MCP stub
+Done: Added `score_chunks(query, chunk_ids)` to `ara-dl-model-mcp` with bounded unique-ID validation and a structured `not_ready` response until P5.6 trains and loads the custom scorer. Added in-memory MCP-client tests, the stdio entry point, README usage, and ADR-017.
+Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 118 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src` → no issues in 24 source files; `git diff --check` → passed.
+Files: `src/ara/mcp_servers/dl_model_server.py`, `tests/test_mcp_dl_model_server.py`, `pyproject.toml`, README, and state files.
+Notes: The response intentionally contains no synthetic or placeholder scores; training and loading remain part of P5.6.
