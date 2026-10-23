@@ -31,7 +31,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P2.3 web_search_server + sanitization + caching + tests (115 tests pass; Ruff and mypy pass)
 - [x] P2.4 dl_model_server stub (typed `score_chunks` not-ready response; 118 tests pass; Ruff and mypy pass)
 - [x] P2.5 mcp_client wrapper (stdio lifecycle, tool listing/calls, timeout/retry; 120 tests pass)
-- [ ] P2.6 Claude Desktop sample config + manual verification note
+- [x] P2.6 Claude Desktop sample config + stdio verification note (all three subprocess servers launch; 121 tests pass)
 
 ## Phase 3 — Orchestration
 - [ ] P3.1 AgentState (pydantic): topic, plan, evidence store, draft, critiques, revision count, run metadata

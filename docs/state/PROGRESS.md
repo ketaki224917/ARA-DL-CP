@@ -167,3 +167,9 @@ Done: Added an async wrapper for named stdio server connections, tool discovery,
 Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 120 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src` → no issues in 26 source files; `git diff --check` → passed.
 Files: `src/ara/mcp_client/client.py`, `src/ara/mcp_client/__init__.py`, `tests/mcp_stdio_fixture.py`, `tests/test_mcp_client.py`, and state files.
 Notes: A protocol tool error is returned to the caller unless its JSON payload explicitly marks it retryable. Server subprocess stderr inherits the parent process as documented by the SDK.
+
+### 2026-10-23 — P2.6 — Add Claude Desktop setup and stdio verification
+Done: Added a portable three-server Claude Desktop JSON sample with absolute-path placeholders, an integration test that starts all three servers as real stdio subprocesses, and a verification note with results and limitations. Confirmed tool discovery and the DL model not-ready response through the SDK client.
+Evidence: `uv run --locked --no-sync pytest tests/test_mcp_stdio_servers.py` → 1 passed; full suite → 121 passed; JSON sample parsed with `python -m json.tool`; Ruff and mypy clean; `git diff --check` passed.
+Files: `docs/claude_desktop_config.example.json`, `docs/stdio_verification.md`, `tests/test_mcp_stdio_servers.py`, and state files.
+Notes: Claude Desktop itself was not launched in this environment; the protocol-level stdio checks do not claim UI integration.
