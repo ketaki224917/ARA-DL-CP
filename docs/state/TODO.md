@@ -22,7 +22,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P1.7 Reranker (lazy CrossEncoder adapter; tests pass; model weights not installed)
 - [x] P1.8 answer() with citations + abstention (tests pass)
 - [x] P1.9 Eval set ≥ 40 Q/A (52 rows; factoid, multi-hop, and unanswerable with validated gold chunk IDs)
-- [!] P1.10 Eval harness + comparison table (metrics implemented; real four-system comparison blocked by unavailable dependencies/services/models)
+- [!] P1.10 Eval harness + comparison table (metrics implemented; real four-system comparison blocked by unavailable Ollama and model weights)
 - [x] P1.11 `make ingest` idempotent; CLI `ara ingest`/`ara ask` (tests pass; live Ollama CLI run not available)
 
 ## Phase 2 — MCP
