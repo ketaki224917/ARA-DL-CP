@@ -26,7 +26,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [!] P1.11 `make ingest` idempotent; CLI `ara ingest`/`ara ask` (implementation and dependency-free smoke check passed; pytest/ruff/mypy blocked by unavailable PyPI packages; real Ollama/Chroma CLI run not available)
 
 ## Phase 2 — MCP
-- [ ] P2.1 mcp_servers/common.py (validation, errors, logging)
+- [!] P2.1 mcp_servers/common.py (validation, errors, logging; implementation and dependency-free smoke passed, pytest blocked because dev dependencies cannot be installed from PyPI)
 - [ ] P2.2 rag_server + tests via MCP client
 - [ ] P2.3 web_search_server + sanitization + caching + tests
 - [ ] P2.4 dl_model_server stub
