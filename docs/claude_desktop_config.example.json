@@ -1,0 +1,34 @@
+{
+  "mcpServers": {
+    "ara-rag": {
+      "type": "stdio",
+      "command": "<ABSOLUTE_PATH_TO_UV_EXECUTABLE>",
+      "args": [
+        "run",
+        "--project",
+        "<ABSOLUTE_PATH_TO_ARA_PROJECT>",
+        "ara-rag-mcp"
+      ]
+    },
+    "ara-web-search": {
+      "type": "stdio",
+      "command": "<ABSOLUTE_PATH_TO_UV_EXECUTABLE>",
+      "args": [
+        "run",
+        "--project",
+        "<ABSOLUTE_PATH_TO_ARA_PROJECT>",
+        "ara-web-search-mcp"
+      ]
+    },
+    "ara-dl-model": {
+      "type": "stdio",
+      "command": "<ABSOLUTE_PATH_TO_UV_EXECUTABLE>",
+      "args": [
+        "run",
+        "--project",
+        "<ABSOLUTE_PATH_TO_ARA_PROJECT>",
+        "ara-dl-model-mcp"
+      ]
+    }
+  }
+}
