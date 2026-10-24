@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import asyncio
 import math
-from collections.abc import Mapping, Sequence
+import time
+from collections.abc import Callable, Mapping, Sequence
 from datetime import UTC, datetime
 from typing import Any, Literal, Protocol
 from urllib.parse import urlsplit
@@ -14,6 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field, StrictStr, ValidationError, f
 
 from ara.agents.prompts.researcher import observation_message, researcher_messages
 from ara.agents.state import AgentState, EvidenceItem, PlanTask
+from ara.agents.trace import TraceEvent, TraceScalar, make_trace_event
 from ara.llm.client import ChatMessage, OllamaClient, ToolCall
 
 _MAX_QUERY_LENGTH = 2_000
@@ -211,7 +213,12 @@ class Researcher:
             raise ValueError("mcp_timeout_seconds must be finite and positive")
         self.mcp_timeout_seconds = float(mcp_timeout_seconds)
 
-    async def research(self, state: AgentState) -> ResearchSummary:
+    async def research(
+        self,
+        state: AgentState,
+        *,
+        trace_callback: Callable[[TraceEvent], None] | None = None,
+    ) -> ResearchSummary:
         """Execute eligible plan tasks, adding bounded citation-ready evidence."""
         ordered_tasks = _topological_tasks(state.plan)
         tool_calls_made = 0
@@ -230,12 +237,34 @@ class Researcher:
                     for dependency in task.depends_on
                 ):
                     task.status = "blocked"
+                    _emit_trace(
+                        trace_callback,
+                        state,
+                        event="task_blocked",
+                        task_id=task.task_id,
+                        result_summary="a prerequisite task is not completed",
+                    )
                     continue
                 if budget_blocking:
                     task.status = "blocked"
+                    _emit_trace(
+                        trace_callback,
+                        state,
+                        event="task_blocked",
+                        task_id=task.task_id,
+                        result_summary="a research budget was exhausted",
+                    )
                     continue
 
                 task.status = "in_progress"
+                task_tool_calls_start = tool_calls_made
+                task_evidence_start = len(evidence_ids_added)
+                _emit_trace(
+                    trace_callback,
+                    state,
+                    event="task_started",
+                    task_id=task.task_id,
+                )
                 messages = researcher_messages(state.topic, task)
                 try:
                     while True:
@@ -248,8 +277,28 @@ class Researcher:
                         if not calls:
                             task.status = "completed"
                             completed_task_ids.append(task.task_id)
+                            _emit_trace(
+                                trace_callback,
+                                state,
+                                event="task_completed",
+                                task_id=task.task_id,
+                                result_summary=(
+                                    f"tool_calls={tool_calls_made - task_tool_calls_start}; "
+                                    f"evidence_added="
+                                    f"{len(evidence_ids_added) - task_evidence_start}"
+                                ),
+                            )
                             break
 
+                        for call in calls:
+                            _emit_trace(
+                                trace_callback,
+                                state,
+                                event="tool_selected",
+                                task_id=task.task_id,
+                                tool_name=call.name,
+                                tool_arguments=_trace_arguments(call.arguments),
+                            )
                         validated_calls = [
                             _validate_tool_call(
                                 call,
@@ -259,41 +308,72 @@ class Researcher:
                             for call in calls
                         ]
                         observations: list[dict[str, object]] = []
-                        for call in validated_calls:
+                        for validated_call in validated_calls:
                             if tool_calls_made >= self.max_tool_calls:
                                 tool_budget_exhausted = True
                                 budget_blocking = True
                                 break
                             tool_calls_made += 1
-                            result = await self._mcp.call_tool(
-                                call.server_name,
-                                call.tool_name,
-                                call.arguments,
-                                timeout_seconds=self.mcp_timeout_seconds,
-                                retries=0,
-                            )
-                            response = _structured_response(result, call.tool_name)
-                            candidates = _evidence_from_result(
-                                call.tool_name,
-                                response,
-                                local_top_k=self.local_top_k,
-                                web_max_results=self.web_max_results,
-                            )
-                            added, evidence_limit_hit = _add_evidence(
-                                state,
-                                candidates,
-                                max_items=self.max_evidence_items,
-                                max_chars=self.max_evidence_chars,
-                            )
+                            call_started = time.perf_counter()
+                            try:
+                                result = await self._mcp.call_tool(
+                                    validated_call.server_name,
+                                    validated_call.tool_name,
+                                    validated_call.arguments,
+                                    timeout_seconds=self.mcp_timeout_seconds,
+                                    retries=0,
+                                )
+                                response = _structured_response(result, validated_call.tool_name)
+                                candidates = _evidence_from_result(
+                                    validated_call.tool_name,
+                                    response,
+                                    local_top_k=self.local_top_k,
+                                    web_max_results=self.web_max_results,
+                                )
+                                added, evidence_limit_hit = _add_evidence(
+                                    state,
+                                    candidates,
+                                    max_items=self.max_evidence_items,
+                                    max_chars=self.max_evidence_chars,
+                                )
+                            except Exception as exc:
+                                _emit_trace(
+                                    trace_callback,
+                                    state,
+                                    event="tool_call",
+                                    task_id=task.task_id,
+                                    tool_name=validated_call.tool_name,
+                                    server_name=validated_call.server_name,
+                                    tool_arguments=_trace_arguments(validated_call.arguments),
+                                    result_summary=f"error_type={type(exc).__name__}",
+                                    latency_ms=(time.perf_counter() - call_started) * 1_000,
+                                )
+                                raise
                             evidence_ids_added.extend(added)
                             evidence_budget_exhausted = (
                                 evidence_budget_exhausted or evidence_limit_hit
                             )
                             if evidence_limit_hit:
                                 budget_blocking = True
+                            _emit_trace(
+                                trace_callback,
+                                state,
+                                event="tool_call",
+                                task_id=task.task_id,
+                                tool_name=validated_call.tool_name,
+                                server_name=validated_call.server_name,
+                                tool_arguments=_trace_arguments(validated_call.arguments),
+                                result_summary=(
+                                    f"results={_result_count(validated_call.tool_name, response)}; "
+                                    f"evidence_added={len(added)}; "
+                                    f"evidence_budget_hit={evidence_limit_hit}"
+                                ),
+                                latency_ms=(time.perf_counter() - call_started) * 1_000,
+                                is_untrusted=True,
+                            )
                             observations.append(
                                 _observation(
-                                    call.tool_name,
+                                    validated_call.tool_name,
                                     response,
                                     self.local_top_k,
                                     self.web_max_results,
@@ -304,16 +384,37 @@ class Researcher:
 
                         if budget_blocking:
                             task.status = "blocked"
+                            _emit_trace(
+                                trace_callback,
+                                state,
+                                event="task_blocked",
+                                task_id=task.task_id,
+                                result_summary="a research budget was exhausted",
+                            )
                             break
                         messages.append(observation_message(observations))
                 except Exception:
                     task.status = "blocked"
+                    _emit_trace(
+                        trace_callback,
+                        state,
+                        event="task_failed",
+                        task_id=task.task_id,
+                        result_summary="research operation raised an exception",
+                    )
                     raise
 
                 if budget_blocking:
                     for remaining in ordered_tasks[position + 1 :]:
                         if remaining.status in {"pending", "in_progress"}:
                             remaining.status = "blocked"
+                            _emit_trace(
+                                trace_callback,
+                                state,
+                                event="task_blocked",
+                                task_id=remaining.task_id,
+                                result_summary="a research budget was exhausted",
+                            )
                     break
         finally:
             state.run_metadata.updated_at = datetime.now(UTC)
@@ -566,6 +667,56 @@ def _validated_web_search_results(
             raise ResearcherError("web search returned an invalid citation ID")
         validated.append(parsed)
     return validated
+
+
+def _result_count(tool_name: str, response: Mapping[str, Any]) -> int:
+    if tool_name in {"search_knowledge_base", "web_search"}:
+        results = response.get("results")
+        return len(results) if isinstance(results, list) else 0
+    if tool_name == "fetch_page":
+        return 1 if isinstance(response.get("content"), str) and response["content"].strip() else 0
+    return 0
+
+
+def _trace_arguments(arguments: Mapping[str, object]) -> dict[str, TraceScalar]:
+    bounded: dict[str, TraceScalar] = {}
+    for name, value in arguments.items():
+        if isinstance(value, str):
+            bounded[name] = value[:500]
+        elif value is None or isinstance(value, (bool, int, float)):
+            bounded[name] = value
+    return bounded
+
+
+def _emit_trace(
+    callback: Callable[[TraceEvent], None] | None,
+    state: AgentState,
+    *,
+    event: str,
+    task_id: str | None = None,
+    tool_name: str | None = None,
+    server_name: str | None = None,
+    tool_arguments: Mapping[str, TraceScalar] | None = None,
+    result_summary: str | None = None,
+    latency_ms: float | None = None,
+    is_untrusted: bool | None = None,
+) -> None:
+    if callback is None:
+        return
+    callback(
+        make_trace_event(
+            state.run_metadata.run_id,
+            agent="researcher",
+            event=event,
+            task_id=task_id,
+            tool_name=tool_name,
+            server_name=server_name,
+            tool_arguments=tool_arguments,
+            result_summary=result_summary,
+            latency_ms=latency_ms,
+            is_untrusted=is_untrusted,
+        )
+    )
 
 
 __all__ = [
