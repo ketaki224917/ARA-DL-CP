@@ -227,3 +227,9 @@ Done: Added Markdown claim extraction, deterministic missing/malformed/unknown c
 Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 209 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src scripts` → no issues in 42 source files; `git diff --check` → passed.
 Files: `src/ara/agents/critic.py`, `src/ara/agents/prompts/critic.py`, `tests/test_critic.py`, and state files.
 Notes: Tests use deterministic mocked structured output. No live Ollama critique was run because Ollama and model weights remain unavailable under ENV-002.
+
+### 2026-10-24 — P4.4 — Add capped writer/critic revision loop
+Done: Added `RevisionLoop`, which starts from a fresh research state, drafts once, reviews each draft, sends the previous draft and bounded high-severity-first critic feedback into rewrites, and stops on abstention, a clean review, an unchanged draft, or `run_metadata.max_revisions`. It returns per-iteration reviewed/supported/unsupported/gap/contradiction/finding counts and can emit bounded JSONL trace events through a callback. Logged ADR-028.
+Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 221 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src scripts` → no issues in 43 source files; `git diff --check` → passed.
+Files: `src/ara/agents/revision.py`, `src/ara/agents/prompts/writer.py`, `src/ara/agents/writer.py`, `src/ara/agents/trace.py`, `tests/test_revision.py`, `tests/test_writer.py`, and state files.
+Notes: Convergence and trace tests use deterministic mocks, including one real Writer/Critic integration with scripted model outputs. Live reduction in unsupported claims has not been measured; P4.5 will first record an offline three-topic controlled demonstration, with live model validation remaining unavailable under ENV-002.
