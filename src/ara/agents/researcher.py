@@ -366,6 +366,8 @@ class Researcher:
                                 result_summary=(
                                     f"results={_result_count(validated_call.tool_name, response)}; "
                                     f"evidence_added={len(added)}; "
+                                    f"new_ids={','.join(added[:5])}; "
+                                    f"additional_ids={max(0, len(added) - 5)}; "
                                     f"evidence_budget_hit={evidence_limit_hit}"
                                 ),
                                 latency_ms=(time.perf_counter() - call_started) * 1_000,
