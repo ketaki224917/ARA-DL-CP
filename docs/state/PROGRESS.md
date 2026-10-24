@@ -209,3 +209,9 @@ Done: Added a runnable offline demo with the real structured-output Planner, Res
 Evidence: `uv run python scripts/offline_e2e_demo.py --trace-dir traces --run-id sample_research_run` → status completed; 3 tasks completed; 1 synthetic evidence item. `.tools/uv/uv.exe run --locked --no-sync pytest` → 178 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src scripts` → no issues in 37 source files; `git diff --check` → passed.
 Files: `scripts/offline_e2e_demo.py`, `scripts/offline_research_mcp_server.py`, `tests/test_end_to_end_research.py`, `traces/sample_research_run.jsonl`, README, and state files.
 Notes: This is an offline software integration run, not live model generation or real research. ENV-002 remains open for Ollama/model weights, real retrieval evaluation, and live end-to-end validation. Phase 3 acceptance is complete for the implemented offline path.
+
+### 2026-10-24 — P4.1 — Add evidence-grounded report writer
+Done: Added a fixed-section structured report schema with claim-level evidence IDs, bounded score-ordered evidence context, untrusted-data framing, deterministic inline citation rendering, model/no-evidence abstention, and fail-closed behavior for citations outside the supplied context. The writer stores its Markdown draft in `AgentState`. Logged ADR-025.
+Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 187 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src scripts` → no issues in 39 source files; `git diff --check` → passed.
+Files: `src/ara/agents/writer.py`, `src/ara/agents/prompts/writer.py`, `tests/test_writer.py`, and state files.
+Notes: Writer tests use mocked structured output. No live Ollama generation was run; claim support still requires the P4.3 critic, and P4.2 adds a standalone rendered-citation validator.

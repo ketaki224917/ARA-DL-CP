@@ -42,7 +42,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P3.6 Offline end-to-end plan/research gate with real Planner/Researcher/Orchestrator, stdio MCP fixture, and saved synthetic trace (178 tests pass; live Ollama remains under ENV-002)
 
 ## Phase 4 — Writer/Critic
-- [ ] P4.1 Writer (evidence-only, inline citations, section templates)
+- [x] P4.1 Writer (bounded evidence-only sectioned output, structured claim IDs, inline citation rendering, deterministic abstention; 187 tests pass)
 - [ ] P4.2 Citation parser/validator (deterministic check that cited IDs exist)
 - [ ] P4.3 Critic (claim-level verification vs cited chunk, gap and contradiction checks) + JSON schema
 - [ ] P4.4 Revision loop + stopping logic + per-iteration stats
