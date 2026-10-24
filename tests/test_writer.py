@@ -10,7 +10,7 @@ import httpx
 import pytest
 
 from ara.agents.prompts.writer import REPORT_SECTION_HEADINGS
-from ara.agents.state import AgentState, EvidenceItem
+from ara.agents.state import AgentState, Critique, EvidenceItem
 from ara.agents.writer import (
     ReportDraft,
     Writer,
@@ -179,6 +179,66 @@ def test_writer_frames_prompt_injection_inside_evidence_as_untrusted_data() -> N
     payload = json.loads(messages[1]["content"].partition("\n")[2])
     assert payload["evidence"][0]["text"] == injected
     assert payload["evidence"][0]["is_untrusted"] is True
+
+
+def test_writer_receives_prior_draft_and_structured_critic_feedback() -> None:
+    llm = FakeWriterLLM(_draft())
+    state = _state(_evidence())
+    state.draft = "# Earlier report\n\n- An unsupported statement. [chunk:one]"
+    state.revision_count = 1
+    state.critiques = [
+        Critique(
+            issue="unsupported",
+            claim="An unsupported statement.",
+            details="The source does not establish this statement.",
+            evidence_ids=["chunk:one"],
+            suggested_revision="Remove the unsupported statement.",
+        )
+    ]
+
+    Writer(llm).write(state)
+
+    system, user = llm.calls[0][0]
+    payload = json.loads(user["content"].partition("\n")[2])
+    assert "revise that draft" in system["content"]
+    assert "prior draft" in system["content"]
+    assert payload["current_draft"].startswith("# Earlier report")
+    assert payload["revision_count"] == 1
+    assert payload["critic_feedback"][0]["issue"] == "unsupported"
+    assert (
+        payload["critic_feedback"][0]["suggested_revision"]
+        == "Remove the unsupported statement."
+    )
+
+
+def test_writer_bounds_feedback_and_prioritizes_high_severity_findings() -> None:
+    llm = FakeWriterLLM(_draft())
+    state = _state(_evidence())
+    state.draft = "# Earlier report"
+    state.critiques = [
+        Critique(
+            issue="clarity",
+            claim=f"Claim {index}",
+            details="d" * 700,
+            severity="low",
+        )
+        for index in range(10)
+    ] + [
+        Critique(
+            issue="unsupported",
+            claim="High-priority claim",
+            details="h" * 700,
+            severity="high",
+        )
+    ]
+
+    Writer(llm).write(state)
+
+    payload = json.loads(llm.calls[0][0][1]["content"].partition("\n")[2])
+    assert len(payload["critic_feedback"]) == 10
+    assert payload["critic_feedback_truncated"] is True
+    assert payload["critic_feedback"][0]["claim"] == "High-priority claim"
+    assert len(payload["critic_feedback"][0]["details"]) == 500
 
 
 def test_writer_structured_output_retries_invalid_section_template() -> None:

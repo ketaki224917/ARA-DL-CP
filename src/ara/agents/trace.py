@@ -13,7 +13,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 _RUN_ID_PATTERN = re.compile(r"[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}\Z")
 TraceScalar = str | int | float | bool | None
-TraceAgent = Literal["orchestrator", "planner", "researcher"]
+TraceAgent = Literal["orchestrator", "planner", "researcher", "revision_loop"]
 
 
 class TraceEvent(BaseModel):

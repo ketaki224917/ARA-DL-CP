@@ -167,7 +167,14 @@ class Writer:
 
         try:
             draft = self._llm.structured_output(
-                writer_messages(state.topic, state.plan, evidence),
+                writer_messages(
+                    state.topic,
+                    state.plan,
+                    evidence,
+                    current_draft=state.draft,
+                    critiques=state.critiques,
+                    revision_count=state.revision_count,
+                ),
                 ReportDraft,
                 max_retries=self.max_retries,
             )
