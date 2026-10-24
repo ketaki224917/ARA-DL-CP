@@ -185,3 +185,9 @@ Done: Added a planner prompt and strict structured-output schema for 3-8 researc
 Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 152 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src` → no issues in 31 source files; `git diff --check` → passed.
 Files: `src/ara/agents/planner.py`, `src/ara/agents/prompts/`, `tests/test_planner.py`, and state files.
 Notes: Tests used an in-memory HTTP transport; no live Ollama service or model was available for generation.
+
+### 2026-10-24 — P3.3 — Add MCP-backed researcher
+Done: Added the researcher tool catalog and prompt, validated local-search/web-search/page-fetch calls, named MCP routing with retries disabled, dependency ordering, and per-run call/evidence-count/character budgets. Added local and fetched web evidence to `AgentState` with stable-ID deduplication; search snippets remain untrusted navigation observations. Added tests for tool selection, invalid calls, dependency order, MCP errors, deduplication, and budget exhaustion. Logged ADR-022.
+Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 164 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src` → no issues in 33 source files; `git diff --check` → passed.
+Files: `src/ara/agents/researcher.py`, `src/ara/agents/prompts/researcher.py`, `tests/test_researcher.py`, and state files.
+Notes: MCP and LLM behavior were mocked for researcher unit tests; no live Ollama call, indexed-corpus search, or external web query was run.

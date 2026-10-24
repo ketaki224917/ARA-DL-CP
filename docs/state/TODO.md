@@ -36,7 +36,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 ## Phase 3 — Orchestration
 - [x] P3.1 AgentState (Pydantic): typed plan/evidence/draft/critique/run state, validation and JSON round-trip tests
 - [x] P3.2 Planner + prompts + JSON validation/retry + tests (3-8 task plans, dependency validation, bounded retries; 152 tests pass)
-- [ ] P3.3 Researcher (tool selection via LLM tool-calling through MCP client; dedupe; budget limits) + tests
+- [x] P3.3 Researcher (LLM tool selection through MCP; evidence dedupe; call/item/character budgets; mocked tests; 164 tests pass)
 - [ ] P3.4 Orchestrator graph + trace JSONL
 - [ ] P3.5 Prompt-injection test fixtures
 - [ ] P3.6 Gate: end-to-end plan+research run, saved sample trace
