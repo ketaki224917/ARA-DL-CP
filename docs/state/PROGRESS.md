@@ -221,3 +221,9 @@ Done: Added `validate_citations` for `[chunk:<id>]` and `[web:<id>]` markers. It
 Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 199 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src scripts` → no issues in 40 source files; `git diff --check` → passed.
 Files: `src/ara/agents/citations.py`, `tests/test_citations.py`, and state files.
 Notes: Validation checks citation syntax and membership in the supplied evidence keys; it does not decide whether the cited text supports a claim. The P4.3 critic handles claim-level support review. No live model was needed for this deterministic utility.
+
+### 2026-10-24 — P4.3 — Add structured evidence critic
+Done: Added Markdown claim extraction, deterministic missing/malformed/unknown citation findings, bounded untrusted evidence context, structured per-claim support judgments, plan-gap and contradiction findings, cross-reference validation, and replacement of `AgentState.critiques` only after a valid review. The result includes reviewed, supported, unsupported, gap, and contradiction counts for P4.4. Logged ADR-027.
+Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 209 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src scripts` → no issues in 42 source files; `git diff --check` → passed.
+Files: `src/ara/agents/critic.py`, `src/ara/agents/prompts/critic.py`, `tests/test_critic.py`, and state files.
+Notes: Tests use deterministic mocked structured output. No live Ollama critique was run because Ollama and model weights remain unavailable under ENV-002.
