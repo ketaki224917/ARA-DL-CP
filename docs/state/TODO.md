@@ -38,7 +38,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P3.2 Planner + prompts + JSON validation/retry + tests (3-8 task plans, dependency validation, bounded retries; 152 tests pass)
 - [x] P3.3 Researcher (LLM tool selection through MCP; evidence dedupe; call/item/character budgets; mocked tests; 164 tests pass)
 - [x] P3.4 Orchestrator + JSONL trace lifecycle, tool metadata/latency, and run status tests (173 tests pass)
-- [ ] P3.5 Prompt-injection test fixtures
+- [x] P3.5 Prompt-injection fixtures for local documents, web snippets, and fetched pages; all remain data and disallowed tools are rejected (176 tests pass)
 - [ ] P3.6 Gate: end-to-end plan+research run, saved sample trace
 
 ## Phase 4 — Writer/Critic

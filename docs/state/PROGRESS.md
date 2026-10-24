@@ -197,3 +197,9 @@ Done: Added a hand-rolled async orchestrator for plan/research lifecycle, plan r
 Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 173 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src` → no issues in 35 source files; `git diff --check` → passed.
 Files: `src/ara/agents/orchestrator.py`, `src/ara/agents/trace.py`, researcher trace hooks, `tests/test_orchestrator.py`, and state files.
 Notes: Orchestration tests inject mocked planner/researcher components and use temporary trace directories. No live Ollama or MCP-backed research run was available.
+
+### 2026-10-24 — P3.5 — Add prompt-injection test fixtures
+Done: Added synthetic malicious local-document, web-search snippet, and fetched-page fixtures. Tests pass each through the researcher observation path, confirm the model receives data-only/untrusted framing, and make the mocked model request an unapproved tool; the researcher rejects it before MCP execution. Retrieved fixture text remains marked untrusted in evidence.
+Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 176 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src` → no issues in 35 source files; `git diff --check` → passed.
+Files: `tests/fixtures/prompt_injection/`, `tests/test_researcher.py`.
+Notes: The examples are synthetic and test tool-policy enforcement; they do not claim to measure how a live model responds to prompt injection.
