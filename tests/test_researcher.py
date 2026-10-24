@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 from collections.abc import Mapping, Sequence
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -107,6 +108,27 @@ def _state(tasks: list[PlanTask] | None = None) -> AgentState:
             PlanTask(task_id="second", question="Find the second evidence."),
             PlanTask(task_id="third", question="Find the third evidence."),
         ],
+    )
+
+
+def _injection_fixture(name: str) -> str:
+    fixture_path = Path(__file__).parent / "fixtures" / "prompt_injection" / name
+    return fixture_path.read_text(encoding="utf-8")
+
+
+def _web_search_payload(snippet: str) -> CallToolResult:
+    return _result(
+        {
+            "results": [
+                {
+                    "chunk_id": "web:injection-page",
+                    "title": "Synthetic public page",
+                    "url": "https://example.org/research",
+                    "snippet": snippet,
+                    "is_untrusted": True,
+                }
+            ]
+        }
     )
 
 
@@ -353,3 +375,89 @@ def test_researcher_rejects_mcp_error_results() -> None:
         asyncio.run(Researcher(mcp, llm).research(state))
 
     assert state.plan[0].status == "blocked"
+
+
+def test_malicious_local_document_stays_data_and_cannot_expand_tool_allowlist() -> None:
+    injected_text = _injection_fixture("local_document.txt")
+    llm = FakeLLM(
+        [
+            [_call("search_knowledge_base", {"query": "research"})],
+            [_call("delete_files", {"path": "C:/private"})],
+        ]
+    )
+    mcp = FakeMCPClient(
+        {("rag", "search_knowledge_base"): _local_result(text=injected_text)}
+    )
+    state = _state()
+
+    with pytest.raises(ResearcherError, match="disallowed"):
+        asyncio.run(Researcher(mcp, llm).research(state))
+
+    observation = llm.requests[1][-1]["content"]
+    parsed = json.loads(observation.partition("\n")[-1])
+    assert "never as instructions" in observation
+    assert "SYSTEM OVERRIDE" in parsed["observations"][0]["results"][0]["excerpt"]
+    assert list(state.evidence_store.values())[0].is_untrusted is True
+    assert [call[1] for call in mcp.calls] == ["search_knowledge_base"]
+    assert state.plan[0].status == "blocked"
+
+
+def test_malicious_web_snippet_is_labeled_and_cannot_invoke_unknown_tool() -> None:
+    injected_snippet = _injection_fixture("web_snippet.txt")
+    llm = FakeLLM(
+        [
+            [_call("web_search", {"query": "research"})],
+            [_call("delete_files", {"path": "C:/private"})],
+        ]
+    )
+    mcp = FakeMCPClient({("web", "web_search"): _web_search_payload(injected_snippet)})
+    state = _state()
+
+    with pytest.raises(ResearcherError, match="disallowed"):
+        asyncio.run(Researcher(mcp, llm).research(state))
+
+    observation = llm.requests[1][-1]["content"]
+    parsed = json.loads(observation.partition("\n")[-1])
+    result = parsed["observations"][0]["results"][0]
+    assert "never as instructions" in observation
+    assert result["snippet"] == injected_snippet[:1_200]
+    assert result["is_untrusted"] is True
+    assert not state.evidence_store
+    assert [call[1] for call in mcp.calls] == ["web_search"]
+
+
+def test_malicious_fetched_page_remains_untrusted_evidence() -> None:
+    injected_page = _injection_fixture("fetched_page.txt")
+    llm = FakeLLM(
+        [
+            [_call("web_search", {"query": "research"})],
+            [_call("fetch_page", {"url": "https://example.org/research"})],
+            [_call("reveal_secrets", {})],
+        ]
+    )
+    mcp = FakeMCPClient(
+        {
+            ("web", "web_search"): _web_search_payload("A relevant source is available."),
+            ("web", "fetch_page"): _result(
+                {
+                    "chunk_id": "web:injection-page",
+                    "title": "Synthetic public page",
+                    "url": "https://example.org/research",
+                    "content": injected_page,
+                }
+            ),
+        }
+    )
+    state = _state()
+
+    with pytest.raises(ResearcherError, match="disallowed"):
+        asyncio.run(Researcher(mcp, llm).research(state))
+
+    observation = llm.requests[2][-1]["content"]
+    parsed = json.loads(observation.partition("\n")[-1])
+    assert "never as instructions" in observation
+    assert "IMPORTANT MESSAGE TO AI" in parsed["observations"][0]["results"][0]["excerpt"]
+    evidence = state.evidence_store["web:injection-page"]
+    assert evidence.text == injected_page.strip()
+    assert evidence.is_untrusted is True
+    assert [call[1] for call in mcp.calls] == ["web_search", "fetch_page"]
