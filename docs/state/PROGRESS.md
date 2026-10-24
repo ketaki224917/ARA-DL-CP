@@ -203,3 +203,9 @@ Done: Added synthetic malicious local-document, web-search snippet, and fetched-
 Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 176 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src` → no issues in 35 source files; `git diff --check` → passed.
 Files: `tests/fixtures/prompt_injection/`, `tests/test_researcher.py`.
 Notes: The examples are synthetic and test tool-policy enforcement; they do not claim to measure how a live model responds to prompt injection.
+
+### 2026-10-24 — P3.6 — Complete offline plan/research gate
+Done: Added a runnable offline demo with the real structured-output Planner, Researcher, MCPClient stdio transport, Orchestrator, and JSONL trace writer. The demo uses a deterministic mocked Ollama response and a clearly synthetic MCP server, verifies all three tasks complete with one evidence item, and saves `traces/sample_research_run.jsonl`. Documented the command and limitations in README. Logged ADR-024.
+Evidence: `uv run python scripts/offline_e2e_demo.py --trace-dir traces --run-id sample_research_run` → status completed; 3 tasks completed; 1 synthetic evidence item. `.tools/uv/uv.exe run --locked --no-sync pytest` → 178 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src scripts` → no issues in 37 source files; `git diff --check` → passed.
+Files: `scripts/offline_e2e_demo.py`, `scripts/offline_research_mcp_server.py`, `tests/test_end_to_end_research.py`, `traces/sample_research_run.jsonl`, README, and state files.
+Notes: This is an offline software integration run, not live model generation or real research. ENV-002 remains open for Ollama/model weights, real retrieval evaluation, and live end-to-end validation. Phase 3 acceptance is complete for the implemented offline path.

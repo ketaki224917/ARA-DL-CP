@@ -39,7 +39,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P3.3 Researcher (LLM tool selection through MCP; evidence dedupe; call/item/character budgets; mocked tests; 164 tests pass)
 - [x] P3.4 Orchestrator + JSONL trace lifecycle, tool metadata/latency, and run status tests (173 tests pass)
 - [x] P3.5 Prompt-injection fixtures for local documents, web snippets, and fetched pages; all remain data and disallowed tools are rejected (176 tests pass)
-- [ ] P3.6 Gate: end-to-end plan+research run, saved sample trace
+- [x] P3.6 Offline end-to-end plan/research gate with real Planner/Researcher/Orchestrator, stdio MCP fixture, and saved synthetic trace (178 tests pass; live Ollama remains under ENV-002)
 
 ## Phase 4 — Writer/Critic
 - [ ] P4.1 Writer (evidence-only, inline citations, section templates)
