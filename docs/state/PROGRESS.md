@@ -191,3 +191,9 @@ Done: Added the researcher tool catalog and prompt, validated local-search/web-s
 Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 164 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src` → no issues in 33 source files; `git diff --check` → passed.
 Files: `src/ara/agents/researcher.py`, `src/ara/agents/prompts/researcher.py`, `tests/test_researcher.py`, and state files.
 Notes: MCP and LLM behavior were mocked for researcher unit tests; no live Ollama call, indexed-corpus search, or external web query was run.
+
+### 2026-10-24 — P3.4 — Add orchestration and JSONL traces
+Done: Added a hand-rolled async orchestrator for plan/research lifecycle, plan reuse, run status updates, and failure recording. Added validated append-only `TraceEvent` JSONL output with safe run IDs and bounded tool arguments/results. Added researcher task, tool-selection, and tool-call events with latency. Logged ADR-023.
+Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 173 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src` → no issues in 35 source files; `git diff --check` → passed.
+Files: `src/ara/agents/orchestrator.py`, `src/ara/agents/trace.py`, researcher trace hooks, `tests/test_orchestrator.py`, and state files.
+Notes: Orchestration tests inject mocked planner/researcher components and use temporary trace directories. No live Ollama or MCP-backed research run was available.
