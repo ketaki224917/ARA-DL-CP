@@ -179,3 +179,9 @@ Done: Added shared Pydantic models for planner subtasks, citation-ready local/we
 Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 141 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src` → no issues in 28 source files; `git diff --check` → passed.
 Files: `src/ara/agents/state.py`, `src/ara/agents/__init__.py`, `tests/test_agent_state.py`, and state files.
 Notes: Plan is empty before planning and must contain 3-8 tasks once populated. All evidence is marked untrusted regardless of local or web provenance.
+
+### 2026-10-24 — P3.2 — Add validated research planner
+Done: Added a planner prompt and strict structured-output schema for 3-8 research tasks. Validated unique task IDs, same-plan dependencies, and an acyclic dependency graph; converted accepted tasks to pending `PlanTask` objects. Reused the Ollama client's bounded schema retry and JSON repair behavior. Logged ADR-021.
+Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 152 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src` → no issues in 31 source files; `git diff --check` → passed.
+Files: `src/ara/agents/planner.py`, `src/ara/agents/prompts/`, `tests/test_planner.py`, and state files.
+Notes: Tests used an in-memory HTTP transport; no live Ollama service or model was available for generation.
