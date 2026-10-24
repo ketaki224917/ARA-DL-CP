@@ -215,3 +215,9 @@ Done: Added a fixed-section structured report schema with claim-level evidence I
 Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 187 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src scripts` → no issues in 39 source files; `git diff --check` → passed.
 Files: `src/ara/agents/writer.py`, `src/ara/agents/prompts/writer.py`, `tests/test_writer.py`, and state files.
 Notes: Writer tests use mocked structured output. No live Ollama generation was run; claim support still requires the P4.3 critic, and P4.2 adds a standalone rendered-citation validator.
+
+### 2026-10-24 — P4.2 — Add deterministic citation parsing and validation
+Done: Added `validate_citations` for `[chunk:<id>]` and `[web:<id>]` markers. It returns unique IDs in report order, separates unknown evidence IDs from malformed markers, accepts ordinary bracketed Markdown, and treats nested citation-looking brackets as one malformed marker. Logged ADR-026.
+Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 199 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src scripts` → no issues in 40 source files; `git diff --check` → passed.
+Files: `src/ara/agents/citations.py`, `tests/test_citations.py`, and state files.
+Notes: Validation checks citation syntax and membership in the supplied evidence keys; it does not decide whether the cited text supports a claim. The P4.3 critic handles claim-level support review. No live model was needed for this deterministic utility.

@@ -43,7 +43,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 
 ## Phase 4 — Writer/Critic
 - [x] P4.1 Writer (bounded evidence-only sectioned output, structured claim IDs, inline citation rendering, deterministic abstention; 187 tests pass)
-- [ ] P4.2 Citation parser/validator (deterministic check that cited IDs exist)
+- [x] P4.2 Citation parser/validator (deterministic check that cited IDs exist; handles chunk/web markers, malformed syntax, and unknown IDs; 199 tests pass)
 - [ ] P4.3 Critic (claim-level verification vs cited chunk, gap and contradiction checks) + JSON schema
 - [ ] P4.4 Revision loop + stopping logic + per-iteration stats
 - [ ] P4.5 Loop-effect experiment on ≥ 3 topics; table in PROGRESS.md
