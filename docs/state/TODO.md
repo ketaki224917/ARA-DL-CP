@@ -46,7 +46,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P4.2 Citation parser/validator (deterministic check that cited IDs exist; handles chunk/web markers, malformed syntax, and unknown IDs; 199 tests pass)
 - [x] P4.3 Critic (claim-level verification vs cited chunk, gap and contradiction checks, strict structured schema, state updates; 209 tests pass)
 - [x] P4.4 Revision loop + stopping logic + per-iteration stats (writer consumes bounded critic feedback; stops clean/abstained/unchanged/cap; 221 tests pass)
-- [ ] P4.5 Loop-effect experiment on ≥ 3 topics; table in PROGRESS.md
+- [x] P4.5 Loop-effect experiment on ≥ 3 topics; table in PROGRESS.md (scripted controlled demonstration; live-model quality effect remains NOT RUN under ENV-002)
 
 ## Phase 5 — Custom DL model
 - [ ] P5.1 Synthetic data generator (queries, positives, hard negatives via BM25/dense mining) + quality filtering

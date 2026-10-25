@@ -233,3 +233,17 @@ Done: Added `RevisionLoop`, which starts from a fresh research state, drafts onc
 Evidence: `.tools/uv/uv.exe run --locked --no-sync pytest` → 221 passed; `.tools/uv/uv.exe run --locked --no-sync ruff check .` → clean; `.tools/uv/uv.exe run --locked --no-sync mypy src scripts` → no issues in 43 source files; `git diff --check` → passed.
 Files: `src/ara/agents/revision.py`, `src/ara/agents/prompts/writer.py`, `src/ara/agents/writer.py`, `src/ara/agents/trace.py`, `tests/test_revision.py`, `tests/test_writer.py`, and state files.
 Notes: Convergence and trace tests use deterministic mocks, including one real Writer/Critic integration with scripted model outputs. Live reduction in unsupported claims has not been measured; P4.5 will first record an offline three-topic controlled demonstration, with live model validation remaining unavailable under ENV-002.
+
+### 2026-10-25 — P4.5 — Add scripted three-topic revision-loop demonstration
+Done: Added a reproducible CLI that loads three separate sample-corpus notes and runs the actual `Writer`, `Critic`, and `RevisionLoop` components with scripted structured responses. It checks prior-draft and critic-feedback propagation, iteration counts, stop reason, and trace events. Logged ADR-029.
+Evidence: `.tools/uv/uv.exe run --locked --no-sync python scripts/offline_revision_demo.py` produced:
+
+| Topic | Unsupported before | Unsupported after | Reduction | Revisions | Stop reason |
+|---|---:|---:|---:|---:|---|
+| What can hybrid retrieval do, and what should be evaluated? | 1 | 0 | 100% | 1 | clean |
+| How should report citations preserve and verify provenance? | 1 | 0 | 100% | 1 | clean |
+| How should a research agent handle instructions inside retrieved text? | 1 | 0 | 100% | 1 | clean |
+
+The script labels these as a scripted offline demonstration, not a live-model quality measurement. `.tools/uv/uv.exe run --locked --no-sync pytest` → 222 passed; Ruff clean; mypy → no issues in 44 source files; `git diff --check` → passed.
+Files: `scripts/offline_revision_demo.py`, `tests/test_revision_demo.py`, and state files.
+Notes: The initial unsupported judgments and revisions are deliberately scripted. Live-model effect measurement is NOT RUN because Ollama and weights are unavailable (ENV-002); the controlled result verifies software behavior only. Code/test commit: `033be55`.
