@@ -1,32 +1,35 @@
 # Environment
 
-Updated: 2026-10-23 (session 1)
+Updated: 2026-10-25 (session 1)
 
 - OS/shell: Windows 11; PowerShell.
 - CPU: Intel64 Family 6 Model 170 Stepping 4, GenuineIntel; 18 logical processors.
 - RAM: 16,660,357,120 bytes (15.52 GiB), detected through `psutil.virtual_memory()`.
-- GPU/VRAM: No supported CUDA/MPS adapter detected. `nvidia-smi` is unavailable and PyTorch is not installed, so GPU/VRAM details remain unknown.
+- GPU/VRAM: No supported CUDA/MPS adapter detected; CPU PyTorch reports `torch.cuda.is_available() == False`. `nvidia-smi` is unavailable, so exact display adapter/VRAM details remain unknown.
 - Python: 3.12.15 managed by uv at `.tools/python/cpython-3.12.15-windows-x86_64-none`; no PATH or registry change.
 - uv: 0.13.4 at `.tools/uv/uv.exe`.
-- Project environment: `.venv` created with `uv sync --extra dev`; `uv.lock` locks 154 resolved packages. Installed notable versions: pytest 8.4.2, Ruff 0.17.2, mypy 1.20.2, MCP SDK 2.3.0, ChromaDB 1.5.9.
+- Project environments: `.venv` is the original dev environment. A clean `.tools/dl-venv` was synced with `uv sync --locked --extra dev --extra dl` after stale `.venv` metadata caused an access-denied cleanup error. The DL environment has Python 3.12.15, PyTorch `2.14.1+cpu`, Transformers `4.57.6`, pytest 8.4.2, Ruff 0.17.2, and mypy 1.20.2. `uv.lock` pins the full dependency graph.
 - Package index: PyPI resolution/download works when `UV_SYSTEM_CERTS=true`. Default uv cache lock access was denied outside the workspace; set `UV_CACHE_DIR=.tools/uv-cache` for commands.
 - Git: 2.55.0 available. GNU `make`: NOT FOUND.
-- Ollama/model weights: Ollama NOT FOUND; no chat, embedding, or reranker model pulled.
+- Ollama/model weights: Ollama NOT FOUND; chat and embedding models are not pulled. The `cross-encoder/ms-marco-MiniLM-L6-v2` checkpoint and tokenizer are cached under ignored `models/huggingface/` at revision `df500e56a59fc34f37322735a40eff666200312e`; CPU inference returned one finite relevance logit. The 90,870,598-byte weights file and tokenizer cache are not committed.
 - Services/ports: none started or checked.
 
 ## Model choice
 
-Hardware probing found a CPU-only runtime with 18 logical processors and 15.52 GiB RAM. The supported GPU probe found no CUDA/MPS accelerator; the machine's display hardware and VRAM are not known because neither `nvidia-smi` nor PyTorch is available. The default chat model remains `qwen2.5:1.5b` to keep the prescribed CPU laptop demo small. The embedding model remains `embeddinggemma`. Neither has been downloaded or run; see ADR-015.
+Hardware probing found a CPU-only runtime with 18 logical processors and 15.52 GiB RAM. The supported GPU probe found no CUDA/MPS accelerator; the machine's display hardware and VRAM remain unknown. The default chat model remains `qwen2.5:1.5b` to keep the prescribed CPU laptop demo small. The embedding model remains `embeddinggemma`. Neither has been downloaded or run; see ADR-015. For the custom DL component, ADR-032 records the pinned MiniLM cross-encoder and CPU PyTorch choice.
 
 ## Commands
 
 ```powershell
 $env:UV_SYSTEM_CERTS = 'true'
 $env:UV_CACHE_DIR = '.tools/uv-cache'
-.tools/uv/uv.exe sync --extra dev
-.tools/uv/uv.exe run pytest
-.tools/uv/uv.exe run ruff check .
-.tools/uv/uv.exe run mypy src
+$env:UV_PROJECT_ENVIRONMENT = '.tools/dl-venv'
+.tools/uv/uv.exe sync --locked --extra dev --extra dl
+.tools/uv/uv.exe run --locked --extra dev --extra dl pytest
+.tools/uv/uv.exe run --locked --extra dev --extra dl ruff check .
+.tools/uv/uv.exe run --locked --extra dev --extra dl mypy src scripts
 ```
+
+On this Windows host, Hugging Face HTTPS needed `truststore.inject_into_ssl()` before importing Transformers because `requests`' bundled CA store did not trust the available system chain. Keep certificate validation enabled. Hugging Face warns that symlinks are unavailable under the current permissions; its cache falls back to copies and remains usable.
 
 With Ollama installed and the configured models pulled, use `uv run ara ingest`, `uv run ara ask "<question>"`, and `uv run ara-rag-mcp`. GNU Make is unavailable; invoke the corresponding uv commands directly.
