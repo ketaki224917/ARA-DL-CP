@@ -52,7 +52,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P5.1 Synthetic data generator (queries, positives, hard negatives via BM25/dense mining) + quality filtering (local-LLM path implemented and mocked; offline fallback dataset committed; live generation NOT RUN under ENV-002)
 - [x] P5.2 Public dataset subset integration + doc-level splits (SciFact; 200 labeled queries; evidence-linked document splits validated with no overlap)
 - [x] P5.3 Dataset/Dataloader + model.py (split-safe pair batches, pinned MiniLM relevance scorer, optional masked credibility head; CPU inference verified)
-- [ ] P5.4 train.py (config, seed, early stop, checkpoints, curves)
+- [x] P5.4 train.py (config-driven AdamW/BCE training, seeded split loaders, validation early stopping, atomic best checkpoint, JSON metrics, PNG loss curve; 3-epoch CPU run completed)
 - [ ] P5.5 evaluate.py vs baselines + ablations + error analysis
 - [ ] P5.6 export + load in dl_model_server (`score_chunks`) + tests
 - [ ] P5.7 Integrate in researcher; A/B end-to-end comparison

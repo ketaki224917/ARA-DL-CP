@@ -1,23 +1,23 @@
 # HANDOFF (overwritten after every task)
 
 Updated: 2026-10-25 | Session #: 1
-Current phase/task: Phase 5 / P5.4 - deterministic cross-encoder training | Status: P5.3 complete and committed; training has not started
+Current phase/task: Phase 5 / P5.5 - evaluate reranker against baselines | Status: P5.4 complete and committed; training/validation artifacts are recorded
 
-Last completed task commit: `b63c711` - [P5.3] Add CPU cross-encoder dataset and model.
+Last completed task commit: `0e89284` - [P5.4] Add deterministic cross-encoder training.
 
 ## Do next (exact)
-1. Implement `src/ara/dl/train.py` to seed Python/Torch, load split-specific `PairExample` sets and the pinned tokenizer/model, and train relevance with the existing `CrossEncoderScorer.compute_loss`.
-2. Add validated training settings for epochs, learning rate, early-stopping patience, output checkpoint, and curve paths; write tests for deterministic CPU training, validation-based best-checkpoint selection, and loss-curve output.
-3. Run a short CPU fit using `data/dl_data/scifact_subset`, then rerun `.tools/uv/uv.exe run --locked --extra dev --extra dl pytest`, Ruff, mypy, and `git diff --check`; record training/validation metrics without claiming a baseline win.
+1. Read ADR-031–033 and inspect the held-out files; implement `src/ara/dl/evaluate.py` to score the trained checkpoint, pinned generic checkpoint, and a BM25+dense baseline using only labeled test evidence.
+2. Add query-level accuracy/F1/MRR/nDCG metrics, hard-negative ablation, and a 20-case error report with deterministic tests; never use the held-out test data for training or checkpoint selection.
+3. Run the comparison on `data/dl_data/scifact_subset`, save a real metrics table and error-analysis artifact under `docs/` or `outputs/`, then rerun pytest, Ruff, mypy, and `git diff --check`.
 
 ## Environment state
-Windows 11; PowerShell; Git 2.55.0. Python 3.12.15 and uv 0.13.4 are under ignored `.tools/`. Use `UV_PROJECT_ENVIRONMENT=.tools/dl-venv`, `UV_SYSTEM_CERTS=true`, and `UV_CACHE_DIR=.tools/uv-cache`; this locked environment has PyTorch `2.14.1+cpu`, Transformers `4.57.6`, pytest 8.4.2, Ruff 0.17.2, and mypy 1.20.2. The pinned MiniLM model and tokenizer are cached under ignored `models/huggingface/`; no fine-tuned checkpoint exists yet. Hugging Face download on this host needs `import truststore; truststore.inject_into_ssl()` before importing Transformers, with TLS verification enabled. GNU Make and Ollama are unavailable. Hardware: 18 logical processors, 15.52 GiB RAM, CPU-only inference; exact display adapter/VRAM unknown. No services are running.
+Windows 11; PowerShell; Git 2.55.0. Python 3.12.15 and uv 0.13.4 are under ignored `.tools/`. Use `UV_PROJECT_ENVIRONMENT=.tools/dl-venv`, `UV_SYSTEM_CERTS=true`, and `UV_CACHE_DIR=.tools/uv-cache`; this locked environment has PyTorch `2.14.1+cpu`, Transformers `4.57.6`, Matplotlib `3.11.2`, pytest 8.4.2, Ruff 0.17.2, and mypy 1.20.2. The pinned MiniLM model/tokenizer are cached under ignored `models/huggingface/`. The trained checkpoint currently exists at ignored `models/checkpoints/reranker.pt` but is not committed; regenerate with `python -m ara.dl.train` (three CPU epochs took about 8m35s). Metrics and curve are tracked under `outputs/`. Hugging Face downloads need `import truststore; truststore.inject_into_ssl()` before importing Transformers on this host; TLS verification stays enabled. GNU Make and Ollama are unavailable. Hardware: 18 logical processors, 15.52 GiB RAM, CPU-only; exact display adapter/VRAM unknown. No services are running.
 
 ## WIP / uncommitted
-P5.3 model, pair dataset, config, lock, and tests are committed as `b63c711`; state updates are the follow-up commit. P5.2 code/data is committed as `d5db624`; P5.1 code/data is committed as `fa6ba18`. No known source/data WIP remains.
+P5.4 trainer, tests, metrics, and loss curve are committed as `0e89284`; state updates are the follow-up commit. The local trained weights under `models/checkpoints/` are ignored and can be regenerated from the pinned public checkpoint. P5.3 code is committed as `b63c711`; P5.2 data/code as `d5db624`; P5.1 generator/data as `fa6ba18`. No known source/data WIP remains.
 
 ## Known failing tests / issues
-No known pytest/Ruff/mypy failures: the full DL-extra suite reports 240 passed; Ruff is clean; mypy reports no issues in 48 source files. The pinned pretrained checkpoint loaded and CPU inference passed. P5.4 training and P5.5 baseline evaluation have not run yet. P4.5 is a scripted controlled demonstration only; live LLM work remains unavailable under ENV-002. P5.1 data uses the extractive/BM25 fallback; local-LLM generation and dense mining are NOT RUN. SciFact has 200 claims and 5,183 documents with document-disjoint internal splits. Planner/researcher/writer/critic/revision-loop tests use mocked LLM behavior; the saved end-to-end sample uses synthetic evidence. The three MCP servers were verified through stdio, but Claude Desktop UI and live DDGS search were not tested. Retrieval comparisons and local Ollama/Chroma runs remain unavailable. Exact GPU/VRAM remains unknown. The default `dl_data_path` is the configured generation output; pass `data/dl_data/synthetic_pairs_offline.jsonl` explicitly when using the committed offline pair artifact.
+No known pytest/Ruff/mypy failures: the full DL-extra suite reports 241 passed; Ruff is clean; mypy reports no issues in 49 source files. P5.4 trained for three CPU epochs; validation BCE reached `0.309428`, but no held-out ranking evaluation or baseline comparison has run yet. P5.1 generation used the extractive/BM25 fallback; local-LLM generation and dense mining are NOT RUN. SciFact has 200 claims and 5,183 documents with document-disjoint splits. The 30-query test partition was not loaded during training and must remain untouched until P5.5. P4.5 is scripted; live LLM research remains unavailable under ENV-002. The saved agent end-to-end example uses synthetic evidence. MCP stdio was verified, but Claude Desktop UI and live DDGS search were not tested. Exact GPU/VRAM remains unknown.
 
 ## Gotchas learned
 - Use `$env:UV_SYSTEM_CERTS='true'` and `$env:UV_CACHE_DIR='.tools/uv-cache'` before uv commands in this environment.
@@ -39,4 +39,5 @@ No known pytest/Ruff/mypy failures: the full DL-extra suite reports 240 passed; 
 - The loop result is a controlled code-path measurement only when the Writer/Critic LLMs are scripted. It cannot establish a real model quality improvement; record live results only when Ollama and weights are available.
 - Use `UV_PROJECT_ENVIRONMENT=.tools/dl-venv` for `--extra dl` commands; syncing the stale `.venv` failed cleanup with Access denied, while the clean dedicated environment worked.
 - Import `truststore` and call `truststore.inject_into_ssl()` before Transformers when downloading Hugging Face files on this host. Do not disable TLS verification. The Hugging Face cache falls back to copies because symlinks are unavailable here.
-- `build_pair_examples(..., include_synthetic_train=True)` defaults to configured `Settings.dl_data_path`; the checked-in fallback is `data/dl_data/synthetic_pairs_offline.jsonl`, so pass that path explicitly unless the generator has created the configured output file.
+- `build_pair_examples(..., include_synthetic_train=True)` reads configured `Settings.dl_data_path`, now set to `data/dl_data/synthetic_pairs_offline.jsonl` in `config.yaml`.
+- `python -m ara.dl.train --max-batches 1 --epochs 1` is a one-batch-per-epoch smoke run; normal training reads train and validation only and saves a best-state checkpoint, JSON history, and PNG curve. The ignored checkpoint is not portable to a fresh checkout, while the pinned base weights and config are.

@@ -8,10 +8,11 @@ Updated: 2026-10-25 (session 1)
 - GPU/VRAM: No supported CUDA/MPS adapter detected; CPU PyTorch reports `torch.cuda.is_available() == False`. `nvidia-smi` is unavailable, so exact display adapter/VRAM details remain unknown.
 - Python: 3.12.15 managed by uv at `.tools/python/cpython-3.12.15-windows-x86_64-none`; no PATH or registry change.
 - uv: 0.13.4 at `.tools/uv/uv.exe`.
-- Project environments: `.venv` is the original dev environment. A clean `.tools/dl-venv` was synced with `uv sync --locked --extra dev --extra dl` after stale `.venv` metadata caused an access-denied cleanup error. The DL environment has Python 3.12.15, PyTorch `2.14.1+cpu`, Transformers `4.57.6`, pytest 8.4.2, Ruff 0.17.2, and mypy 1.20.2. `uv.lock` pins the full dependency graph.
+- Project environments: `.venv` is the original dev environment. A clean `.tools/dl-venv` was synced with `uv sync --locked --extra dev --extra dl` after stale `.venv` metadata caused an access-denied cleanup error. The DL environment has Python 3.12.15, PyTorch `2.14.1+cpu`, Transformers `4.57.6`, Matplotlib `3.11.2`, pytest 8.4.2, Ruff 0.17.2, and mypy 1.20.2. `uv.lock` pins the full dependency graph.
 - Package index: PyPI resolution/download works when `UV_SYSTEM_CERTS=true`. Default uv cache lock access was denied outside the workspace; set `UV_CACHE_DIR=.tools/uv-cache` for commands.
 - Git: 2.55.0 available. GNU `make`: NOT FOUND.
 - Ollama/model weights: Ollama NOT FOUND; chat and embedding models are not pulled. The `cross-encoder/ms-marco-MiniLM-L6-v2` checkpoint and tokenizer are cached under ignored `models/huggingface/` at revision `df500e56a59fc34f37322735a40eff666200312e`; CPU inference returned one finite relevance logit. The 90,870,598-byte weights file and tokenizer cache are not committed.
+- Training artifacts: three CPU epochs completed with best validation BCE `0.309428`; metrics and loss curve are tracked at `outputs/dl_training_metrics.json` and `outputs/dl_training_loss.png`. The fine-tuned 90,891,664-byte checkpoint currently exists at ignored `models/checkpoints/reranker.pt` but is not committed and must be recreated by training in a fresh checkout.
 - Services/ports: none started or checked.
 
 ## Model choice
