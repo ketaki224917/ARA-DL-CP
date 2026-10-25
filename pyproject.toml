@@ -32,6 +32,10 @@ dev = [
   "types-PyYAML>=6,<7",
 ]
 rerank = ["sentence-transformers>=5,<7"]
+dl = [
+  "torch>=2.6,<3",
+  "transformers>=4.52,<5",
+]
 
 [project.scripts]
 ara = "ara.cli:main"
@@ -63,4 +67,16 @@ follow_imports_for_stubs = true
 [[tool.mypy.overrides]]
 module = ["numpy", "numpy.*"]
 follow_imports = "skip"
+
+[[tool.mypy.overrides]]
+module = ["torch", "torch.*", "transformers"]
+follow_imports = "skip"
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu", extra = "dl" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
 

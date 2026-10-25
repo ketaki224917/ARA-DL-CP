@@ -15,6 +15,7 @@ paths:
   dl_data_path: data/dl_data/synthetic_pairs.jsonl
   dl_public_data_dir: data/dl_data/scifact_subset
   dl_public_archive_path: data/dl_data/cache/scifact.tar.gz
+  dl_model_cache_dir: models/huggingface
   output_dir: outputs
   trace_dir: traces
 retrieval:
@@ -30,4 +31,8 @@ dl:
   candidate_k: 20
   negative_pool_size: 1
   public_max_queries: 200
+  model_revision: df500e56a59fc34f37322735a40eff666200312e
+  max_length: 256
+  batch_size: 4
+  credibility_head: false
 

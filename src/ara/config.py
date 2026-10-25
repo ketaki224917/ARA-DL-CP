@@ -40,6 +40,11 @@ _ENV_FIELDS = {
     "ARA_DL_PUBLIC_DATA_DIR": "dl_public_data_dir",
     "ARA_DL_PUBLIC_ARCHIVE_PATH": "dl_public_archive_path",
     "ARA_DL_PUBLIC_MAX_QUERIES": "dl_public_max_queries",
+    "ARA_DL_MODEL_REVISION": "dl_model_revision",
+    "ARA_DL_MODEL_CACHE_DIR": "dl_model_cache_dir",
+    "ARA_DL_MAX_LENGTH": "dl_max_length",
+    "ARA_DL_BATCH_SIZE": "dl_batch_size",
+    "ARA_DL_CREDIBILITY_HEAD": "dl_credibility_head",
 }
 
 
@@ -63,6 +68,11 @@ class Settings(BaseSettings):
     dl_public_data_dir: Path = Path("data/dl_data/scifact_subset")
     dl_public_archive_path: Path = Path("data/dl_data/cache/scifact.tar.gz")
     dl_public_max_queries: int = Field(default=200, ge=3, le=1000)
+    dl_model_revision: str = "df500e56a59fc34f37322735a40eff666200312e"
+    dl_model_cache_dir: Path = Path("models/huggingface")
+    dl_max_length: int = Field(default=256, ge=16, le=512)
+    dl_batch_size: int = Field(default=4, ge=1, le=64)
+    dl_credibility_head: bool = False
     dl_seed: int = 42
     dl_questions_per_chunk: int = Field(default=2, ge=1, le=5)
     dl_candidate_k: int = Field(default=20, ge=1, le=200)
@@ -118,6 +128,11 @@ def load_settings(
         "dl_public_data_dir": paths.get("dl_public_data_dir"),
         "dl_public_archive_path": paths.get("dl_public_archive_path"),
         "dl_public_max_queries": dl.get("public_max_queries"),
+        "dl_model_revision": dl.get("model_revision"),
+        "dl_model_cache_dir": paths.get("dl_model_cache_dir"),
+        "dl_max_length": dl.get("max_length"),
+        "dl_batch_size": dl.get("batch_size"),
+        "dl_credibility_head": dl.get("credibility_head"),
         "dl_seed": dl.get("seed"),
         "dl_questions_per_chunk": dl.get("questions_per_chunk"),
         "dl_candidate_k": dl.get("candidate_k"),

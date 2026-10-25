@@ -8,6 +8,7 @@ __pycache__/
 .env
 data/indexes/
 models/checkpoints/
+models/huggingface/
 outputs/generated/
 traces/*.jsonl
 data/dl_data/cache/
