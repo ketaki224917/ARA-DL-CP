@@ -45,6 +45,15 @@ _ENV_FIELDS = {
     "ARA_DL_MAX_LENGTH": "dl_max_length",
     "ARA_DL_BATCH_SIZE": "dl_batch_size",
     "ARA_DL_CREDIBILITY_HEAD": "dl_credibility_head",
+    "ARA_DL_EPOCHS": "dl_epochs",
+    "ARA_DL_LEARNING_RATE": "dl_learning_rate",
+    "ARA_DL_WEIGHT_DECAY": "dl_weight_decay",
+    "ARA_DL_EARLY_STOPPING_PATIENCE": "dl_early_stopping_patience",
+    "ARA_DL_EARLY_STOPPING_MIN_DELTA": "dl_early_stopping_min_delta",
+    "ARA_DL_CHECKPOINT_PATH": "dl_checkpoint_path",
+    "ARA_DL_CURVES_PATH": "dl_curves_path",
+    "ARA_DL_METRICS_PATH": "dl_metrics_path",
+    "ARA_DL_USE_SYNTHETIC_PAIRS": "dl_use_synthetic_pairs",
 }
 
 
@@ -64,7 +73,7 @@ class Settings(BaseSettings):
     vector_store_dir: Path = Path("data/indexes/chroma")
     bm25_index_path: Path = Path("data/indexes/bm25.json")
     ingest_manifest_path: Path = Path("data/indexes/ingest_manifest.json")
-    dl_data_path: Path = Path("data/dl_data/synthetic_pairs.jsonl")
+    dl_data_path: Path = Path("data/dl_data/synthetic_pairs_offline.jsonl")
     dl_public_data_dir: Path = Path("data/dl_data/scifact_subset")
     dl_public_archive_path: Path = Path("data/dl_data/cache/scifact.tar.gz")
     dl_public_max_queries: int = Field(default=200, ge=3, le=1000)
@@ -73,6 +82,15 @@ class Settings(BaseSettings):
     dl_max_length: int = Field(default=256, ge=16, le=512)
     dl_batch_size: int = Field(default=4, ge=1, le=64)
     dl_credibility_head: bool = False
+    dl_epochs: int = Field(default=3, ge=1, le=100)
+    dl_learning_rate: float = Field(default=2e-5, gt=0, le=1)
+    dl_weight_decay: float = Field(default=0.01, ge=0, le=1)
+    dl_early_stopping_patience: int = Field(default=2, ge=1, le=20)
+    dl_early_stopping_min_delta: float = Field(default=0.0, ge=0, le=1)
+    dl_checkpoint_path: Path = Path("models/checkpoints/reranker.pt")
+    dl_curves_path: Path = Path("outputs/dl_training_loss.png")
+    dl_metrics_path: Path = Path("outputs/dl_training_metrics.json")
+    dl_use_synthetic_pairs: bool = True
     dl_seed: int = 42
     dl_questions_per_chunk: int = Field(default=2, ge=1, le=5)
     dl_candidate_k: int = Field(default=20, ge=1, le=200)
@@ -133,6 +151,15 @@ def load_settings(
         "dl_max_length": dl.get("max_length"),
         "dl_batch_size": dl.get("batch_size"),
         "dl_credibility_head": dl.get("credibility_head"),
+        "dl_epochs": dl.get("epochs"),
+        "dl_learning_rate": dl.get("learning_rate"),
+        "dl_weight_decay": dl.get("weight_decay"),
+        "dl_early_stopping_patience": dl.get("early_stopping_patience"),
+        "dl_early_stopping_min_delta": dl.get("early_stopping_min_delta"),
+        "dl_checkpoint_path": paths.get("dl_checkpoint_path"),
+        "dl_curves_path": paths.get("dl_curves_path"),
+        "dl_metrics_path": paths.get("dl_metrics_path"),
+        "dl_use_synthetic_pairs": dl.get("use_synthetic_pairs"),
         "dl_seed": dl.get("seed"),
         "dl_questions_per_chunk": dl.get("questions_per_chunk"),
         "dl_candidate_k": dl.get("candidate_k"),

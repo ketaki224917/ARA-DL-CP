@@ -1,0 +1,28 @@
+{
+  "best_epoch": 3,
+  "best_validation_loss": 0.30942759494627675,
+  "stopped_early": false,
+  "training_example_count": 358,
+  "validation_example_count": 62,
+  "smoke_batch_limit": null,
+  "checkpoint_path": "models\\checkpoints\\reranker.pt",
+  "curves_path": "outputs\\dl_training_loss.png",
+  "seed": 42,
+  "history": [
+    {
+      "epoch": 1,
+      "training_loss": 0.6848998771949187,
+      "validation_loss": 0.4161318920312389
+    },
+    {
+      "epoch": 2,
+      "training_loss": 0.4370264100462365,
+      "validation_loss": 0.33547601608499406
+    },
+    {
+      "epoch": 3,
+      "training_loss": 0.3213573022011938,
+      "validation_loss": 0.30942759494627675
+    }
+  ]
+}

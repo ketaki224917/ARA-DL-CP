@@ -12,10 +12,13 @@ paths:
   vector_store_dir: data/indexes/chroma
   bm25_index_path: data/indexes/bm25.json
   ingest_manifest_path: data/indexes/ingest_manifest.json
-  dl_data_path: data/dl_data/synthetic_pairs.jsonl
+  dl_data_path: data/dl_data/synthetic_pairs_offline.jsonl
   dl_public_data_dir: data/dl_data/scifact_subset
   dl_public_archive_path: data/dl_data/cache/scifact.tar.gz
   dl_model_cache_dir: models/huggingface
+  dl_checkpoint_path: models/checkpoints/reranker.pt
+  dl_curves_path: outputs/dl_training_loss.png
+  dl_metrics_path: outputs/dl_training_metrics.json
   output_dir: outputs
   trace_dir: traces
 retrieval:
@@ -35,4 +38,10 @@ dl:
   max_length: 256
   batch_size: 4
   credibility_head: false
+  epochs: 3
+  learning_rate: 0.00002
+  weight_decay: 0.01
+  early_stopping_patience: 2
+  early_stopping_min_delta: 0.0
+  use_synthetic_pairs: true
 

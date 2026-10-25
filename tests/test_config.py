@@ -36,6 +36,11 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
             "ARA_DL_PUBLIC_MAX_QUERIES": "72",
             "ARA_DL_MAX_LENGTH": "128",
             "ARA_DL_BATCH_SIZE": "2",
+            "ARA_DL_EPOCHS": "5",
+            "ARA_DL_LEARNING_RATE": "0.001",
+            "ARA_DL_EARLY_STOPPING_PATIENCE": "4",
+            "ARA_DL_CHECKPOINT_PATH": "checkpoints/test.pt",
+            "ARA_DL_USE_SYNTHETIC_PAIRS": "false",
         },
     )
 
@@ -54,6 +59,11 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
     assert settings.dl_public_max_queries == 72
     assert settings.dl_max_length == 128
     assert settings.dl_batch_size == 2
+    assert settings.dl_epochs == 5
+    assert settings.dl_learning_rate == pytest.approx(0.001)
+    assert settings.dl_early_stopping_patience == 4
+    assert settings.dl_checkpoint_path == Path("checkpoints/test.pt")
+    assert settings.dl_use_synthetic_pairs is False
 
 
 def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
@@ -68,13 +78,21 @@ def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
     assert settings.vector_store_dir == Path("data/indexes/chroma")
     assert settings.llm_request_timeout_seconds == 120
     assert settings.dl_seed == 42
-    assert settings.dl_data_path == Path("data/dl_data/synthetic_pairs.jsonl")
+    assert settings.dl_data_path == Path("data/dl_data/synthetic_pairs_offline.jsonl")
     assert settings.dl_public_data_dir == Path("data/dl_data/scifact_subset")
     assert settings.dl_public_max_queries == 200
     assert settings.dl_model_revision == "df500e56a59fc34f37322735a40eff666200312e"
     assert settings.dl_model_cache_dir == Path("models/huggingface")
     assert settings.dl_max_length == 256
     assert settings.dl_batch_size == 4
+    assert settings.dl_epochs == 3
+    assert settings.dl_learning_rate == pytest.approx(2e-5)
+    assert settings.dl_weight_decay == pytest.approx(0.01)
+    assert settings.dl_early_stopping_patience == 2
+    assert settings.dl_checkpoint_path == Path("models/checkpoints/reranker.pt")
+    assert settings.dl_curves_path == Path("outputs/dl_training_loss.png")
+    assert settings.dl_metrics_path == Path("outputs/dl_training_metrics.json")
+    assert settings.dl_use_synthetic_pairs is True
 
 
 def test_invalid_configuration_section_is_rejected(tmp_path: Path) -> None:
