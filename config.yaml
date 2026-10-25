@@ -12,6 +12,7 @@ paths:
   vector_store_dir: data/indexes/chroma
   bm25_index_path: data/indexes/bm25.json
   ingest_manifest_path: data/indexes/ingest_manifest.json
+  dl_data_path: data/dl_data/synthetic_pairs.jsonl
   output_dir: outputs
   trace_dir: traces
 retrieval:
@@ -21,4 +22,9 @@ retrieval:
   reranker_model: cross-encoder/ms-marco-MiniLM-L6-v2
   min_evidence_score: 0.012
   max_evidence_chunks: 8
+dl:
+  seed: 42
+  questions_per_chunk: 2
+  candidate_k: 20
+  negative_pool_size: 1
 

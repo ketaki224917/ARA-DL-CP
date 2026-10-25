@@ -31,6 +31,8 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
             "ARA_ANSWER_MAX_EVIDENCE_CHUNKS": "5",
             "ARA_INGEST_SOURCE_DIR": "private_docs",
             "ARA_VECTOR_STORE_DIR": "indexes/vectors",
+            "ARA_DL_SEED": "17",
+            "ARA_DL_QUESTIONS_PER_CHUNK": "3",
         },
     )
 
@@ -44,6 +46,8 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
     assert settings.ingest_source_dir == Path("private_docs")
     assert settings.vector_store_dir == Path("indexes/vectors")
     assert settings.bm25_index_path == Path("data/indexes/bm25.json")
+    assert settings.dl_seed == 17
+    assert settings.dl_questions_per_chunk == 3
 
 
 def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
@@ -57,6 +61,8 @@ def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
     assert settings.ingest_source_dir == Path("data/sample_corpus")
     assert settings.vector_store_dir == Path("data/indexes/chroma")
     assert settings.llm_request_timeout_seconds == 120
+    assert settings.dl_seed == 42
+    assert settings.dl_data_path == Path("data/dl_data/synthetic_pairs.jsonl")
 
 
 def test_invalid_configuration_section_is_rejected(tmp_path: Path) -> None:

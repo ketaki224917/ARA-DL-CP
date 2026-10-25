@@ -32,6 +32,11 @@ _ENV_FIELDS = {
     "ARA_VECTOR_STORE_DIR": "vector_store_dir",
     "ARA_BM25_INDEX_PATH": "bm25_index_path",
     "ARA_INGEST_MANIFEST_PATH": "ingest_manifest_path",
+    "ARA_DL_DATA_PATH": "dl_data_path",
+    "ARA_DL_SEED": "dl_seed",
+    "ARA_DL_QUESTIONS_PER_CHUNK": "dl_questions_per_chunk",
+    "ARA_DL_CANDIDATE_K": "dl_candidate_k",
+    "ARA_DL_NEGATIVE_POOL_SIZE": "dl_negative_pool_size",
 }
 
 
@@ -51,6 +56,11 @@ class Settings(BaseSettings):
     vector_store_dir: Path = Path("data/indexes/chroma")
     bm25_index_path: Path = Path("data/indexes/bm25.json")
     ingest_manifest_path: Path = Path("data/indexes/ingest_manifest.json")
+    dl_data_path: Path = Path("data/dl_data/synthetic_pairs.jsonl")
+    dl_seed: int = 42
+    dl_questions_per_chunk: int = Field(default=2, ge=1, le=5)
+    dl_candidate_k: int = Field(default=20, ge=1, le=200)
+    dl_negative_pool_size: int = Field(default=1, ge=1, le=50)
     output_dir: Path = Path("outputs")
     trace_dir: Path = Path("traces")
     retrieval_chunk_size: int = Field(default=900, ge=1)
@@ -85,6 +95,7 @@ def load_settings(
     embeddings = _mapping(raw_config.get("embeddings"))
     paths = _mapping(raw_config.get("paths"))
     retrieval = _mapping(raw_config.get("retrieval"))
+    dl = _mapping(raw_config.get("dl"))
     values: dict[str, Any] = {
         "llm_base_url": llm.get("base_url"),
         "llm_model": llm.get("model"),
@@ -97,6 +108,11 @@ def load_settings(
         "vector_store_dir": paths.get("vector_store_dir"),
         "bm25_index_path": paths.get("bm25_index_path"),
         "ingest_manifest_path": paths.get("ingest_manifest_path"),
+        "dl_data_path": paths.get("dl_data_path"),
+        "dl_seed": dl.get("seed"),
+        "dl_questions_per_chunk": dl.get("questions_per_chunk"),
+        "dl_candidate_k": dl.get("candidate_k"),
+        "dl_negative_pool_size": dl.get("negative_pool_size"),
         "output_dir": paths.get("output_dir"),
         "trace_dir": paths.get("trace_dir"),
         "retrieval_chunk_size": retrieval.get("chunk_size"),
