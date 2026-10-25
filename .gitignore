@@ -10,4 +10,4 @@ data/indexes/
 models/checkpoints/
 outputs/generated/
 traces/*.jsonl
-
+data/dl_data/cache/

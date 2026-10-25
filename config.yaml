@@ -13,6 +13,8 @@ paths:
   bm25_index_path: data/indexes/bm25.json
   ingest_manifest_path: data/indexes/ingest_manifest.json
   dl_data_path: data/dl_data/synthetic_pairs.jsonl
+  dl_public_data_dir: data/dl_data/scifact_subset
+  dl_public_archive_path: data/dl_data/cache/scifact.tar.gz
   output_dir: outputs
   trace_dir: traces
 retrieval:
@@ -27,4 +29,5 @@ dl:
   questions_per_chunk: 2
   candidate_k: 20
   negative_pool_size: 1
+  public_max_queries: 200
 

@@ -1,0 +1,36 @@
+{
+  "dataset": "SciFact",
+  "upstream_repository": "https://github.com/allenai/scifact",
+  "paper": "https://aclanthology.org/2020.emnlp-main.609/",
+  "download_url": "https://scifact.s3-us-west-2.amazonaws.com/release/latest/data.tar.gz",
+  "archive_sha256": "11c621288d41ac144d29b13b0f8503b3820b7d6e8b1f6ff24dff335c196d76be",
+  "claim_splits_used": [
+    "train",
+    "dev"
+  ],
+  "official_test_claims_used": false,
+  "claim_license": "CC BY 4.0",
+  "abstract_license": "ODC-By 1.0 (S2ORC corpus)",
+  "seed": 42,
+  "requested_max_queries": 200,
+  "selected_query_count": 200,
+  "query_counts": {
+    "train": 140,
+    "validation": 30,
+    "test": 30
+  },
+  "document_counts": {
+    "train": 3602,
+    "validation": 759,
+    "test": 822
+  },
+  "document_linked_component_count": 175,
+  "split_ratios": {
+    "train": 0.7,
+    "validation": 0.15,
+    "test": 0.15
+  },
+  "split_method": "Claims connected by shared evidence document IDs are kept in one split; remaining corpus documents are assigned by seeded SHA-256 bucket.",
+  "relevance_mapping": "Documents annotated SUPPORT or CONTRADICT are both relevant for retrieval; the verdict and rationale sentence IDs are retained.",
+  "document_overlap": false
+}

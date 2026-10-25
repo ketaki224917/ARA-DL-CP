@@ -33,6 +33,7 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
             "ARA_VECTOR_STORE_DIR": "indexes/vectors",
             "ARA_DL_SEED": "17",
             "ARA_DL_QUESTIONS_PER_CHUNK": "3",
+            "ARA_DL_PUBLIC_MAX_QUERIES": "72",
         },
     )
 
@@ -48,6 +49,7 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
     assert settings.bm25_index_path == Path("data/indexes/bm25.json")
     assert settings.dl_seed == 17
     assert settings.dl_questions_per_chunk == 3
+    assert settings.dl_public_max_queries == 72
 
 
 def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
@@ -63,6 +65,8 @@ def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
     assert settings.llm_request_timeout_seconds == 120
     assert settings.dl_seed == 42
     assert settings.dl_data_path == Path("data/dl_data/synthetic_pairs.jsonl")
+    assert settings.dl_public_data_dir == Path("data/dl_data/scifact_subset")
+    assert settings.dl_public_max_queries == 200
 
 
 def test_invalid_configuration_section_is_rejected(tmp_path: Path) -> None:

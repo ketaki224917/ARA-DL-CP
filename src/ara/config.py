@@ -37,6 +37,9 @@ _ENV_FIELDS = {
     "ARA_DL_QUESTIONS_PER_CHUNK": "dl_questions_per_chunk",
     "ARA_DL_CANDIDATE_K": "dl_candidate_k",
     "ARA_DL_NEGATIVE_POOL_SIZE": "dl_negative_pool_size",
+    "ARA_DL_PUBLIC_DATA_DIR": "dl_public_data_dir",
+    "ARA_DL_PUBLIC_ARCHIVE_PATH": "dl_public_archive_path",
+    "ARA_DL_PUBLIC_MAX_QUERIES": "dl_public_max_queries",
 }
 
 
@@ -57,6 +60,9 @@ class Settings(BaseSettings):
     bm25_index_path: Path = Path("data/indexes/bm25.json")
     ingest_manifest_path: Path = Path("data/indexes/ingest_manifest.json")
     dl_data_path: Path = Path("data/dl_data/synthetic_pairs.jsonl")
+    dl_public_data_dir: Path = Path("data/dl_data/scifact_subset")
+    dl_public_archive_path: Path = Path("data/dl_data/cache/scifact.tar.gz")
+    dl_public_max_queries: int = Field(default=200, ge=3, le=1000)
     dl_seed: int = 42
     dl_questions_per_chunk: int = Field(default=2, ge=1, le=5)
     dl_candidate_k: int = Field(default=20, ge=1, le=200)
@@ -109,6 +115,9 @@ def load_settings(
         "bm25_index_path": paths.get("bm25_index_path"),
         "ingest_manifest_path": paths.get("ingest_manifest_path"),
         "dl_data_path": paths.get("dl_data_path"),
+        "dl_public_data_dir": paths.get("dl_public_data_dir"),
+        "dl_public_archive_path": paths.get("dl_public_archive_path"),
+        "dl_public_max_queries": dl.get("public_max_queries"),
         "dl_seed": dl.get("seed"),
         "dl_questions_per_chunk": dl.get("questions_per_chunk"),
         "dl_candidate_k": dl.get("candidate_k"),
