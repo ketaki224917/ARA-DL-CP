@@ -49,7 +49,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P4.5 Loop-effect experiment on ≥ 3 topics; table in PROGRESS.md (scripted controlled demonstration; live-model quality effect remains NOT RUN under ENV-002)
 
 ## Phase 5 — Custom DL model
-- [ ] P5.1 Synthetic data generator (queries, positives, hard negatives via BM25/dense mining) + quality filtering
+- [x] P5.1 Synthetic data generator (queries, positives, hard negatives via BM25/dense mining) + quality filtering (local-LLM path implemented and mocked; offline fallback dataset committed; live generation NOT RUN under ENV-002)
 - [ ] P5.2 Public dataset subset integration + doc-level splits
 - [ ] P5.3 Dataset/Dataloader + model.py (cross-encoder + optional credibility head)
 - [ ] P5.4 train.py (config, seed, early stop, checkpoints, curves)

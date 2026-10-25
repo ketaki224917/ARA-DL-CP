@@ -1,7 +1,7 @@
 # Blockers
 
 - [RESOLVED 2026-10-22] ENV-001 Python/uv were absent at session start; installed uv 0.13.4 and managed Python 3.12.15 under ignored `.tools/` without PATH or registry changes.
-- [OPEN 2026-10-22] ENV-002 GNU `make` and Ollama are unavailable. CPU and RAM now probe successfully through Python; no supported CUDA/MPS GPU was detected, but exact display adapter/VRAM details remain unknown. Ollama/model weights are still needed for live RAG, real retrieval evaluation, and live P4.5 revision-loop quality measurement. Workaround: run uv CLI commands directly and keep model settings configurable; P4.5 has a scripted offline software-path demonstration only.
+- [OPEN 2026-10-22] ENV-002 GNU `make` and Ollama are unavailable. CPU and RAM now probe successfully through Python; no supported CUDA/MPS GPU was detected, but exact display adapter/VRAM details remain unknown. Ollama/model weights are still needed for live RAG, real retrieval evaluation, live P4.5 revision-loop quality measurement, and actual local-LLM P5.1 query generation. Workaround: run uv CLI commands directly and keep model settings configurable; P4.5 has a scripted offline software-path demonstration, and P5.1 has a separate extractive offline dataset.
 - [RESOLVED 2026-10-22] ENV-003 Sandbox initially granted read-only access to `.git`; approved escalation was used to create the required P0.2 and P0.3 commits without changing global Git configuration.
 - [RESOLVED 2026-10-23] ENV-004 PyPI resolution and downloads succeeded with Windows system certificates and a workspace-local uv cache. `uv.lock` was generated and `.venv` was populated; the full suite, Ruff, and mypy now run successfully. The user confirmed no trusted internal mirror is available, but none was needed.
 
