@@ -197,6 +197,57 @@ def test_loop_stops_on_abstention_without_attempting_a_revision() -> None:
     assert critic.calls == 1
 
 
+def test_revision_abstention_drops_only_critic_flagged_claims() -> None:
+    evidence = EvidenceItem(
+        chunk_id="chunk:one",
+        text="The source supports the remaining report claim.",
+        source="sample.txt",
+    )
+    state = make_state()
+    state.evidence_store[evidence.chunk_id] = evidence
+    initial = (
+        "# Grounded report\n\n"
+        "## Executive summary\n\n"
+        "The report makes an unsupported claim. [chunk:one]\n"
+        "The remaining report claim is supported. [chunk:one]"
+    )
+    abstention = "# Research report\n\n## Executive summary\n\nInsufficient evidence."
+    critique = Critique(
+        issue="unsupported",
+        claim="The report makes an unsupported claim.",
+        details="The source does not support this statement.",
+        evidence_ids=["chunk:one"],
+        severity="high",
+    )
+    critic = FakeCritic(
+        [
+            CriticResult(
+                critiques=[critique],
+                reviewed_claim_count=2,
+                supported_claim_count=1,
+                unsupported_claim_count=1,
+                gap_count=0,
+                contradiction_count=0,
+            ),
+            clean_review(),
+        ]
+    )
+    events: list[TraceEvent] = []
+
+    result = RevisionLoop(
+        FakeWriter([writer_result(initial), writer_result(abstention, abstained=True)]),
+        critic,
+        trace_callback=events.append,
+    ).run(state)
+
+    assert result.abstained is False
+    assert result.stop_reason == "clean"
+    assert "The report makes an unsupported claim" not in result.final_draft
+    assert "The remaining report claim is supported. [chunk:one]" in result.final_draft
+    assert [item.unsupported_claim_count for item in result.iterations] == [1, 0]
+    assert any(event.event == "revision_recovered" for event in events)
+
+
 def test_writer_error_during_revision_raises_and_preserves_last_draft_and_critiques() -> None:
     writer = FakeWriter([writer_result("Draft v1"), RuntimeError("writer offline")])
     critic = FakeCritic([reviewed_issue()])

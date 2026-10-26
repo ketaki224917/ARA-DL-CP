@@ -483,3 +483,9 @@ Done: Retained constrained Mermaid validation and retries, then added a determin
 Evidence: `pytest tests/test_diagrams.py` → 12 passed; full `pytest` → 304 passed in 22.04s; Ruff → all checks passed; MyPy → no issues in 55 source files. Run `b873b03a2c72427199eb6732c7925305` completed research/writing with five chunks but failed diagram validation after three attempts. Follow-up run `ffb3c61542014d55814699761c1abda8` stored five chunks; critic found four of five claims supported, but the revision writer abstained and produced only the abstention report bundle, so the diagram fallback was not reached.
 Files: `src/ara/generative/diagrams.py`, `tests/test_diagrams.py`, `docs/state/TODO.md`, `docs/state/BLOCKERS.md`, and this state log.
 Notes: ADR-055 records that the fallback is structural, not a model-inferred relationship diagram. RUN-001 remains open until a substantive cited bundle is inspected; next, keep supported claims when revision generation abstains.
+
+### 2026-10-26 — P7.5 — Preserve supported claims on revision abstention
+Done: Added a deterministic recovery path for revision abstentions. It removes only lines that exactly match critic findings marked unsupported, miscited, contradicted, or unclear, then keeps the draft only when a cited claim remains and every ID exists in the evidence store. Added a recovery trace event.
+Evidence: Targeted `pytest tests/test_revision.py` → 11 passed; full `pytest` → 305 passed in 22.11s; Ruff → all checks passed; MyPy → no issues in 55 source files. The trigger was live run `ffb3c61542014d55814699761c1abda8`: four of five claims were supported, but the revision writer abstained. Recovery has not yet been exercised in a live run.
+Files: `src/ara/agents/revision.py`, `tests/test_revision.py`, and project state files.
+Notes: ADR-056 documents the conservative fallback. The next live run must verify the recovered draft and continue through diagrams, TTS, PDF, and citation validation.
