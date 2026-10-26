@@ -465,3 +465,15 @@ Done: Increased the writer claim bound to 256 characters/30 words while keeping 
 Evidence: A direct call to the configured Qwen model using two passages from `data/sample_corpus/04_reciprocal_rank_fusion.md`, `Writer(max_retries=0, num_predict=768)`, returned a five-section cited report with both known chunk IDs and no abstention in about 20 seconds. `make test` → 303 passed in 27.30s; `make lint` → all checks passed; `mypy src/ara` → no issues in 55 files; targeted writer/revision tests → 18 passed. Full MCP report bundle → NOT RUN yet.
 Files: `src/ara/agents/writer.py`, `src/ara/agents/prompts/writer.py`, writer tests, and state files.
 Notes: ADR-053 supersedes ADR-051's 80-character limit. The direct writer result demonstrates only the writer stage, not full pipeline acceptance.
+
+### 2026-10-26 — P7.5 — Separate executive-summary claim bound
+Done: Kept section claims at 256 characters/30 words, and added `WriterSummaryClaim` at 512 characters/50 words with the same citation and punctuation constraints. The full-run failure showed only the summary exceeded its cap.
+Evidence: Full run `3c2fb03854514cc6bff9ef540a20663e` completed three research tasks in 129 seconds and stored five chunks; all four writer attempts failed because the summary exceeded 256 characters; no output bundle. A direct Qwen writer call over two real RRF corpus passages now returns a complete five-section report with valid citations to `chunk:live-rrf-1` and `chunk:live-rrf-2` in about 15 seconds. `make test` → 303 passed in 20.58s; `make lint` → all checks passed; `mypy src/ara` → no issues in 55 files; focused writer/revision tests → 28 passed.
+Files: `src/ara/agents/writer.py`, writer prompt, `scripts/offline_revision_demo.py`, tests, and state files.
+Notes: ADR-054 keeps the model-visible punctuation pattern from ADR-052 and splits the larger summary bound from section claims. The full end-to-end run remains unverified.
+
+### 2026-10-26 — P7.5 — Recheck split summary schema
+Done: Updated writer, revision tests, and controlled demo to use the summary-specific claim type while section claims remain constrained to their own schema.
+Evidence: `make test` → 303 passed in 20.42s; `make lint` → all checks passed; `mypy src/ara` → no issues in 55 files. A real Qwen direct call returned a valid five-section report with both supplied citation IDs.
+Files: Writer and revision modules/tests, offline demo, and project state files.
+Notes: The full `ara run` report after the separate-summary fix remains the next P7.5 gate.

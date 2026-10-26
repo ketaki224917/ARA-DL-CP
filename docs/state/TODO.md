@@ -73,7 +73,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P7.2 README (Mermaid architecture, verified usage, measured DL table, explicit NOT RUN retrieval table, demo caveats, troubleshooting)
 - [x] P7.3 docs/design_decisions.md + architecture.md (implementation-grounded diagrams, rationale, measured tradeoffs, limitations, and next steps)
 - [x] P7.4 Three complete curated report bundles in outputs/examples/ (MD/HTML/PDF, Mermaid/SVG, Piper WAV, stored source chunks; four real chunk IDs validated; all PDFs visually inspected)
-- [>] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (D: environment and ingestion verified; researcher now adds local RAG evidence after a web-only task; direct Qwen writer passed with 256-character/30-word cap and terminal-punctuation pattern; run full MCP report and verify bundle under RUN-001)
+- [>] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (D: environment and ingestion verified; full run retrieved five local chunks but summary exceeded the shared 256-character cap; direct Qwen writer now passes with separate 512-character summary and 256-character section claim schemas; rerun full pipeline under RUN-001)
 - [~] P7.6 (stretch) LoRA fine-tune for report style, with before/after comparison - dropped for this CPU-only pass; no local chat model is available and LoRA is outside final acceptance (ADR-044)
 - [x] P7.7 Final Acceptance Checklist verification (audit recorded in PROGRESS.md; project remains incomplete on open environment/evaluation gates)
 

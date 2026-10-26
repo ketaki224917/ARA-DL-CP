@@ -17,6 +17,7 @@ from ara.agents.writer import (
     WriterClaim,
     WriterError,
     WriterSection,
+    WriterSummaryClaim,
 )
 from ara.config import Settings
 from ara.llm.client import ChatMessage, OllamaClient
@@ -52,11 +53,15 @@ def _claim(text: str, *evidence_ids: str) -> WriterClaim:
     return WriterClaim(text=text, evidence_ids=list(evidence_ids))
 
 
+def _summary_claim(text: str, evidence_id: str) -> WriterSummaryClaim:
+    return WriterSummaryClaim(text=text, evidence_ids=[evidence_id])
+
+
 def _draft(evidence_id: str = "chunk:one") -> ReportDraft:
     return ReportDraft(
         abstain=False,
         title="Hybrid retrieval",
-        summary=[_claim("Hybrid retrieval combines ranking signals.", evidence_id)],
+        summary=[_summary_claim("Hybrid retrieval combines ranking signals.", evidence_id)],
         sections=[
             WriterSection(
                 heading=heading,
@@ -206,7 +211,9 @@ def test_writer_schema_and_prompt_bound_claim_length() -> None:
     Writer(llm).write(_state(_evidence()))
 
     prompt = llm.calls[0][0][0]["content"]
-    assert "at most 30 words" in prompt
+    assert "at most 50 words" in prompt
+    assert "512 characters" in prompt
+    assert "at most 30" in prompt
     assert "256 characters" in prompt
     with pytest.raises(ValueError, match="at most 256 characters"):
         WriterClaim(text="x" * 257 + ".", evidence_ids=["chunk:one"])
@@ -320,6 +327,12 @@ def test_writer_structured_output_retries_invalid_section_template() -> None:
     )
     assert requests[0]["format"]["$defs"]["WriterClaim"]["properties"]["text"]["maxLength"] == 256
     assert (
+        requests[0]["format"]["$defs"]["WriterSummaryClaim"]["properties"]["text"][
+            "maxLength"
+        ]
+        == 512
+    )
+    assert (
         requests[0]["format"]["$defs"]["WriterClaim"]["properties"]["evidence_ids"][
             "items"
         ]["enum"]
@@ -348,7 +361,7 @@ def test_report_draft_requires_fixed_section_template() -> None:
         ReportDraft(
             abstain=False,
             title="Bad structure",
-            summary=[_claim("A supported statement.", "chunk:one")],
+            summary=[_summary_claim("A supported statement.", "chunk:one")],
             sections=[
                 WriterSection(heading="Key findings", claims=[_claim("A finding.", "chunk:one")])
             ],

@@ -15,7 +15,13 @@ from ara.agents.prompts.writer import REPORT_SECTION_HEADINGS
 from ara.agents.revision import RevisionLoop, RevisionLoopResult
 from ara.agents.state import AgentState, EvidenceItem
 from ara.agents.trace import TraceEvent
-from ara.agents.writer import ReportDraft, Writer, WriterClaim, WriterSection
+from ara.agents.writer import (
+    ReportDraft,
+    Writer,
+    WriterClaim,
+    WriterSection,
+    WriterSummaryClaim,
+)
 from ara.llm.client import ChatMessage
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -197,10 +203,13 @@ def _report_draft(scenario: _Scenario, summary: str) -> ReportDraft:
     def cited_claim(text: str) -> WriterClaim:
         return WriterClaim(text=text, evidence_ids=[scenario.evidence_id])
 
+    def cited_summary(text: str) -> WriterSummaryClaim:
+        return WriterSummaryClaim(text=text, evidence_ids=[scenario.evidence_id])
+
     return ReportDraft(
         abstain=False,
         title=scenario.topic,
-        summary=[cited_claim(summary)],
+        summary=[cited_summary(summary)],
         sections=[
             WriterSection(heading=cast(SectionHeading, heading), claims=[cited_claim(text)])
             for heading, text in zip(_TYPED_SECTION_HEADINGS, scenario.section_claims, strict=True)

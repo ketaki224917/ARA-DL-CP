@@ -13,7 +13,14 @@ from ara.agents.prompts.writer import REPORT_SECTION_HEADINGS
 from ara.agents.revision import RevisionLoop, RevisionLoopError
 from ara.agents.state import AgentState, Critique, EvidenceItem
 from ara.agents.trace import TraceEvent
-from ara.agents.writer import ReportDraft, Writer, WriterClaim, WriterResult, WriterSection
+from ara.agents.writer import (
+    ReportDraft,
+    Writer,
+    WriterClaim,
+    WriterResult,
+    WriterSection,
+    WriterSummaryClaim,
+)
 from ara.llm.client import ChatMessage
 
 
@@ -268,10 +275,13 @@ def report_draft(claim_text: str) -> ReportDraft:
     def claim(text: str) -> WriterClaim:
         return WriterClaim(text=text, evidence_ids=["chunk:one"])
 
+    def summary_claim(text: str) -> WriterSummaryClaim:
+        return WriterSummaryClaim(text=text, evidence_ids=["chunk:one"])
+
     return ReportDraft(
         abstain=False,
         title="A grounded report",
-        summary=[claim(claim_text)],
+        summary=[summary_claim(claim_text)],
         sections=[
             WriterSection(heading=heading, claims=[claim(f"{claim_text} ({heading}).")])
             for heading in REPORT_SECTION_HEADINGS

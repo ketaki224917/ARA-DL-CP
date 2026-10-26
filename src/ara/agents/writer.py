@@ -14,6 +14,7 @@ from ara.llm.client import ChatMessage, OllamaClient
 
 _MAX_REPORT_LENGTH = 20_000
 _MAX_CLAIM_LENGTH = 256
+_MAX_SUMMARY_CLAIM_LENGTH = 512
 
 
 class WriterError(RuntimeError):
@@ -53,6 +54,16 @@ class WriterClaim(BaseModel):
         return identifiers
 
 
+class WriterSummaryClaim(WriterClaim):
+    """Executive-summary claim with extra room for the report topic context."""
+
+    text: str = Field(
+        min_length=1,
+        max_length=_MAX_SUMMARY_CLAIM_LENGTH,
+        pattern=r".*[.!?]\s*$",
+    )
+
+
 class WriterSection(BaseModel):
     """One required report section containing cited factual claims."""
 
@@ -75,7 +86,7 @@ class ReportDraft(BaseModel):
     abstain: bool
     abstention_reason: str | None = Field(default=None, max_length=1_000)
     title: str | None = Field(default=None, min_length=1, max_length=200)
-    summary: list[WriterClaim] = Field(default_factory=list, max_length=1)
+    summary: list[WriterSummaryClaim] = Field(default_factory=list, max_length=1)
     sections: list[WriterSection] = Field(default_factory=list, max_length=4)
 
     @model_validator(mode="before")
@@ -260,13 +271,17 @@ def _report_output_schema(evidence: Sequence[EvidenceItem]) -> dict[str, Any]:
     """Constrain generated citations to IDs in the writer's selected evidence."""
     schema = ReportDraft.model_json_schema()
     definitions = schema.get("$defs")
-    claim = definitions.get("WriterClaim") if isinstance(definitions, dict) else None
-    properties = claim.get("properties") if isinstance(claim, dict) else None
-    identifiers = properties.get("evidence_ids") if isinstance(properties, dict) else None
-    items = identifiers.get("items") if isinstance(identifiers, dict) else None
-    if not isinstance(items, dict):
+    if not isinstance(definitions, dict):
         raise WriterError("Could not construct the report citation schema.")
-    items["enum"] = list(dict.fromkeys(item.chunk_id for item in evidence))
+    allowed_ids = list(dict.fromkeys(item.chunk_id for item in evidence))
+    for definition_name in ("WriterClaim", "WriterSummaryClaim"):
+        claim = definitions.get(definition_name)
+        properties = claim.get("properties") if isinstance(claim, dict) else None
+        identifiers = properties.get("evidence_ids") if isinstance(properties, dict) else None
+        items = identifiers.get("items") if isinstance(identifiers, dict) else None
+        if not isinstance(items, dict):
+            raise WriterError("Could not constrain citations to selected evidence.")
+        items["enum"] = allowed_ids
     return schema
 
 
