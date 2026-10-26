@@ -447,3 +447,9 @@ Done: Kept fail-closed sentence validation, limited each claim to 120 characters
 Evidence: `make test` → 303 passed in 25.30s; `make lint` → all checks passed; `mypy src/ara` → no issues in 55 source files. Targeted writer/config/client tests → 29 passed. Live 768-token run → NOT RUN yet.
 Files: `src/ara/agents/writer.py`, `src/ara/agents/prompts/writer.py`, `src/ara/config.py`, `config.yaml`, `.env.example`, `scripts/offline_revision_demo.py`, writer/config tests, and state files.
 Notes: ADR-050 supersedes ADR-049's 384-token writer default. No claims about live report quality are made until the next run returns a valid report bundle.
+
+### 2026-10-26 — P7.5 — Tighten the writer claim bound after the 768-token run
+Done: Kept a separate 768-token writer output cap and shortened the schema/prompt claim maximum to 80 characters/10 words. Updated controlled example summaries to remain within the shared claim validator.
+Evidence: Live RRF run `e51717ee0a864ef695045fac2151705b` completed three research tasks in about 153 seconds and collected five local chunks. With the 768-token cap and previous 120-character schema, all four writer attempts produced claims without terminal punctuation and validation failed; no output bundle was emitted. After the change: `make test` → 303 passed in 24.18s; `make lint` → all checks passed; `mypy src/ara` → no issues in 55 source files. Live run with 80-character claims → NOT RUN.
+Files: `src/ara/agents/writer.py`, `src/ara/agents/prompts/writer.py`, `scripts/offline_revision_demo.py`, tests, and state files.
+Notes: ADR-051 supersedes ADR-050's 120-character/14-word limit. Keep sentence validation and citation checks fail-closed.

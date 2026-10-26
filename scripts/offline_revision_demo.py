@@ -71,10 +71,7 @@ _SCENARIOS = (
         source_path="data/sample_corpus/03_hybrid_retrieval.md",
         evidence_id="chunk:demo_hybrid_retrieval",
         initial_summary="Hybrid retrieval always beats dense and lexical baselines.",
-        revised_summary=(
-            "Hybrid retrieval combines dense and lexical search, but its performance "
-            "must be evaluated on labeled questions."
-        ),
+        revised_summary="Hybrid retrieval combines dense and lexical search; benchmark it.",
         section_claims=[
             "Hybrid retrieval can combine dense semantic and sparse lexical search.",
             "Fusion cannot recover passages missed by all component searches.",
@@ -88,10 +85,7 @@ _SCENARIOS = (
         source_path="data/sample_corpus/11_chunk_citation_metadata.md",
         evidence_id="chunk:demo_citation_provenance",
         initial_summary="A citation ID is enough even if it cannot resolve to source text.",
-        revised_summary=(
-            "A citation ID should resolve to stored source text and metadata before "
-            "a claim is reviewed."
-        ),
+        revised_summary="Verify citation IDs resolve to source text before reviewing claims.",
         section_claims=[
             "Stable passage IDs connect claims to their source text.",
             "Useful citation metadata can include source, page, and character offsets.",
@@ -106,8 +100,7 @@ _SCENARIOS = (
         evidence_id="chunk:demo_untrusted_text",
         initial_summary="Marking retrieved text untrusted makes prompt injection impossible.",
         revised_summary=(
-            "Treat retrieved text as data; isolation reduces confusion but cannot "
-            "eliminate prompt injection."
+            "Treat retrieved text as data; boundaries reduce, but cannot stop, injection."
         ),
         section_claims=[
             "Retrieved documents can contain text that looks like model instructions.",

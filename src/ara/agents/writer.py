@@ -13,7 +13,7 @@ from ara.agents.state import AgentState, EvidenceItem
 from ara.llm.client import ChatMessage, OllamaClient
 
 _MAX_REPORT_LENGTH = 20_000
-_MAX_CLAIM_LENGTH = 120
+_MAX_CLAIM_LENGTH = 80
 
 
 class WriterError(RuntimeError):

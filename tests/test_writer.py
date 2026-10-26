@@ -206,10 +206,10 @@ def test_writer_schema_and_prompt_bound_claim_length() -> None:
     Writer(llm).write(_state(_evidence()))
 
     prompt = llm.calls[0][0][0]["content"]
-    assert "at most 14 words" in prompt
-    assert "120 characters" in prompt
-    with pytest.raises(ValueError, match="at most 120 characters"):
-        WriterClaim(text="x" * 121 + ".", evidence_ids=["chunk:one"])
+    assert "at most 10 words" in prompt
+    assert "80 characters" in prompt
+    with pytest.raises(ValueError, match="at most 80 characters"):
+        WriterClaim(text="x" * 81 + ".", evidence_ids=["chunk:one"])
 
 
 def test_writer_frames_prompt_injection_inside_evidence_as_untrusted_data() -> None:
@@ -312,7 +312,7 @@ def test_writer_structured_output_retries_invalid_section_template() -> None:
         requests[0]["format"]["$defs"]["WriterSection"]["properties"]["claims"]["maxItems"]
         == 1
     )
-    assert requests[0]["format"]["$defs"]["WriterClaim"]["properties"]["text"]["maxLength"] == 120
+    assert requests[0]["format"]["$defs"]["WriterClaim"]["properties"]["text"]["maxLength"] == 80
     assert (
         requests[0]["format"]["$defs"]["WriterClaim"]["properties"]["evidence_ids"][
             "items"
