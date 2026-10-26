@@ -1,28 +1,28 @@
 # HANDOFF (overwritten after every task)
 
 Updated: 2026-10-26 | Session #: 1
-Current phase/task: Phase 6 / P6.2 — narration script and local TTS synthesis | Status: next
+Current phase/task: Phase 6 / P6.3 — Markdown/HTML/PDF report builder with figures, references, and audio | Status: next
 
-Last completed task: P6.1 diagram generator source committed as `e6f798d`; state commit is pending.
+Last completed task: P6.2 narration/TTS source committed as `6b318bd`; state commit is pending.
 
 ## Do next (exact)
-1. Check whether Piper, Kokoro, Coqui, `espeak`, or other local TTS engines and weights are already available; inspect current Python dependency and model-cache constraints.
-2. Choose a reproducible offline TTS adapter or deterministic not-ready behavior, log the choice, and implement a 1–2 minute narration script builder plus audio synthesis with explicit missing-model/runtime errors.
-3. Add tests for script length/content, successful synthesis through an injected engine, missing weights/runtime behavior, and output writing; run the full suite, Ruff, MyPy, and `git diff --check`, then update and commit state.
+1. Inspect `ReportDraft`/citation rendering, the diagram and TTS artifact APIs, installed HTML/PDF libraries, and existing output conventions.
+2. Choose a CPU-local PDF path, log any nontrivial choice, then implement report assembly for Markdown, HTML, PDF, figures, references, and a narrated-audio link.
+3. Add focused tests for citation/reference preservation, SVG/image embedding, audio links, renderer failures, and output paths; run the full suite, Ruff, MyPy, and `git diff --check`, then update and commit state.
 
 ## Environment state
-Windows 11; PowerShell; Git 2.55.0. Python 3.12.15 and uv 0.13.4 are under ignored `.tools/`. Use `UV_PROJECT_ENVIRONMENT=.tools/dl-venv`, `UV_SYSTEM_CERTS=true`, and `UV_CACHE_DIR=.tools/uv-cache`; locked environment has PyTorch `2.14.1+cpu`, Transformers `4.57.6`, Matplotlib 3.11.2, pytest 8.4.2, Ruff 0.17.2, and MyPy 1.20.2. CPU-only, 18 logical processors, 15.52 GiB RAM; exact display adapter/VRAM unknown. Pinned reranker/dense weights are cached under ignored `models/huggingface/`; trained checkpoint and export bundle are ignored under `models/`. GNU Make and Ollama are unavailable; no services are running. Graphviz `dot`, Mermaid CLI `mmdc`, Node, and npm are absent; diagram rendering currently uses the standard-library SVG fallback.
+Windows 11; PowerShell; Git 2.55.0. Python 3.12.15 and uv 0.13.4 are under ignored `.tools/`. Use `UV_PROJECT_ENVIRONMENT=.tools/tts-venv`, `UV_SYSTEM_CERTS=true`, and `UV_CACHE_DIR=.tools/uv-cache`; this environment was synced with locked `dev`, `dl`, and `tts` extras. It includes PyTorch `2.14.1+cpu`, Transformers 4.57.6, Matplotlib 3.11.2, Piper 1.8.0, ONNX Runtime 1.31.0, Hugging Face Hub 0.36.2, and truststore 0.10.5. CPU-only, 18 logical processors, 15.52 GiB RAM; exact display adapter/VRAM unknown. Trained reranker files and voice assets are ignored under `models/`. The `en_US-sam-medium` voice is downloaded at pinned revision `b145f2ac26522d6a2ccde0164b7b0e48b1e3199c`. GNU Make and Ollama are unavailable; Graphviz/mermaid-cli are absent; no services are running.
 
 ## WIP / uncommitted
-P6.1 implementation files: `src/ara/generative/__init__.py`, `src/ara/generative/diagrams.py`, and `tests/test_diagrams.py` are committed as `e6f798d`. P6.1 state docs are updated and pending the state commit. No other code WIP is known.
+P6.2 files: `src/ara/generative/tts.py`, `scripts/tts_synthesis_smoke.py`, `tests/test_tts.py`, configuration, lockfile, Makefile, and `.env.example` are committed as `6b318bd`. State docs for P6.2 are updated and pending the state commit. The smoke WAV at `outputs/generated/p6_2_voice_smoke.wav` is ignored.
 
 ## Known failing tests / issues
-No known pytest/Ruff/MyPy failures. Latest full suite: 266 passed in 35.52s; Ruff clean; MyPy clean for 56 source files. P6.1 live Ollama generation and a real Graphviz binary were NOT RUN. The P5.5 evaluation covers a 30-query internal SciFact split, not the official test set; live Ollama reports and real P4.5 model-quality measurement remain unavailable under ENV-002.
+No known pytest/Ruff/MyPy failures. Latest full suite: 279 passed in 38.82s; Ruff clean; MyPy clean for 58 source files. P6.2 local audio synthesis ran successfully; live LLM narration-script generation remains NOT RUN because Ollama is unavailable under ENV-002. P5.5 retrieval metrics cover a 30-query internal SciFact split, not the official test set; P4.5 live revision-quality measurement also remains unavailable.
 
 ## Gotchas learned
 - Set `$env:UV_SYSTEM_CERTS='true'` and `$env:UV_CACHE_DIR='.tools/uv-cache'` before uv commands in this environment.
 - GNU Make is absent; invoke the matching uv commands directly.
-- Import `truststore` and call `truststore.inject_into_ssl()` before Transformers on this host; TLS verification remains enabled. Hugging Face cache uses copies because symlinks are unavailable.
-- Recreate the ignored reranker checkpoint with `python -m ara.dl.train`, then recreate the exported scorer with `python -m ara.dl.export`.
-- Researcher reranking is controlled by `ARA_DL_USE_SCORER` and defaults off; it requires a connected `dl-model` MCP server and exported bundle.
-- `generate_diagram` validates only the documented Mermaid subset; unsupported source receives a bounded syntax retry. This host renders through the built-in SVG path.
+- Import `truststore` before Hugging Face downloads on this host; TLS verification remains enabled. Hugging Face cache uses copies because symlinks are unavailable.
+- Recreate the ignored reranker checkpoint with `python -m ara.dl.train`, then recreate its export with `python -m ara.dl.export`.
+- Re-download the ignored Piper model with `python -m ara.generative.tts --download-voice`; reproduce local synthesis with `python scripts/tts_synthesis_smoke.py`.
+- `build_narration_script` needs the configured local Ollama model; `synthesize_narration` needs the TTS extra and voice files but performs no network access.

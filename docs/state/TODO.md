@@ -60,7 +60,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 
 ## Phase 6 — Generative layer
 - [x] P6.1 Diagram generation (constrained Mermaid flowchart) + Graphviz/SVG rendering + syntax validation/retry (11 focused tests; built-in SVG used because Graphviz/Mermaid CLI are absent; live Ollama generation NOT RUN)
-- [ ] P6.2 TTS narration script generation + audio synthesis
+- [x] P6.2 TTS narration script generation + audio synthesis (Pydantic 170–260 word script; pinned local Piper voice; 185-word CPU smoke rendered 68.79-second WAV; live Ollama script generation NOT RUN)
 - [ ] P6.3 report_builder (MD/HTML/PDF, figures, references, audio link)
 - [ ] P6.4 (stretch) Stable Diffusion illustration flag
 
