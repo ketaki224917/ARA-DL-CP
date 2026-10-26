@@ -4,7 +4,7 @@ Updated: 2026-10-26 | Session #: 1
 Current task: P7.5 — verify short-report TTS fallback in full live bundle | Status: ready for rerun
 Environment task: ENV-006 — old OneDrive checkout at C: remains blocked by inherited deny-child-delete ACL; D: project/runtime are canonical and usable
 
-Last committed task: `16d8a11 [STATE] Refresh handoff after research fallback`; TTS fallback and ADR-058/state updates are pending commit.
+Last committed task: `4117b3e [P7.5] Fall back for short narration scripts`.
 
 ## Do next (exact)
 1. Commit the tested TTS fallback and state updates; verify `git diff --check` first.
@@ -15,7 +15,7 @@ Last committed task: `16d8a11 [STATE] Refresh handoff after research fallback`; 
 Windows 11, PowerShell, Python 3.12.15, uv 0.13.4, CPU-only, 18 logical processors, 15.52 GiB RAM. Canonical checkout: `D:\DL CP`; committed HEAD `16d8a11`. GNU Make 4.4.1/MSYS2: `D:\msys64`. uv executable/cache/managed Python: `D:\DL CP\.tools\uv`, `.tools\uv-cache`, `.tools\uv-python`; `.venv` is on D:. Ollama 0.40.11: `D:\Ollama\app`; models/user data: `D:\Ollama\user-data`; server at `localhost:11434`. Models available: `qwen2.5:1.5b`, `embeddinggemma:latest`.
 
 ## WIP / uncommitted
-`src/ara/generative/tts.py` and `tests/test_tts.py` add a deterministic citation-grounded fallback for short model narration. Focused TTS tests: 13 passed; full suite: 307 passed in 29.00s; Ruff passes; MyPy reports no issues in 55 source files. ADR-058/TODO/BLOCKERS/PROGRESS/SESSIONS/HANDOFF updates are pending commit.
+None. The citation-grounded TTS fallback is committed; focused TTS tests: 13 passed; full suite: 307 passed in 29.00s; Ruff passes; MyPy reports no issues in 55 source files.
 
 ## Known failing tests / issues
 Latest live run `6f77b0bac8064a98a4e26ec746075863`: research finished with five local chunks; critic found one unsupported claim; recovery removed it, retained four cited claims, and the critic re-reviewed them with zero unsupported. Qwen Mermaid failed three attempts; structural SVG fallback rendered. TTS returned only 90 words on all four attempts, and the command stopped before report assembly. The TTS fallback is unit-tested but not yet live-verified. The four-way RAG evaluation remains NOT RUN; only four first-rank DL test failures exist, fewer than the required 20-case review. ENV-006 remains open due the C: OneDrive inherited deny-child-delete ACL; no permissions changed.
