@@ -25,6 +25,28 @@ def test_parser_accepts_ingest_source_and_ask_limits() -> None:
     assert reranked_ask.rerank is True
 
 
+def test_parser_accepts_mcp_run_eval_and_train_commands() -> None:
+    serve = cli._build_parser().parse_args(["serve-mcp", "--server", "web-search"])
+    run = cli._build_parser().parse_args(
+        ["run", "--topic", "grid storage", "--until", "research", "--max-revisions", "2"]
+    )
+    evaluate, evaluate_args = cli._build_parser().parse_known_args(
+        ["eval", "--no-random-negative-ablation"]
+    )
+    train, train_args = cli._build_parser().parse_known_args(["train", "--epochs", "1"])
+
+    assert serve.command == "serve-mcp"
+    assert serve.server == "web-search"
+    assert run.command == "run"
+    assert run.topic == "grid storage"
+    assert run.until == "research"
+    assert run.max_revisions == 2
+    assert evaluate.command == "eval"
+    assert evaluate_args == ["--no-random-negative-ablation"]
+    assert train.command == "train"
+    assert train_args == ["--epochs", "1"]
+
+
 def test_main_dispatches_ingest_with_loaded_settings(monkeypatch) -> None:
     settings = Settings(_env_file=None)
     calls: list[tuple[Path | None, Settings]] = []
@@ -46,3 +68,56 @@ def test_main_without_subcommand_shows_help(monkeypatch, capsys) -> None:
 
     assert cli.main([]) == 2
     assert "usage: ara" in capsys.readouterr().out
+
+
+def test_main_delegates_eval_and_train_arguments(monkeypatch) -> None:
+    calls: list[tuple[str, list[str]]] = []
+    monkeypatch.setattr("ara.logging_setup.configure_logging", lambda: None)
+    monkeypatch.setattr(
+        cli,
+        "_delegate_dl_command",
+        lambda module, argv: calls.append((module, list(argv))) or 0,
+    )
+
+    assert cli.main(["eval", "--no-random-negative-ablation"]) == 0
+    assert cli.main(["train", "--epochs", "1"]) == 0
+    assert calls == [
+        ("ara.dl.evaluate", ["--no-random-negative-ablation"]),
+        ("ara.dl.train", ["--epochs", "1"]),
+    ]
+
+
+def test_main_dispatches_selected_mcp_server(monkeypatch) -> None:
+    settings = Settings(_env_file=None)
+    servers: list[str] = []
+    monkeypatch.setattr("ara.logging_setup.configure_logging", lambda: None)
+    monkeypatch.setattr(cli, "load_settings", lambda: settings)
+    monkeypatch.setattr(cli, "_serve_mcp_server", lambda server: servers.append(server) or 0)
+
+    assert cli.main(["serve-mcp", "--server", "dl-model"]) == 0
+    assert servers == ["dl-model"]
+
+
+def test_main_dispatches_run_options_to_pipeline(monkeypatch) -> None:
+    settings = Settings(_env_file=None)
+    calls: list[tuple[str, str, int, Settings]] = []
+
+    async def fake_run(
+        topic: str,
+        *,
+        until: str,
+        max_revisions: int,
+        settings: Settings,
+    ) -> Path:
+        calls.append((topic, until, max_revisions, settings))
+        return Path("outputs/run/report.pdf")
+
+    monkeypatch.setattr("ara.logging_setup.configure_logging", lambda: None)
+    monkeypatch.setattr(cli, "load_settings", lambda: settings)
+    monkeypatch.setattr(cli, "_run_pipeline", fake_run)
+
+    assert (
+        cli.main(["run", "--topic", "grid storage", "--until", "research", "--max-revisions", "1"])
+        == 0
+    )
+    assert calls == [("grid storage", "research", 1, settings)]

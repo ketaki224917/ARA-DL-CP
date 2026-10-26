@@ -1,8 +1,9 @@
-"""Command-line entry point for ARA ingestion and evidence-grounded questions."""
+"""Command-line entry point for indexing, local MCP servers, and cited reports."""
 
 from __future__ import annotations
 
 import argparse
+import asyncio
 import logging
 import sys
 from collections.abc import Sequence
@@ -20,11 +21,19 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     configure_logging()
     parser = _build_parser()
-    args = parser.parse_args(argv)
+    args, passthrough = parser.parse_known_args(argv)
     if args.command is None:
         parser.print_help()
         return 2
+
     try:
+        if args.command == "eval":
+            return _delegate_dl_command("ara.dl.evaluate", passthrough)
+        if args.command == "train":
+            return _delegate_dl_command("ara.dl.train", passthrough)
+        if passthrough:
+            parser.error(f"unrecognized arguments: {' '.join(passthrough)}")
+
         settings = load_settings()
         if args.command == "ingest":
             summary = ingest_corpus(args.source, settings=settings)
@@ -48,9 +57,23 @@ def main(argv: Sequence[str] | None = None) -> int:
                 args.candidate_k,
                 args.rerank,
             )
-        parser.error("select an ingest or ask command")
-    except Exception as exc:
-        logger.error("ARA %s failed: %s", args.command, exc)
+        if args.command == "serve-mcp":
+            return _serve_mcp_server(args.server)
+        if args.command == "run":
+            report_path = asyncio.run(
+                _run_pipeline(
+                    args.topic,
+                    until=args.until,
+                    max_revisions=args.max_revisions,
+                    settings=settings,
+                )
+            )
+            if report_path is not None:
+                logger.info("Report written to %s", report_path)
+            return 0
+        parser.error("select an ARA command")
+    except Exception:
+        logger.exception("ARA %s failed", args.command)
         return 1
 
 
@@ -104,10 +127,133 @@ def _ask(
     return 0
 
 
+async def _run_pipeline(
+    topic: str,
+    *,
+    until: str,
+    max_revisions: int,
+    settings: Settings,
+) -> Path | None:
+    """Research through MCP and optionally write a complete local report bundle."""
+    from mcp import StdioServerParameters
+
+    from ara.agents.critic import Critic
+    from ara.agents.orchestrator import Orchestrator
+    from ara.agents.planner import Planner
+    from ara.agents.researcher import Researcher
+    from ara.agents.revision import RevisionLoop
+    from ara.agents.state import AgentState, RunMetadata
+    from ara.agents.trace import JSONLTraceWriter
+    from ara.agents.writer import Writer
+    from ara.generative.diagrams import generate_diagram
+    from ara.generative.report_builder import build_report
+    from ara.generative.tts import build_narration_script, synthesize_narration
+    from ara.llm.client import OllamaClient
+    from ara.mcp_client.client import MCPClient
+
+    state = AgentState(
+        topic=topic,
+        run_metadata=RunMetadata(max_revisions=max_revisions),
+    )
+    async with MCPClient() as mcp_client:
+        await mcp_client.connect(
+            "rag",
+            StdioServerParameters(
+                command=sys.executable, args=["-m", "ara.mcp_servers.rag_server"]
+            ),
+        )
+        await mcp_client.connect(
+            "web",
+            StdioServerParameters(
+                command=sys.executable,
+                args=["-m", "ara.mcp_servers.web_search_server"],
+            ),
+        )
+        if settings.dl_use_scorer:
+            await mcp_client.connect(
+                "dl-model",
+                StdioServerParameters(
+                    command=sys.executable,
+                    args=["-m", "ara.mcp_servers.dl_model_server"],
+                ),
+            )
+
+        with OllamaClient(settings) as llm:
+            orchestrator = Orchestrator(
+                Planner(llm),
+                Researcher(mcp_client, llm, use_dl_scorer=settings.dl_use_scorer),
+                trace_dir=settings.trace_dir,
+            )
+            await orchestrator.run(state)
+            if until == "research":
+                logger.info(
+                    "Research complete: tasks=%d evidence=%d trace=%s",
+                    len(state.plan),
+                    len(state.evidence_store),
+                    settings.trace_dir / f"{state.run_metadata.run_id}.jsonl",
+                )
+                return None
+
+            trace_writer = JSONLTraceWriter(state.run_metadata.run_id, settings.trace_dir)
+            revision = RevisionLoop(
+                Writer(llm),
+                Critic(llm),
+                trace_callback=trace_writer.write,
+            ).run(state)
+
+            run_output_dir = settings.output_dir / state.run_metadata.run_id
+            diagrams = []
+            audio_path: Path | None = None
+            if not revision.abstained:
+                diagram = generate_diagram(revision.final_draft, llm_client=llm)
+                diagrams.append(diagram)
+                narration = build_narration_script(revision.final_draft, llm_client=llm)
+                audio_path = synthesize_narration(
+                    narration,
+                    run_output_dir / "audio" / "narration.wav",
+                    settings=settings,
+                ).path
+
+            artifacts = build_report(
+                revision.final_draft,
+                state.evidence_store,
+                run_output_dir,
+                diagrams=diagrams,
+                audio_path=audio_path,
+                basename="report",
+            )
+            return artifacts.pdf_path
+
+
+def _serve_mcp_server(server_name: str) -> int:
+    """Start one named MCP server over stdio in the current process."""
+    if server_name == "rag":
+        from ara.mcp_servers.rag_server import main as serve
+    elif server_name == "web-search":
+        from ara.mcp_servers.web_search_server import main as serve
+    elif server_name == "dl-model":
+        from ara.mcp_servers.dl_model_server import main as serve
+    else:
+        raise ValueError(f"unsupported MCP server {server_name!r}")
+    serve()
+    return 0
+
+
+def _delegate_dl_command(module_name: str, argv: Sequence[str]) -> int:
+    """Pass arguments to the existing custom-model train/evaluation entry point."""
+    if module_name == "ara.dl.evaluate":
+        from ara.dl.evaluate import main as command_main
+    elif module_name == "ara.dl.train":
+        from ara.dl.train import main as command_main
+    else:
+        raise ValueError(f"unsupported delegated command {module_name!r}")
+    return command_main(argv)
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="ara",
-        description="Research answers grounded in local sources.",
+        description="Research, retrieve, and build reports from cited evidence.",
     )
     commands = parser.add_subparsers(dest="command")
 
@@ -133,9 +279,43 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="use the optional local cross-encoder reranker",
     )
+
+    serve = commands.add_parser("serve-mcp", help="start one MCP server over stdio")
+    serve.add_argument(
+        "--server",
+        choices=("rag", "web-search", "dl-model"),
+        default="rag",
+        help="server to start (default: rag)",
+    )
+
+    run = commands.add_parser("run", help="research a topic and build a cited report")
+    run.add_argument("--topic", required=True, help="research topic")
+    run.add_argument(
+        "--until",
+        choices=("research", "report"),
+        default="report",
+        help="stop after research or continue through report generation",
+    )
+    run.add_argument(
+        "--max-revisions",
+        type=int,
+        choices=range(21),
+        default=3,
+        help="maximum writer revisions (0-20; default: 3)",
+    )
+
+    commands.add_parser(
+        "eval",
+        help="evaluate the custom cross-encoder against retrieval baselines",
+        add_help=False,
+    )
+    commands.add_parser(
+        "train",
+        help="train the custom evidence cross-encoder",
+        add_help=False,
+    )
     return parser
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

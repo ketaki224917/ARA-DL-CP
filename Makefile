@@ -1,32 +1,43 @@
-.PHONY: setup ingest serve run eval train test lint tts-model tts-smoke
+.PHONY: setup ingest serve serve-rag serve-web-search serve-dl-model run eval train test lint tts-model tts-smoke
+
+UV ?= uv
 
 setup:
-	uv sync --extra dev --extra dl --extra tts
+	$(UV) sync --locked --extra dev --extra dl --extra tts
 
 ingest:
-	uv run ara ingest
+	$(UV) run --locked ara ingest
 
 serve:
-	uv run ara serve-mcp
+	$(UV) run --locked ara serve-mcp --server rag
+
+serve-rag:
+	$(UV) run --locked ara serve-mcp --server rag
+
+serve-web-search:
+	$(UV) run --locked ara serve-mcp --server web-search
+
+serve-dl-model:
+	$(UV) run --locked ara serve-mcp --server dl-model
 
 run:
-	uv run ara run --topic "$(TOPIC)"
+	$(UV) run --locked ara run --topic "$(TOPIC)" $(ARGS)
 
 eval:
-	uv run ara eval
+	$(UV) run --locked ara eval $(ARGS)
 
 train:
-	uv run ara train
+	$(UV) run --locked ara train $(ARGS)
 
 test:
-	uv run pytest
+	$(UV) run --locked pytest
 
 lint:
-	uv run ruff check .
+	$(UV) run --locked ruff check .
 
 tts-model:
-	uv run --extra tts python -m ara.generative.tts --download-voice
+	$(UV) run --locked --extra tts python -m ara.generative.tts --download-voice
 
 tts-smoke:
-	uv run --extra tts python scripts/tts_synthesis_smoke.py
+	$(UV) run --locked --extra tts python scripts/tts_synthesis_smoke.py
 
