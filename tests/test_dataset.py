@@ -103,6 +103,23 @@ def test_builds_positive_and_deterministic_in_split_negatives(tmp_path: Path) ->
     )
 
 
+def test_random_negative_ablation_is_deterministic_and_split_local(tmp_path: Path) -> None:
+    _make_split(tmp_path)
+
+    first = build_pair_examples(
+        tmp_path, "train", seed=19, negative_strategy="random", candidate_k=3
+    )
+    second = build_pair_examples(
+        tmp_path, "train", seed=19, negative_strategy="random", candidate_k=3
+    )
+    negative_ids = {item.document_id for item in first.examples if item.relevance_label == 0.0}
+
+    assert first == second
+    assert len(negative_ids) == 1
+    assert negative_ids.issubset({"negative-a", "negative-b"})
+    assert all(item.split == "train" for item in first.examples)
+
+
 def test_rejects_positive_document_outside_split(tmp_path: Path) -> None:
     _make_split(tmp_path)
     query_file = tmp_path / "queries_train.jsonl"
@@ -125,23 +142,36 @@ def test_rejects_positive_document_outside_split(tmp_path: Path) -> None:
 def test_synthetic_pairs_are_training_only(tmp_path: Path) -> None:
     _make_split(tmp_path)
     synthetic = tmp_path / "synthetic.jsonl"
-    synthetic.write_text(
-        json.dumps(
-            {
+    synthetic_records = [
+        {
                 "query": "What increases cardiac risk?",
                 "positive_chunk_id": "chunk:positive",
                 "positive_text": "Blood pressure is associated with cardiac risk.",
                 "positive_source": "report-a",
-                "negative_chunk_id": "chunk:negative",
+                "negative_chunk_id": "chunk:negative-a",
                 "negative_text": "Beetles respond to daylight changes.",
                 "negative_source": "report-b",
                 "negative_mining_method": "bm25",
                 "negative_search_rank": 1,
                 "query_origin": "extractive",
                 "seed": 19,
-            }
-        )
-        + "\n",
+        },
+        {
+            "query": "How do plants store solar energy?",
+            "positive_chunk_id": "chunk:positive-b",
+            "positive_text": "Plants use chlorophyll to convert solar energy into chemical energy.",
+            "positive_source": "report-c",
+            "negative_chunk_id": "chunk:negative-b",
+            "negative_text": "The lunar surface has many impact craters.",
+            "negative_source": "report-d",
+            "negative_mining_method": "bm25",
+            "negative_search_rank": 2,
+            "query_origin": "extractive",
+            "seed": 19,
+        },
+    ]
+    synthetic.write_text(
+        "".join(json.dumps(record) + "\n" for record in synthetic_records),
         encoding="utf-8",
     )
 
@@ -160,9 +190,23 @@ def test_synthetic_pairs_are_training_only(tmp_path: Path) -> None:
         synthetic_path=synthetic,
     )
     synthetic_examples = [item for item in result.examples if item.source == "sample_corpus"]
-    assert result.synthetic_pair_count == 1
-    assert len(synthetic_examples) == 2
+    assert result.synthetic_pair_count == 2
+    assert len(synthetic_examples) == 4
     assert {item.split for item in synthetic_examples} == {"train"}
+
+    randomized = build_pair_examples(
+        tmp_path,
+        "train",
+        negative_strategy="random",
+        include_synthetic_train=True,
+        synthetic_path=synthetic,
+    )
+    synthetic_random = [item for item in randomized.examples if item.source == "sample_corpus"]
+    random_positive_ids = {"chunk:positive", "chunk:positive-b"}
+    random_negative_ids = {
+        item.document_id for item in synthetic_random if item.relevance_label == 0.0
+    }
+    assert random_negative_ids == random_positive_ids
 
 
 def test_collator_and_dataloader_preserve_masks_and_labels() -> None:

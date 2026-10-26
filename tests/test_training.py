@@ -126,6 +126,7 @@ def test_training_is_seeded_early_stops_and_saves_best_artifacts(tmp_path: Path)
                 model=_tiny_model(),
                 tokenizer=TinyTokenizer(),
                 device="cpu",
+                negative_strategy="random",
             )
         )
 
@@ -136,6 +137,7 @@ def test_training_is_seeded_early_stops_and_saves_best_artifacts(tmp_path: Path)
     assert first.stopped_early is True
     assert first.training_example_count == 2
     assert first.validation_example_count == 2
+    assert first.negative_strategy == "random"
     assert first.best_validation_loss == pytest.approx(first.history[0].validation_loss)
 
     checkpoint = torch.load(first.checkpoint_path, map_location="cpu", weights_only=True)
@@ -143,6 +145,7 @@ def test_training_is_seeded_early_stops_and_saves_best_artifacts(tmp_path: Path)
     assert checkpoint["best_epoch"] == first.best_epoch
     assert checkpoint["model_revision"] == "df500e56a59fc34f37322735a40eff666200312e"
     assert checkpoint["training_config"]["epochs"] == 5
+    assert checkpoint["training_config"]["negative_strategy"] == "random"
     assert Path(first.checkpoint_path).is_file()
     assert Path(first.metrics_path).is_file()
     assert Path(first.curves_path).read_bytes().startswith(b"\x89PNG\r\n\x1a\n")

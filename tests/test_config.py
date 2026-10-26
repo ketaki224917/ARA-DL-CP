@@ -41,6 +41,8 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
             "ARA_DL_EARLY_STOPPING_PATIENCE": "4",
             "ARA_DL_CHECKPOINT_PATH": "checkpoints/test.pt",
             "ARA_DL_USE_SYNTHETIC_PAIRS": "false",
+            "ARA_DL_DENSE_MODEL": "tiny-dense-test",
+            "ARA_DL_EVAL_CANDIDATE_K": "12",
         },
     )
 
@@ -64,6 +66,8 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
     assert settings.dl_early_stopping_patience == 4
     assert settings.dl_checkpoint_path == Path("checkpoints/test.pt")
     assert settings.dl_use_synthetic_pairs is False
+    assert settings.dl_dense_model == "tiny-dense-test"
+    assert settings.dl_eval_candidate_k == 12
 
 
 def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
@@ -93,6 +97,18 @@ def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
     assert settings.dl_curves_path == Path("outputs/dl_training_loss.png")
     assert settings.dl_metrics_path == Path("outputs/dl_training_metrics.json")
     assert settings.dl_use_synthetic_pairs is True
+    assert settings.dl_dense_model == "sentence-transformers/all-MiniLM-L6-v2"
+    assert settings.dl_dense_model_revision == "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+    assert settings.dl_eval_candidate_k == 20
+    assert settings.dl_eval_batch_size == 16
+    assert settings.dl_eval_metrics_path == Path("outputs/dl_evaluation_metrics.json")
+    assert settings.dl_error_analysis_path == Path("outputs/dl_error_analysis.json")
+    assert settings.dl_dense_embeddings_cache_path == Path(
+        "data/indexes/dl_eval_test_embeddings.pt"
+    )
+    assert settings.dl_random_negative_checkpoint_path == Path(
+        "models/checkpoints/reranker_random_negatives.pt"
+    )
 
 
 def test_invalid_configuration_section_is_rejected(tmp_path: Path) -> None:

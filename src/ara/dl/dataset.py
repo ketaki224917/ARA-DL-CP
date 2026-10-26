@@ -135,6 +135,7 @@ def build_pair_examples(
     candidate_k: int = 32,
     negative_pool_size: int = 1,
     seed: int = 42,
+    negative_strategy: Literal["bm25", "random"] = "bm25",
     include_synthetic_train: bool = False,
     synthetic_path: Path | str | None = None,
 ) -> PairBuildResult:
@@ -142,12 +143,15 @@ def build_pair_examples(
 
     Unjudged SciFact abstracts are used as mined training candidates, not treated as
     benchmark relevance judgments. Their negative labels are therefore explicitly
-    identified as mined examples in the returned source field/counters.
+    identified as mined examples in the returned source field/counters. The random
+    strategy samples from the same split's remaining documents for ablation runs.
     """
     if max_negatives_per_query < 0:
         raise ValueError("max_negatives_per_query cannot be negative")
     if candidate_k < 1 or negative_pool_size < 1:
         raise ValueError("candidate_k and negative_pool_size must be positive")
+    if negative_strategy not in {"bm25", "random"}:
+        raise ValueError("negative_strategy must be 'bm25' or 'random'")
     if include_synthetic_train and split != "train":
         raise ValueError("P5.1 sample-corpus pairs may only be added to the train split")
 
@@ -216,28 +220,31 @@ def build_pair_examples(
 
         if max_negatives_per_query == 0:
             continue
+        if negative_strategy == "bm25":
+            candidates = [
+                result.chunk for result in lexical_index.search(query, top_k=candidate_k)
+            ]
+        else:
+            candidates = chunks
         eligible = [
-            result
-            for result in lexical_index.search(query, top_k=candidate_k)
-            if result.chunk.chunk_id.removeprefix("scifact:") not in positive_ids
-            and all(
-                _jaccard(result.chunk.text, positive_text) < 0.8
-                for positive_text in positive_texts
-            )
+            chunk
+            for chunk in candidates
+            if chunk.chunk_id.removeprefix("scifact:") not in positive_ids
+            and all(_jaccard(chunk.text, positive_text) < 0.8 for positive_text in positive_texts)
         ]
         if not eligible:
             no_negative_count += 1
             continue
         rng = random.Random(_stable_seed(seed, query_id))
-        pool = eligible[:negative_pool_size]
+        pool = eligible[:negative_pool_size] if negative_strategy == "bm25" else eligible
         for negative in _sample_without_replacement(rng, pool, max_negatives_per_query):
-            document_id = negative.chunk.chunk_id.removeprefix("scifact:")
+            document_id = negative.chunk_id.removeprefix("scifact:")
             examples.append(
                 PairExample(
                     query_id=query_id,
                     query=query,
                     document_id=document_id,
-                    passage=negative.chunk.text,
+                    passage=negative.text,
                     relevance_label=0.0,
                     split=split,
                     source="scifact",
@@ -250,7 +257,11 @@ def build_pair_examples(
         configured_path = (
             Path(synthetic_path) if synthetic_path is not None else load_settings().dl_data_path
         )
-        synthetic_examples = _load_synthetic_pairs(configured_path)
+        synthetic_examples = _load_synthetic_pairs(
+            configured_path,
+            seed=seed,
+            negative_strategy=negative_strategy,
+        )
         examples.extend(synthetic_examples)
         synthetic_count = len(synthetic_examples) // 2
 
@@ -288,40 +299,69 @@ def make_pair_dataloader(
     )
 
 
-def _load_synthetic_pairs(path: Path) -> list[PairExample]:
+def _load_synthetic_pairs(
+    path: Path,
+    *,
+    seed: int,
+    negative_strategy: Literal["bm25", "random"],
+) -> list[PairExample]:
     if not path.is_file():
         raise FileNotFoundError(f"P5.1 synthetic pair file does not exist: {path}")
-    examples: list[PairExample] = []
+    pairs: list[SyntheticTrainingPair] = []
     for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
         try:
             pair = SyntheticTrainingPair.model_validate_json(line)
         except ValueError as exc:
             raise ValueError(f"Invalid synthetic pair at {path}:{line_number}: {exc}") from exc
-        query_id = f"synthetic:{hashlib.sha256(pair.query.encode()).hexdigest()[:16]}"
-        examples.extend(
-            [
-                PairExample(
-                    query_id=query_id,
-                    query=pair.query,
-                    document_id=pair.positive_chunk_id,
-                    passage=pair.positive_text,
-                    relevance_label=1.0,
-                    split="train",
-                    source="sample_corpus",
-                ),
-                PairExample(
-                    query_id=query_id,
-                    query=pair.query,
-                    document_id=pair.negative_chunk_id,
-                    passage=pair.negative_text,
-                    relevance_label=0.0,
-                    split="train",
-                    source="sample_corpus",
-                ),
-            ]
-        )
-    if not examples:
+        pairs.append(pair)
+    if not pairs:
         raise ValueError(f"P5.1 synthetic pair file is empty: {path}")
+
+    examples: list[PairExample] = []
+    for index, pair in enumerate(pairs):
+        query_id = f"synthetic:{hashlib.sha256(pair.query.encode()).hexdigest()[:16]}"
+        examples.append(
+            PairExample(
+                query_id=query_id,
+                query=pair.query,
+                document_id=pair.positive_chunk_id,
+                passage=pair.positive_text,
+                relevance_label=1.0,
+                split="train",
+                source="sample_corpus",
+            )
+        )
+        if negative_strategy == "bm25":
+            negative_id = pair.negative_chunk_id
+            negative_text = pair.negative_text
+        else:
+            random_candidates = [
+                candidate
+                for candidate_index, candidate in enumerate(pairs)
+                if candidate_index != index
+                and candidate.positive_chunk_id != pair.positive_chunk_id
+                and candidate.positive_source != pair.positive_source
+            ]
+            if not random_candidates:
+                raise ValueError(
+                    "random synthetic negative generation requires a second positive from "
+                    "another source document"
+                )
+            randomizer = random.Random(_stable_seed(seed, query_id))
+            random_pair = randomizer.choice(random_candidates)
+            negative_id = random_pair.positive_chunk_id
+            negative_text = random_pair.positive_text
+        examples.append(
+            PairExample(
+                query_id=query_id,
+                query=pair.query,
+                document_id=negative_id,
+                passage=negative_text,
+                relevance_label=0.0,
+                split="train",
+                source="sample_corpus",
+            )
+        )
     logger.info("Added %d P5.1 sample-corpus query/passage pairs to training", len(examples))
     return examples
 

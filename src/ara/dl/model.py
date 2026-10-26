@@ -11,6 +11,7 @@ import torch
 from torch import Tensor, nn
 
 from ara.config import Settings, load_settings
+from ara.dl.hf_compat import configure_system_certificates
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +48,7 @@ class CrossEncoderScorer(nn.Module):
         credibility_head: bool | None = None,
     ) -> CrossEncoderScorer:
         """Load the configured Hugging Face sequence-classification checkpoint lazily."""
+        configure_system_certificates()
         from transformers import AutoModelForSequenceClassification
 
         resolved = settings or load_settings()
@@ -147,6 +149,7 @@ def load_pair_tokenizer(
     cache_dir: Path | str | None = None,
 ) -> Any:
     """Load the checkpoint's pair tokenizer only when explicitly requested."""
+    configure_system_certificates()
     from transformers import AutoTokenizer
 
     resolved = settings or load_settings()

@@ -19,6 +19,10 @@ paths:
   dl_checkpoint_path: models/checkpoints/reranker.pt
   dl_curves_path: outputs/dl_training_loss.png
   dl_metrics_path: outputs/dl_training_metrics.json
+  dl_eval_metrics_path: outputs/dl_evaluation_metrics.json
+  dl_error_analysis_path: outputs/dl_error_analysis.json
+  dl_dense_embeddings_cache_path: data/indexes/dl_eval_test_embeddings.pt
+  dl_random_negative_checkpoint_path: models/checkpoints/reranker_random_negatives.pt
   output_dir: outputs
   trace_dir: traces
 retrieval:
@@ -44,4 +48,8 @@ dl:
   early_stopping_patience: 2
   early_stopping_min_delta: 0.0
   use_synthetic_pairs: true
+  dense_model: sentence-transformers/all-MiniLM-L6-v2
+  dense_model_revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
+  eval_candidate_k: 20
+  eval_batch_size: 16
 

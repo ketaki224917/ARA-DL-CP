@@ -1,0 +1,174 @@
+{
+  "dataset": "SciFact internal held-out test split",
+  "selection": "up to 20 queries where the fine-tuned system did not rank a gold document first",
+  "cases": [
+    {
+      "query_id": "scifact:1138",
+      "query": "TRAP+ osteoclasts regulate mature osteoblast maintenance.",
+      "gold_document_ids": [
+        "6796297"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 12,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "27127885",
+          "relevance_score": -1.4479902982711792,
+          "text": "An activator of the cAMP/PKA/CREB pathway promotes osteogenesis from human mesenchymal stem cells.\n\nMesenchymal stem cells (MSCs) are multipotent adult stem cells capable of differentiating along the osteoblast, adipocyte, and chondrocyte lineages. Regulation of MSCs differentiation may be a useful tool for regenerative medicine and cell-based therapy. The discovery of small molecule that activates the osteogenic differentiation of MSCs could aid in the development of a new anabolic drug for ost",
+          "is_relevant": false
+        },
+        {
+          "document_id": "9301606",
+          "relevance_score": -1.5953518152236938,
+          "text": "Parathyroid hormone-induced E4BP4/NFIL3 down-regulates transcription in osteoblasts.\n\nParathyroid hormone (PTH), a major regulator of bone metabolism, activates the PTHR1 receptor on the osteoblast plasma membrane to initiate signaling and induce transcription of primary response genes. Subsequently, primary genes with transcriptional activity regulate expression of downstream PTH targets. We have identified the adenovirus E4 promoter-binding protein/nuclear factor regulated by IL-3 (E4bp4) as a",
+          "is_relevant": false
+        },
+        {
+          "document_id": "14863011",
+          "relevance_score": -1.786087989807129,
+          "text": "Bcl2 Regulation by the Melanocyte Master Regulator Mitf Modulates Lineage Survival and Melanoma Cell Viability\n\nKit/SCF signaling and Mitf-dependent transcription are both essential for melanocyte development and pigmentation. To identify Mitf-dependent Kit transcriptional targets in primary melanocytes, microarray studies were undertaken. Among identified targets was BCL2, whose germline deletion produces melanocyte loss and which exhibited phenotypic synergy with Mitf in mice. BCL2's regulatio",
+          "is_relevant": false
+        },
+        {
+          "document_id": "11716783",
+          "relevance_score": -1.885527491569519,
+          "text": "Multiple roles of vascular endothelial growth factor (VEGF) in skeletal development, growth, and repair.\n\nPublisher Summary This chapter discusses the developmental roles of vascular endothelial growth factor (VEGF) in skeletal morphogenesis, speculates on the future directions of research in this area, and describes some of the challenges in the field. VEGF regulates osteoclastic differentiation, migration, and activity. VEGF is, therefore, a key coordinator of the entire process. VEGF is neces",
+          "is_relevant": false
+        },
+        {
+          "document_id": "21199527",
+          "relevance_score": -2.14669132232666,
+          "text": "Parathyroid hormone induces E4bp4 messenger ribonucleic acid expression primarily through cyclic adenosine 3',5'-monophosphate signaling in osteoblasts.\n\nPTH binding to its receptor activates protein kinase A (PKA), protein kinase C (PKC), and calcium signaling to induce transcription of primary response genes in osteoblasts. Adenovirus E4 promoter-binding protein/nuclear factor regulated by IL-3 (E4BP4/NFIL3), a transcriptional repressor, is a PTH-induced primary response gene in primary mouse ",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:645",
+      "query": "Intake of folic acid (FA) and vitamin B6 (VB6) increases levels of homocysteine.",
+      "gold_document_ids": [
+        "12810152"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 2,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "33409100",
+          "relevance_score": 2.4317312240600586,
+          "text": "Effect of homocysteine lowering on mortality and vascular disease in advanced chronic kidney disease and end-stage renal disease: a randomized controlled trial.\n\nCONTEXT High plasma homocysteine levels are a risk factor for mortality and vascular disease in observational studies of patients with chronic kidney disease. Folic acid and B vitamins decrease homocysteine levels in this population but whether they lower mortality is unknown.   \n OBJECTIVE To determine whether high doses of folic acid ",
+          "is_relevant": false
+        },
+        {
+          "document_id": "12810152",
+          "relevance_score": -0.7917382121086121,
+          "text": "Folate and vitamin B6 from diet and supplements in relation to risk of coronary heart disease among women.\n\nCONTEXT Hyperhomocysteinemia is caused by genetic and lifestyle influences, including low intakes of folate and vitamin B6. However, prospective data relating intake of these vitamins to risk of coronary heart disease (CHD) are not available.   \n OBJECTIVE To examine intakes of folate and vitamin B6 in relation to the incidence of nonfatal myocardial infarction (MI) and fatal CHD.   \n DESI",
+          "is_relevant": true
+        },
+        {
+          "document_id": "20083834",
+          "relevance_score": -1.988796353340149,
+          "text": "Consumption of isoflavone-rich soy protein does not alter homocysteine or markers of inflammation in postmenopausal women\n\nBackground/Objective:To investigate the effect of soy protein containing isoflavones on homocysteine (Hcy), C-reactive protein (CRP), soluble E-selectin (sE-selectin), soluble vascular adhesion molecule-1 (sVCAM-1) and soluble intercellular adhesion molecule-1 (sICAM-1).Subject/Methods:In a randomized crossover design, 34 postmenopausal women consumed soy protein isolate (26",
+          "is_relevant": false
+        },
+        {
+          "document_id": "25439264",
+          "relevance_score": -2.416315793991089,
+          "text": "Homocysteine Induces Trophoblast Cell Death with Apoptotic Features1\n\nAbstract Hyperhomocysteinemia has been suggested as a possible risk factor in women suffering from habitual abortions, placental abruption or infarcts, preeclampsia, and/or intrauterine growth retardation. However, little is known about the pathogenic mechanisms underlying the action of homocysteine. The present study investigated the in vitro ability of homocysteine to affect trophoblast gonadotropin secretion and to induce c",
+          "is_relevant": false
+        },
+        {
+          "document_id": "9813098",
+          "relevance_score": -2.4242303371429443,
+          "text": "Plasma homocysteine is a risk factor for recurrent vascular events in young patients with an ischaemic stroke or TIA\n\nYoung patients with an ischaemic stroke or transient ischaemic attack (TIA) often have no vascular risk factors. Hyperhomocysteinaemia is an established risk factor for stroke in elderly patients but it is uncertain whether it is also important for the prognosis of young ischaemic stroke and TIA patients. We examined the possible effect of the plasma homocysteine level on the ris",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:646",
+      "query": "Intake of folic acid (FA) and vitamin B6 (VB6) reduces levels of homocysteine.",
+      "gold_document_ids": [
+        "12810152"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 2,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "33409100",
+          "relevance_score": 2.585731267929077,
+          "text": "Effect of homocysteine lowering on mortality and vascular disease in advanced chronic kidney disease and end-stage renal disease: a randomized controlled trial.\n\nCONTEXT High plasma homocysteine levels are a risk factor for mortality and vascular disease in observational studies of patients with chronic kidney disease. Folic acid and B vitamins decrease homocysteine levels in this population but whether they lower mortality is unknown.   \n OBJECTIVE To determine whether high doses of folic acid ",
+          "is_relevant": false
+        },
+        {
+          "document_id": "12810152",
+          "relevance_score": -1.0146269798278809,
+          "text": "Folate and vitamin B6 from diet and supplements in relation to risk of coronary heart disease among women.\n\nCONTEXT Hyperhomocysteinemia is caused by genetic and lifestyle influences, including low intakes of folate and vitamin B6. However, prospective data relating intake of these vitamins to risk of coronary heart disease (CHD) are not available.   \n OBJECTIVE To examine intakes of folate and vitamin B6 in relation to the incidence of nonfatal myocardial infarction (MI) and fatal CHD.   \n DESI",
+          "is_relevant": true
+        },
+        {
+          "document_id": "20083834",
+          "relevance_score": -1.7339166402816772,
+          "text": "Consumption of isoflavone-rich soy protein does not alter homocysteine or markers of inflammation in postmenopausal women\n\nBackground/Objective:To investigate the effect of soy protein containing isoflavones on homocysteine (Hcy), C-reactive protein (CRP), soluble E-selectin (sE-selectin), soluble vascular adhesion molecule-1 (sVCAM-1) and soluble intercellular adhesion molecule-1 (sICAM-1).Subject/Methods:In a randomized crossover design, 34 postmenopausal women consumed soy protein isolate (26",
+          "is_relevant": false
+        },
+        {
+          "document_id": "25439264",
+          "relevance_score": -2.771085262298584,
+          "text": "Homocysteine Induces Trophoblast Cell Death with Apoptotic Features1\n\nAbstract Hyperhomocysteinemia has been suggested as a possible risk factor in women suffering from habitual abortions, placental abruption or infarcts, preeclampsia, and/or intrauterine growth retardation. However, little is known about the pathogenic mechanisms underlying the action of homocysteine. The present study investigated the in vitro ability of homocysteine to affect trophoblast gonadotropin secretion and to induce c",
+          "is_relevant": false
+        },
+        {
+          "document_id": "9813098",
+          "relevance_score": -3.003185749053955,
+          "text": "Plasma homocysteine is a risk factor for recurrent vascular events in young patients with an ischaemic stroke or TIA\n\nYoung patients with an ischaemic stroke or transient ischaemic attack (TIA) often have no vascular risk factors. Hyperhomocysteinaemia is an established risk factor for stroke in elderly patients but it is uncertain whether it is also important for the prognosis of young ischaemic stroke and TIA patients. We examined the possible effect of the plasma homocysteine level on the ris",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:765",
+      "query": "Medications to treat obesity do not have side effects.",
+      "gold_document_ids": [
+        "7552215"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 2,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "5839365",
+          "relevance_score": 3.2617945671081543,
+          "text": "Anti-obesity drugs: past, present and future\n\nThe ideal anti-obesity drug would produce sustained weight loss with minimal side effects. The mechanisms that regulate energy balance have substantial built-in redundancy, overlap considerably with other physiological functions, and are influenced by social, hedonic and psychological factors that limit the effectiveness of pharmacological interventions. It is therefore unsurprising that anti-obesity drug discovery programmes have been littered with ",
+          "is_relevant": false
+        },
+        {
+          "document_id": "7552215",
+          "relevance_score": 0.31909993290901184,
+          "text": "Long term pharmacotherapy for obesity and overweight: updated meta-analysis.\n\nOBJECTIVE To summarise the long term efficacy of anti-obesity drugs in reducing weight and improving health status.   \n DESIGN Updated meta-analysis of randomised trials.   \n DATA SOURCES Medline, Embase, the Cochrane controlled trials register, the Current Science meta-register of controlled trials, and reference lists of identified articles. All data sources were searched from December 2002 (end date of last search) ",
+          "is_relevant": true
+        },
+        {
+          "document_id": "5864770",
+          "relevance_score": -1.8391371965408325,
+          "text": "Estrogens, progestogens, normal breast cell proliferation, and breast cancer risk.\n\nEpidemiologic studies suggest that ovarian hormones contribute to the development of breast cancer at all stages. Early menopause and premenopausal obesity reduces the risk while postmenopausal obesity and menopausal estrogen replacement therapy increases the risk. Combined oral contraceptives and Depo-Provera do not reduce the risk. It appears that estrogens and progestogens act through and with proto-oncogenes ",
+          "is_relevant": false
+        },
+        {
+          "document_id": "28845338",
+          "relevance_score": -2.863860607147217,
+          "text": "Increased lean body mass as an early indicator of olanzapine-induced weight gain in healthy men.\n\nOne of the primary limitations of many psychiatric medications is weight gain, the mechanism of which remains to be fully elucidated. We conducted a 2-week double-blind placebo-controlled study on weight gain with olanzapine, which is frequently but unpredictably associated with this side effect, to address the possible mechanisms of weight gain independent of changes in the psychiatric condition fo",
+          "is_relevant": false
+        },
+        {
+          "document_id": "24625323",
+          "relevance_score": -3.9217491149902344,
+          "text": "Comorbidity between ADHD and obesity: exploring shared mechanisms and clinical implications.\n\nRecent studies suggest an association between attention-deficit/hyperactivity disorder (ADHD) and obesity. In this article, we systematically review and critically discuss evidence on the prevalence of ADHD in obese patients as well as the weight status of individuals with ADHD. Relevant articles were searched in PubMed, PsychInfo, and ISI Web of Science (January 1980 to June 2010). We found that curren",
+          "is_relevant": false
+        }
+      ]
+    }
+  ]
+}

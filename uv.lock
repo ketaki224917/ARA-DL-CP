@@ -273,6 +273,7 @@ dl = [
     { name = "torch", version = "2.14.1", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "sys_platform == 'darwin'" },
     { name = "torch", version = "2.14.1+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "sys_platform != 'darwin'" },
     { name = "transformers" },
+    { name = "truststore" },
 ]
 rerank = [
     { name = "sentence-transformers" },
@@ -300,6 +301,7 @@ requires-dist = [
     { name = "sentence-transformers", marker = "extra == 'rerank'", specifier = ">=5,<7" },
     { name = "torch", marker = "extra == 'dl'", specifier = ">=2.6,<3", index = "https://download.pytorch.org/whl/cpu", conflict = { package = "ara-research-agent", extra = "dl" } },
     { name = "transformers", marker = "extra == 'dl'", specifier = ">=4.52,<5" },
+    { name = "truststore", marker = "extra == 'dl'", specifier = ">=0.10,<1" },
     { name = "types-pyyaml", marker = "extra == 'dev'", specifier = ">=6,<7" },
 ]
 provides-extras = ["dev", "rerank", "dl"]

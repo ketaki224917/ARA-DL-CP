@@ -11,7 +11,7 @@ import tempfile
 from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import torch
 from torch import Tensor, nn
@@ -44,6 +44,7 @@ class TrainingResult:
     stopped_early: bool
     training_example_count: int
     validation_example_count: int
+    negative_strategy: Literal["bm25", "random"]
     checkpoint_path: Path
     metrics_path: Path
     curves_path: Path
@@ -59,6 +60,7 @@ def train_model(
     device: torch.device | str | None = None,
     epochs: int | None = None,
     include_synthetic_pairs: bool | None = None,
+    negative_strategy: Literal["bm25", "random"] = "bm25",
     max_batches_per_epoch: int | None = None,
 ) -> TrainingResult:
     """Train on train pairs, early-stop on validation, and never inspect test labels.
@@ -87,6 +89,7 @@ def train_model(
         candidate_k=resolved.dl_candidate_k,
         negative_pool_size=resolved.dl_negative_pool_size,
         seed=resolved.dl_seed,
+        negative_strategy=negative_strategy,
         include_synthetic_train=use_synthetic,
         synthetic_path=resolved.dl_data_path,
     )
@@ -96,6 +99,7 @@ def train_model(
         candidate_k=resolved.dl_candidate_k,
         negative_pool_size=resolved.dl_negative_pool_size,
         seed=resolved.dl_seed,
+        negative_strategy=negative_strategy,
     )
     _validate_training_pairs(train_pairs.examples, split_name="train")
     _validate_training_pairs(validation_pairs.examples, split_name="validation")
@@ -171,6 +175,7 @@ def train_model(
                 state_dict=best_state,
                 settings=resolved,
                 training_epochs=run_epochs,
+                negative_strategy=negative_strategy,
                 best_epoch=best_epoch,
                 best_validation_loss=best_validation_loss,
                 history=history,
@@ -192,6 +197,7 @@ def train_model(
         stopped_early=stopped_early,
         training_example_count=len(train_pairs.examples),
         validation_example_count=len(validation_pairs.examples),
+        negative_strategy=negative_strategy,
         checkpoint_path=resolved.dl_checkpoint_path,
         metrics_path=resolved.dl_metrics_path,
         curves_path=resolved.dl_curves_path,
@@ -276,6 +282,7 @@ def _save_checkpoint(
     state_dict: dict[str, Tensor],
     settings: Settings,
     training_epochs: int,
+    negative_strategy: Literal["bm25", "random"],
     best_epoch: int,
     best_validation_loss: float,
     history: Sequence[EpochMetrics],
@@ -296,6 +303,7 @@ def _save_checkpoint(
             "early_stopping_min_delta": settings.dl_early_stopping_min_delta,
             "batch_size": settings.dl_batch_size,
             "max_length": settings.dl_max_length,
+            "negative_strategy": negative_strategy,
         },
         "history": [asdict(row) for row in history],
         "model_state_dict": state_dict,
@@ -315,6 +323,7 @@ def _write_metrics(result: TrainingResult, settings: Settings) -> None:
         "stopped_early": result.stopped_early,
         "training_example_count": result.training_example_count,
         "validation_example_count": result.validation_example_count,
+        "negative_strategy": result.negative_strategy,
         "smoke_batch_limit": result.smoke_batch_limit,
         "checkpoint_path": str(result.checkpoint_path),
         "curves_path": str(result.curves_path),
@@ -374,6 +383,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--data-dir", type=Path, help="SciFact split directory")
     parser.add_argument("--epochs", type=int, help="override configured epoch count")
     parser.add_argument("--no-synthetic-pairs", action="store_true")
+    parser.add_argument("--random-negatives", action="store_true")
     parser.add_argument(
         "--max-batches",
         type=int,
@@ -385,6 +395,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         data_dir=args.data_dir,
         epochs=args.epochs,
         include_synthetic_pairs=False if args.no_synthetic_pairs else None,
+        negative_strategy="random" if args.random_negatives else "bm25",
         max_batches_per_epoch=args.max_batches,
     )
     logger.info(

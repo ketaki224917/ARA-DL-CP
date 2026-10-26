@@ -1,0 +1,29 @@
+{
+  "best_epoch": 1,
+  "best_validation_loss": 0.0506736260656673,
+  "stopped_early": true,
+  "training_example_count": 358,
+  "validation_example_count": 62,
+  "negative_strategy": "random",
+  "smoke_batch_limit": null,
+  "checkpoint_path": "models\\checkpoints\\reranker_random_negatives.pt",
+  "curves_path": "outputs\\dl_training_loss_random_negatives.png",
+  "seed": 42,
+  "history": [
+    {
+      "epoch": 1,
+      "training_loss": 0.11883450459913929,
+      "validation_loss": 0.0506736260656673
+    },
+    {
+      "epoch": 2,
+      "training_loss": 0.02465033035383263,
+      "validation_loss": 0.06507729193441675
+    },
+    {
+      "epoch": 3,
+      "training_loss": 0.008446991927017766,
+      "validation_loss": 0.05837597929184408
+    }
+  ]
+}

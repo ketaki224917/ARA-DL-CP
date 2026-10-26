@@ -54,6 +54,14 @@ _ENV_FIELDS = {
     "ARA_DL_CURVES_PATH": "dl_curves_path",
     "ARA_DL_METRICS_PATH": "dl_metrics_path",
     "ARA_DL_USE_SYNTHETIC_PAIRS": "dl_use_synthetic_pairs",
+    "ARA_DL_DENSE_MODEL": "dl_dense_model",
+    "ARA_DL_DENSE_MODEL_REVISION": "dl_dense_model_revision",
+    "ARA_DL_EVAL_CANDIDATE_K": "dl_eval_candidate_k",
+    "ARA_DL_EVAL_BATCH_SIZE": "dl_eval_batch_size",
+    "ARA_DL_EVAL_METRICS_PATH": "dl_eval_metrics_path",
+    "ARA_DL_ERROR_ANALYSIS_PATH": "dl_error_analysis_path",
+    "ARA_DL_DENSE_EMBEDDINGS_CACHE_PATH": "dl_dense_embeddings_cache_path",
+    "ARA_DL_RANDOM_NEGATIVE_CHECKPOINT_PATH": "dl_random_negative_checkpoint_path",
 }
 
 
@@ -91,6 +99,16 @@ class Settings(BaseSettings):
     dl_curves_path: Path = Path("outputs/dl_training_loss.png")
     dl_metrics_path: Path = Path("outputs/dl_training_metrics.json")
     dl_use_synthetic_pairs: bool = True
+    dl_dense_model: str = "sentence-transformers/all-MiniLM-L6-v2"
+    dl_dense_model_revision: str = "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+    dl_eval_candidate_k: int = Field(default=20, ge=1, le=200)
+    dl_eval_batch_size: int = Field(default=16, ge=1, le=128)
+    dl_eval_metrics_path: Path = Path("outputs/dl_evaluation_metrics.json")
+    dl_error_analysis_path: Path = Path("outputs/dl_error_analysis.json")
+    dl_dense_embeddings_cache_path: Path = Path("data/indexes/dl_eval_test_embeddings.pt")
+    dl_random_negative_checkpoint_path: Path = Path(
+        "models/checkpoints/reranker_random_negatives.pt"
+    )
     dl_seed: int = 42
     dl_questions_per_chunk: int = Field(default=2, ge=1, le=5)
     dl_candidate_k: int = Field(default=20, ge=1, le=200)
@@ -160,6 +178,14 @@ def load_settings(
         "dl_curves_path": paths.get("dl_curves_path"),
         "dl_metrics_path": paths.get("dl_metrics_path"),
         "dl_use_synthetic_pairs": dl.get("use_synthetic_pairs"),
+        "dl_dense_model": dl.get("dense_model"),
+        "dl_dense_model_revision": dl.get("dense_model_revision"),
+        "dl_eval_candidate_k": dl.get("eval_candidate_k"),
+        "dl_eval_batch_size": dl.get("eval_batch_size"),
+        "dl_eval_metrics_path": paths.get("dl_eval_metrics_path"),
+        "dl_error_analysis_path": paths.get("dl_error_analysis_path"),
+        "dl_dense_embeddings_cache_path": paths.get("dl_dense_embeddings_cache_path"),
+        "dl_random_negative_checkpoint_path": paths.get("dl_random_negative_checkpoint_path"),
         "dl_seed": dl.get("seed"),
         "dl_questions_per_chunk": dl.get("questions_per_chunk"),
         "dl_candidate_k": dl.get("candidate_k"),
