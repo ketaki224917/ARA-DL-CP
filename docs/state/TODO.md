@@ -53,7 +53,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P5.2 Public dataset subset integration + doc-level splits (SciFact; 200 labeled queries; evidence-linked document splits validated with no overlap)
 - [x] P5.3 Dataset/Dataloader + model.py (split-safe pair batches, pinned MiniLM relevance scorer, optional masked credibility head; CPU inference verified)
 - [x] P5.4 train.py (config-driven AdamW/BCE training, seeded split loaders, validation early stopping, atomic best checkpoint, JSON metrics, PNG loss curve; 3-epoch CPU run completed)
-- [x] P5.5 evaluate.py vs baselines + ablations + error analysis (30-query internal SciFact test split; fine-tuned model ties recall and improves MRR/nDCG slightly over RRF; only four first-rank failures existed, all four reviewed)
+- [!] P5.5 evaluate.py vs baselines + ablations + error analysis (30-query internal SciFact test split; fine-tuned model ties recall and improves MRR/nDCG slightly over RRF; only four first-rank failures existed and all four were reviewed, so the required 20-case error analysis still needs a larger held-out set)
 - [x] P5.6 export + load in dl_model_server (`score_chunks`) + tests (atomic inference bundle; lazy scorer; real MCP client smoke returned ordered relevance probabilities; 251 tests pass)
 - [x] P5.7 Integrate in researcher; A/B end-to-end comparison (optional MCP-only scoring with validated IDs/fallback; real local model moved gold evidence rank 2→1 on one controlled fixture)
 - [x] P5.8 docs/model_card.md (training, internal held-out evaluation, four observed ranking failures, integration fixture, and limitations documented; checks pass)
@@ -71,5 +71,5 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P7.4 Three complete curated report bundles in outputs/examples/ (MD/HTML/PDF, Mermaid/SVG, Piper WAV, stored source chunks; four real chunk IDs validated; all PDFs visually inspected)
 - [!] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (fresh clone sync and CLI help pass; GNU Make is absent; direct ingest/run fail because Ollama is not running; ENV-002)
 - [~] P7.6 (stretch) LoRA fine-tune for report style, with before/after comparison - dropped for this CPU-only pass; no local chat model is available and LoRA is outside final acceptance (ADR-044)
-- [ ] P7.7 Final Acceptance Checklist verification
+- [x] P7.7 Final Acceptance Checklist verification (audit recorded in PROGRESS.md; project remains incomplete on open environment/evaluation gates)
 

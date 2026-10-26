@@ -379,3 +379,23 @@ Notes: The fresh clone also omits ignored voice/model weights. README documents 
 Done: Dropped the stretch task for this pass under ADR-044. The core report acceptance path does not require LoRA; no adapter benefit is claimed without a pinned base model and measured before/after comparison.
 Evidence: `docs/state/ENVIRONMENT.md` records CPU-only hardware; the configured Ollama chat model is not downloaded or running. No adapter was trained or evaluated.
 Files: `docs/state/TODO.md`, `docs/state/DECISIONS.md`, `docs/state/PROGRESS.md`, and state files.
+
+### 2026-10-26 - P7.7 - Audit final acceptance checklist
+Done: Compared each final checklist item against committed artifacts and recorded commands. P7.7 audit is complete; the project is NOT marked complete because required local-model and four-way RAG gates remain unverified.
+Evidence: `uv sync` and `ara --help` succeeded in the fresh clone, while direct ingest and research failed at the absent Ollama service. The last full project suite was 295 passed in 62.19s; Ruff passed; MyPy reported no issues in 61 source files. The report examples' deterministic citation validator resolves four IDs across three bundles, and all six PDF pages were visually reviewed. Only four first-rank failures appeared in the 30-query internal SciFact test split; all four are reviewed, but the specified 20-case failure analysis was not achieved.
+Files: `docs/state/PROGRESS.md`, `docs/state/TODO.md`, `docs/state/BLOCKERS.md`, `docs/state/ENVIRONMENT.md`, and `docs/state/HANDOFF.md`.
+
+#### Final Acceptance Checklist status
+- [!] Fresh environment: `make setup && make ingest && make run TOPIC="..."` produces MD/HTML/PDF/diagrams/audio - uv setup and CLI help pass in a fresh clone; GNU Make is absent, and direct ingest/run fail because Ollama is not running. The clone also needs the configured voice downloaded.
+- [!] Dense/BM25/hybrid/hybrid+rerank evaluation table - 52-question protocol exists; real four-system metrics remain NOT RUN under ENV-002.
+- [x] Three MCP servers independently verified over stdio with the official SDK client; Claude Desktop UI not launched (`docs/stdio_verification.md`).
+- [x] Revision loop measured on three controlled topics; each scripted case moved from one unsupported claim to zero. Live-model quality effect remains NOT RUN.
+- [x] Custom DL model trained and compared with baselines; model card and controlled researcher A/B are present. Results are descriptive on an internal 30-query SciFact split.
+- [!] Phase 5 error review required 20 failure cases; only four first-rank errors existed in the internal test split, and all four were reviewed.
+- [x] Every claim in the three checked-in example reports has a validated source chunk citation; all four cited IDs resolve.
+- [x] Prompt-injection and failure-mode tests are in the suite; the last full run passed 295 tests.
+- [!] `make test` and Ruff - GNU Make is absent; equivalent `uv run pytest` passed 295 tests and Ruff is clean.
+- [x] README, `docs/design_decisions.md`, and `docs/architecture.md` are complete with Mermaid diagrams and documented limits.
+- [!] State files are current, but `HANDOFF.md` cannot say PROJECT COMPLETE while the live-model, RAG evaluation, error-review, and P7.5 gates remain open.
+
+Project status: incomplete pending ENV-002 and a larger held-out error set. Do not replace any `NOT RUN` result with a success claim until local Ollama inference and the required evaluation runs are recorded.

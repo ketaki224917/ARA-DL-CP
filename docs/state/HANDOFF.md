@@ -1,23 +1,23 @@
 # HANDOFF (overwritten after every task)
 
 Updated: 2026-10-26 | Session #: 1
-Current phase/task: Phase 7 / P7.6 - optional LoRA stretch | Status: dropped under ADR-044; next is P7.7
+Current phase/task: Phase 7 / P7.7 - final acceptance audit | Status: audit complete; project blocked on ENV-002 and a larger held-out error set
 
-Last source commit: `e225232 [P7.4] Add reproducible example report bundles`; last state commit: `d3beada [P7.5] Record fresh-clone regression blocker`. P7.6 state update is pending its state commit.
+Last source commit: `e225232 [P7.4] Add reproducible example report bundles`; last state commit: `cfdbd01 [P7.6] Defer optional LoRA stretch`. Final audit state update is pending its state commit.
 
 ## Do next (exact)
-1. Commit the P7.6 decision and status in `docs/state/DECISIONS.md`, `TODO.md`, `PROGRESS.md`, `SESSIONS.md`, and this handoff.
-2. For P7.7, compare each final acceptance item with its recorded command/artifact and add an explicit `[x]` or `[!]` result to `docs/state/PROGRESS.md`.
-3. Record the incomplete project status in `docs/state/HANDOFF.md`; ask for the missing Ollama/Make host only after the audit is concrete.
+1. Provide a host with GNU Make and Ollama 0.11.10 or newer installed/running; pull `qwen2.5:1.5b` and `embeddinggemma`, then download the pinned Piper voice.
+2. In a fresh clone, run `make setup && make ingest && make run TOPIC="Grid-scale battery storage"`; save the complete report bundle and trace, then run `make test` and `make lint`.
+3. Measure the fixed 52-question four-way RAG comparison and expand the held-out test set for the missing 20-case failure review; update each `[!]` row in `docs/state/PROGRESS.md` with real evidence.
 
 ## Environment state
 Windows 11; PowerShell; Python 3.12.15; uv 0.13.4; CPU-only, 18 logical processors, 15.52 GiB RAM; GPU/VRAM details unknown. Workspace-local uv cache and `.tools/reports-venv` are active. A fresh clone/venv at `.tools/p7_5_clone/` installed 137 packages from `uv.lock`, and its CLI help succeeded. Pinned Piper voice and reranker weights are present in the main checkout's ignored `models/`, but absent from the fresh clone. Configured Ollama chat/embed models are not pulled, and no service is running. Poppler, Node, GNU Make, and Ollama were not found.
 
 ## WIP / uncommitted
-P7.4 code and all three complete report bundles are committed. PDF QA previews and the fresh clone/venv remain ignored under `.tools/` and `outputs/generated/`. P7.5 blocker evidence is committed; only the P7.6 state update is pending its state commit. No product-code WIP is expected.
+P7.4 code and all three complete report bundles are committed. P7.5 blocker and P7.6 decision are recorded. PDF QA previews and the fresh clone/venv remain ignored under `.tools/` and `outputs/generated/`. Only the P7.7 final audit state update is pending its state commit. No product-code WIP is expected.
 
 ## Known failing tests / issues
-No known pytest, Ruff, or MyPy failures. Latest full suite: 295 passed in 62.19s; focused report tests: 12 passed; Ruff clean; MyPy clean for 61 source files. Fresh-clone `uv sync` and `ara --help` passed; direct `ara ingest` and `ara run --topic ... --until research` both failed because the local Ollama endpoint refused connections. P7.5 and the four-way 52-question RAG metrics remain NOT RUN. DL results are descriptive metrics from a 30-query internal SciFact split. Claude Desktop UI was not launched.
+No known pytest, Ruff, or MyPy failures. Latest full suite: 295 passed in 62.19s; focused report tests: 12 passed; Ruff clean; MyPy clean for 61 source files. Fresh-clone `uv sync` and `ara --help` passed; direct `ara ingest` and `ara run --topic ... --until research` both failed because the local Ollama endpoint refused connections. P7.5 and the four-way 52-question RAG metrics remain NOT RUN. The 30-query internal SciFact split produced only four first-rank errors; the required 20-case review is incomplete. DL metrics remain descriptive. Claude Desktop UI was not launched.
 
 ## Gotchas learned
 - Use `.tools/uv/uv.exe`; set `UV_SYSTEM_CERTS=true`, `UV_CACHE_DIR=.tools/uv-cache`, and `UV_PROJECT_ENVIRONMENT=.tools/reports-venv` in PowerShell. In `.tools/p7_5_clone/`, the uv executable and cache are one parent directory up.
