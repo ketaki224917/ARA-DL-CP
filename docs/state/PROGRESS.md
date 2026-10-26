@@ -356,3 +356,9 @@ Done: Replaced the brief README with a Mermaid system diagram, locked setup/CLI/
 Evidence: A local-link/anchor check resolved all 27 Markdown links. The README's 12 DL metric cells matched the four-system `outputs/dl_evaluation_metrics.json` source. `git diff --check` passed (only LF-to-CRLF notice). No source code changed, so the P7.1 full suite result remains 293 passed; tests were not rerun for this documentation-only task. RAG metric rows remain NOT RUN per `docs/evaluation.md`.
 Files: `README.md` and state files. README commit: `f9c6a29`.
 Notes: Official Ollama references: https://ollama.com/library/qwen2.5 and https://ollama.com/library/embeddinggemma. Live topic runs and the four-way RAG evaluation remain unverified under ENV-002.
+
+### 2026-10-26 - P7.3 - Document architecture and design trade-offs
+Done: Added a detailed architecture/data-flow document and an interview-defensible design decision guide covering local models, BM25+dense RRF, MCP, typed agents/citations, the MiniLM ranker, generated outputs, measured results, trade-offs, limits, and next steps. Linked both documents from README.
+Evidence: Documentation QA resolved 43 Markdown links/anchors and balanced code fences; all 12 DL metric cells matched `outputs/dl_evaluation_metrics.json`. `.tools/reports-venv/Scripts/python.exe -m pytest -q` -> 293 passed in 37.84s; Ruff -> clean; MyPy -> no issues in 59 source files; `git diff --check` -> passed. Mermaid CLI/Node remain unavailable, so the diagrams were reviewed as Mermaid source but not rendered by an external CLI.
+Files: `docs/architecture.md`, `docs/design_decisions.md`, `README.md`, and state files. Source commit: `8182727`.
+Notes: RAG's 52-question four-way evaluation remains NOT RUN; the design document reports that gap explicitly and separates measured SciFact reranker results from scripted wiring demonstrations.

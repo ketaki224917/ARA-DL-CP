@@ -67,7 +67,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 ## Phase 7 — Polish & ship
 - [x] P7.1 CLI polish, Makefile targets (`setup|ingest|serve|run|eval|train|test`); command help and delegation tests pass (full suite 293 passed; GNU Make unavailable on host)
 - [x] P7.2 README (Mermaid architecture, verified usage, measured DL table, explicit NOT RUN retrieval table, demo caveats, troubleshooting)
-- [ ] P7.3 docs/design_decisions.md + architecture.md
+- [x] P7.3 docs/design_decisions.md + architecture.md (implementation-grounded diagrams, rationale, measured tradeoffs, limitations, and next steps)
 - [ ] P7.4 Three finished example reports in outputs/
 - [ ] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works
 - [ ] P7.6 (stretch) LoRA fine-tune for report style, with before/after comparison
