@@ -21,6 +21,8 @@ Updated: 2026-10-26 (session 1)
 - Audio smoke: `python scripts/tts_synthesis_smoke.py` synthesized a controlled 185-word narration to ignored `outputs/generated/p6_2_voice_smoke.wav`; the last run was 68.79 seconds, 22,050 Hz, mono, 3,033,644 bytes. This verifies local Piper synthesis, not live LLM script generation. Ollama is unavailable under ENV-002.
 - Services/ports: none started or checked.
 
+- Report generation: `.tools/reports-venv` synced with locked `dev`, `dl`, and `tts` extras; Markdown-it `4.2.0`, ReportLab `5.1.0`, and svglib `2.3.2` are core locked dependencies. Poppler is NOT FOUND. `pypdfium2 5.14.0` is installed only in the ignored report QA environment for PDF-to-PNG visual inspection and is not a project dependency. Demo report bundle and rendered page are ignored under `outputs/generated/p6_3_demo/`.
+
 ## Model choice
 
 Hardware probing found a CPU-only runtime with 18 logical processors and 15.52 GiB RAM. The supported GPU probe found no CUDA/MPS accelerator; the machine's display hardware and VRAM remain unknown. The default chat model remains `qwen2.5:1.5b` to keep the prescribed CPU laptop demo small. The embedding model remains `embeddinggemma`. Neither has been downloaded or run; see ADR-015. For the custom DL component, ADR-032 records the pinned MiniLM cross-encoder and CPU PyTorch choice.

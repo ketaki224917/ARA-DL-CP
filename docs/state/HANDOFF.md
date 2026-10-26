@@ -1,28 +1,27 @@
 # HANDOFF (overwritten after every task)
 
 Updated: 2026-10-26 | Session #: 1
-Current phase/task: Phase 6 / P6.3 — Markdown/HTML/PDF report builder with figures, references, and audio | Status: next
+Current phase/task: Phase 6 / P6.3 - cited Markdown/HTML/PDF report builder | Status: complete
 
-Last completed task: P6.2 narration/TTS source committed as `6b318bd`; state commit is pending.
+Last source commit: `4079d02 [P6.3] Build cited report bundles`; P6.3 state commit is pending.
 
 ## Do next (exact)
-1. Inspect `ReportDraft`/citation rendering, the diagram and TTS artifact APIs, installed HTML/PDF libraries, and existing output conventions.
-2. Choose a CPU-local PDF path, log any nontrivial choice, then implement report assembly for Markdown, HTML, PDF, figures, references, and a narrated-audio link.
-3. Add focused tests for citation/reference preservation, SVG/image embedding, audio links, renderer failures, and output paths; run the full suite, Ruff, MyPy, and `git diff --check`, then update and commit state.
+1. Resolve the optional P6.4 Stable Diffusion stretch task: record a reasoned drop in TODO/DECISIONS/PROGRESS if it is not pursued, then commit that task's state.
+2. Inspect the existing CLI, Makefile, and README against P7.1; write down the concrete gaps before editing.
+3. Implement and test P7.1 CLI/Makefile polish, update the state files, and commit the task.
 
 ## Environment state
-Windows 11; PowerShell; Git 2.55.0. Python 3.12.15 and uv 0.13.4 are under ignored `.tools/`. Use `UV_PROJECT_ENVIRONMENT=.tools/tts-venv`, `UV_SYSTEM_CERTS=true`, and `UV_CACHE_DIR=.tools/uv-cache`; this environment was synced with locked `dev`, `dl`, and `tts` extras. It includes PyTorch `2.14.1+cpu`, Transformers 4.57.6, Matplotlib 3.11.2, Piper 1.8.0, ONNX Runtime 1.31.0, Hugging Face Hub 0.36.2, and truststore 0.10.5. CPU-only, 18 logical processors, 15.52 GiB RAM; exact display adapter/VRAM unknown. Trained reranker files and voice assets are ignored under `models/`. The `en_US-sam-medium` voice is downloaded at pinned revision `b145f2ac26522d6a2ccde0164b7b0e48b1e3199c`. GNU Make and Ollama are unavailable; Graphviz/mermaid-cli are absent; no services are running.
+Windows 11; PowerShell; Git 2.55.0. Python 3.12.15 and uv 0.13.4 are under ignored `.tools/`. Use `$env:UV_SYSTEM_CERTS='true'`, `$env:UV_CACHE_DIR='.tools/uv-cache'`, `$env:UV_PROJECT_ENVIRONMENT='.tools/reports-venv'`, and `.tools/uv/uv.exe`. The report environment has locked `dev`, `dl`, and `tts` extras: PyTorch `2.14.1+cpu`, Transformers 4.57.6, Matplotlib 3.11.2, Piper 1.8.0, ReportLab 5.1.0, svglib 2.3.2, and Markdown-it 4.2.0. `pypdfium2 5.14.0` is an untracked QA-only install in this environment; Poppler, Node, GNU Make, and Ollama are unavailable. CPU-only, 18 logical processors, 15.52 GiB RAM; exact display adapter/VRAM unknown. The pinned Piper voice and reranker model weights are present under ignored `models/`; configured Ollama chat and embedding models are not pulled. No services are running.
 
 ## WIP / uncommitted
-P6.2 files: `src/ara/generative/tts.py`, `scripts/tts_synthesis_smoke.py`, `tests/test_tts.py`, configuration, lockfile, Makefile, and `.env.example` are committed as `6b318bd`. State docs for P6.2 are updated and pending the state commit. The smoke WAV at `outputs/generated/p6_2_voice_smoke.wav` is ignored.
+P6.3 source/test changes are committed as `4079d02`. P6.3 state files are updated but pending their state commit. The ignored demo bundle is under `outputs/generated/p6_3_demo/`; the PDF is one page and has a rendered QA image at `rendered/page-1.png`. No source WIP remains.
 
 ## Known failing tests / issues
-No known pytest/Ruff/MyPy failures. Latest full suite: 279 passed in 38.82s; Ruff clean; MyPy clean for 58 source files. P6.2 local audio synthesis ran successfully; live LLM narration-script generation remains NOT RUN because Ollama is unavailable under ENV-002. P5.5 retrieval metrics cover a 30-query internal SciFact split, not the official test set; P4.5 live revision-quality measurement also remains unavailable.
+No known pytest, Ruff, or MyPy failures. Latest full suite: 289 passed in 72.30s; Ruff clean; MyPy clean for 59 source files. Live Ollama report/narration/diagram generation remains NOT RUN under ENV-002. The P5.5 ranking evaluation uses a 30-query internal SciFact split, not the official test partition; P4.5 live revision-quality measurement remains unrun. The project PDF skill's marker script was executed in the available V8 runtime because the host has no `node` executable; PDF visual inspection used PDFium because Poppler is absent.
 
 ## Gotchas learned
-- Set `$env:UV_SYSTEM_CERTS='true'` and `$env:UV_CACHE_DIR='.tools/uv-cache'` before uv commands in this environment.
-- GNU Make is absent; invoke the matching uv commands directly.
-- Import `truststore` before Hugging Face downloads on this host; TLS verification remains enabled. Hugging Face cache uses copies because symlinks are unavailable.
-- Recreate the ignored reranker checkpoint with `python -m ara.dl.train`, then recreate its export with `python -m ara.dl.export`.
-- Re-download the ignored Piper model with `python -m ara.generative.tts --download-voice`; reproduce local synthesis with `python scripts/tts_synthesis_smoke.py`.
-- `build_narration_script` needs the configured local Ollama model; `synthesize_narration` needs the TTS extra and voice files but performs no network access.
+- GNU Make is absent; invoke locked `uv` commands directly.
+- Hugging Face downloads need `truststore` before Transformers on this host; keep TLS verification enabled. Symlinks are unavailable, so the cache uses copies.
+- Recreate the ignored reranker checkpoint/export with `python -m ara.dl.train` and `python -m ara.dl.export`.
+- Re-download the ignored Piper model with `python -m ara.generative.tts --download-voice`; reproduce controlled audio with `python scripts/tts_synthesis_smoke.py`.
+- `build_narration_script` needs local Ollama; `synthesize_narration` needs the `tts` extra and voice files but no network access. `build_report()` needs its locked Markdown-it/ReportLab/svglib dependencies and validates citation IDs before writing.
