@@ -171,6 +171,8 @@ The default suite uses mocked local-LLM responses and offline MCP fixtures; it d
 
 ## Project notes
 
+- [Detailed architecture](docs/architecture.md)
+- [Design decisions and trade-offs](docs/design_decisions.md)
 - [RAG evaluation protocol](docs/evaluation.md)
 - [Reranker model card](docs/model_card.md)
 - [MCP stdio verification](docs/stdio_verification.md)
