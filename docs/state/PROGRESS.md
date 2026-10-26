@@ -338,3 +338,9 @@ Done: Added `build_report()` with deterministic citation validation, references 
 Evidence: `.tools/reports-venv/Scripts/python.exe -m pytest -q` -> 289 passed in 72.30s. Ruff -> clean. MyPy -> no issues in 59 source files. `git diff --check` -> passed (Git reported only LF-to-CRLF notices). A local demo bundle at `outputs/generated/p6_3_demo/reranker-evaluation.pdf` is 63,671 bytes and contains one page; PDFium rendered it at 1.5x to `rendered/page-1.png` (118,959 bytes), which was visually inspected. Citation text, references, diagram, audio link, and footer were visible. Live local-LLM report generation remains NOT RUN because Ollama is unavailable under ENV-002.
 Files: `src/ara/generative/report_builder.py`, `tests/test_report_builder.py`, `pyproject.toml`, `uv.lock`, and state files. Source commit: `4079d02`.
 Notes: The demo uses two curated excerpts from `docs/model_card.md` and the controlled narration WAV from P6.2; it verifies the assembly path, not the complete live agent workflow. The generated bundle and QA PNG are ignored under `outputs/generated/`.
+
+### 2026-10-26 - P6.4 - Defer Stable Diffusion stretch
+Done: Marked the optional illustration flag dropped with reason. The host is CPU-only (ENVIRONMENT.md), and diagram rendering plus local narration already implement the required generative layer. Logged ADR-040.
+Evidence: Hardware probe in ENVIRONMENT.md records no supported CUDA/MPS accelerator; P6.1 verified Mermaid-to-SVG and P6.2 verified local Piper WAV synthesis. No diffusion model was downloaded or run.
+Files: `docs/state/TODO.md`, `docs/state/DECISIONS.md`, `docs/state/PROGRESS.md`, `docs/state/HANDOFF.md`, and `docs/state/SESSIONS.md`.
+Notes: Reopen only after a pinned model/license review and a measured run on available hardware.
