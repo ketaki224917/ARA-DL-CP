@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Sequence
-from typing import Literal
+from collections.abc import Mapping, Sequence
+from typing import Any, Literal
 
 import pytest
 
@@ -240,6 +240,7 @@ class QueueWriterLLM:
         schema: type[ReportDraft],
         *,
         max_retries: int = 3,
+        json_schema: Mapping[str, Any] | None = None,
     ) -> ReportDraft:
         assert schema is ReportDraft
         self.messages.append(messages)

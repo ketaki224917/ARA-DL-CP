@@ -12,6 +12,7 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
     config = tmp_path / "config.yaml"
     config.write_text(
         "llm:\n  model: local-model\n"
+        "  num_predict: 640\n"
         "embeddings:\n  model: local-embedder\n"
         "paths:\n  data_dir: corpus\n",
         encoding="utf-8",
@@ -24,6 +25,7 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
         dotenv,
         environ={
             "ARA_LLM_MODEL": "environment-model",
+            "ARA_LLM_NUM_PREDICT": "512",
             "ARA_EMBEDDING_MODEL": "environment-embedder",
             "ARA_RETRIEVAL_TOP_K": "4",
             "ARA_RERANKER_MODEL": "local-cross-encoder",
@@ -53,6 +55,7 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
     )
 
     assert settings.llm_model == "environment-model"
+    assert settings.llm_num_predict == 512
     assert settings.data_dir == Path("corpus")
     assert settings.embedding_model == "environment-embedder"
     assert settings.retrieval_top_k == 4
@@ -93,6 +96,7 @@ def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
     assert settings.ingest_source_dir == Path("data/sample_corpus")
     assert settings.vector_store_dir == Path("data/indexes/chroma")
     assert settings.llm_request_timeout_seconds == 120
+    assert settings.llm_num_predict == 768
     assert settings.dl_seed == 42
     assert settings.dl_data_path == Path("data/dl_data/synthetic_pairs_offline.jsonl")
     assert settings.dl_public_data_dir == Path("data/dl_data/scifact_subset")

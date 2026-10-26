@@ -1,28 +1,30 @@
 # HANDOFF (overwritten after every task)
 
 Updated: 2026-10-26 | Session #: 1
-Current phase/task: Phase 7 / P7.5 - live full-report regression | Status: in progress; RUN-001 is open
+Current task: user-requested relocation of ARA, Ollama, model data, and project tools to D: | Status: in progress
+Project task: Phase 7 / P7.5 - live full-report regression | Status: in progress under RUN-001
 
-Last task commit: `12cfdaa [P7.5] Fix Ollama tool history and provision runtime`. This handoff-only refresh follows that commit.
+Last task commit: `2098962 [P7.5] Bound CPU writer output and citations`.
 
 ## Do next (exact)
-1. Inspect the writer's prompt and structured-output payload: `rg -n "class ReportDraft|def structured_output|writer_messages" src/ara/agents/writer.py src/ara/agents/prompts/writer.py src/ara/llm/client.py`; reduce CPU generation cost or add a bounded output setting, with tests.
-2. Re-run the live report after that change: set `ARA_LLM_REQUEST_TIMEOUT_SECONDS=300`, then run `make run TOPIC="MCP host client server responsibilities" ARGS="--max-revisions 0" UV=.tools/uv/uv.exe`; verify citations, Markdown/HTML/PDF, diagram, and WAV.
-3. Create a clean clone at the updated commit and repeat the literal gate: `git clone --shared --local . .tools/p7_5_current_clone`; from the clone run `make setup UV=../uv/uv.exe`, `make ingest UV=../uv/uv.exe`, `make tts-model UV=../uv/uv.exe`, and `make run TOPIC="MCP host client server responsibilities" UV=../uv/uv.exe`.
+1. Inspect destination and reparse-point layout before copying: verify `D:\DL CP` does not already contain user files, check `D:` free space, and inventory `C:\msys64`, the Ollama install/data folders, and any project junctions.
+2. Copy the entire checkout, including `.git`, `.tools`, ignored model weights, and outputs, to `D:\DL CP`; verify the destination file count/size and Git state before retiring the C: copy. Move/install Ollama binaries to `D:\Ollama`, move models and Ollama user data there, and relocate GNU Make if its D: copy passes `make --version`.
+3. Set user `OLLAMA_MODELS` and PATH to D:, restart Ollama, verify `ollama list`, `/api/version`, `make test`, and `make ingest` from `D:\DL CP`, then update `ENVIRONMENT.md`/HANDOFF and resume P7.5 with an RRF topic aligned to the corpus.
 
 ## Environment state
-Windows 11, PowerShell, Python 3.12.15, uv 0.13.4, CPU-only, 18 logical processors, 15.52 GiB RAM. GNU Make 4.4.1 is installed at `C:\msys64\usr\bin\make.exe`; that folder and `%LOCALAPPDATA%\Programs\Ollama` are in the user PATH (restart existing terminals). Ollama 0.40.11 is running at `http://localhost:11434`; `qwen2.5:1.5b` and `embeddinggemma` are pulled. The root checkout uses `.tools/reports-venv`, `.tools/uv-cache`, and the managed `.tools/uv/uv.exe`. `make setup` and `make ingest` passed; ingestion indexed 21 documents into 33 chunks. The pinned Piper voice already exists in the root `models/tts/`. Last disk check showed about 1.8 GB free.
+Windows 11, PowerShell, Python 3.12.15, uv 0.13.4, CPU-only, 18 logical processors, 15.52 GiB RAM. Current checkout is `C:\Users\ketaki more\OneDrive\Documents\DL CP` (~6.57 GiB); D: is fixed and has ~147.9 GiB free. Ollama model data at `C:\Users\ketaki more\.ollama\models` is ~1.50 GiB. Ollama 0.40.11 is serving `http://localhost:11434` with `qwen2.5:1.5b` and `embeddinggemma`. GNU Make 4.4.1 is at `C:\msys64\usr\bin\make.exe`. The checkout contains uv, Python, virtual environments, caches, project weights, and Piper voice files under ignored `.tools/` and `models/` paths.
+
+Use `UV_SYSTEM_CERTS=true`, `UV_CACHE_DIR=.tools/uv-cache`, and `UV_PROJECT_ENVIRONMENT=.tools/reports-venv` for project commands. Set `ARA_LLM_REQUEST_TIMEOUT_SECONDS=300` for live model calls. Ollama and web search need a process that can read the Windows certificate store; keep TLS verification enabled.
 
 ## WIP / uncommitted
-No source or project documentation changes remain uncommitted. The incomplete abstention-only probe created before the tool-history fix has been removed; its trace remains as an ignored diagnostic artifact.
+No uncommitted source changes after `2098962`. The D: relocation has not started. P7.5 remains open; do not call the live report gate complete based on the isolated writer probe.
 
 ## Known failing tests / issues
-No known failing automated tests. `make test UV=.tools/uv/uv.exe` passed 295 tests in 60.71s; `make lint UV=.tools/uv/uv.exe` passed. The full live run completed research with six evidence chunks, but the writer returned an invalid structured draft and its retry exceeded a 300-second request timeout. P7.5 has not produced a complete live bundle or been verified in a clean clone. The 52-question four-way RAG evaluation remains NOT RUN. P5.5 has only four observed held-out ranking failures, short of the required 20. Live P4.5 and P5.1 measurements remain unrun. Web search from the restricted managed process could not access the Windows native certificate store; verified TLS search succeeded in the approved process context.
+`make test UV=.tools/uv/uv.exe` passed 298 tests in 28.77s; `make lint UV=.tools/uv/uv.exe` passed; MyPy reported no issues in 55 source files. The direct writer probe over five MCP-topic chunks returned a valid abstention, not a full report. RUN-001 remains open. The four-way RAG evaluation is NOT RUN, and the required 20-case reranker error analysis remains short of its target.
 
 ## Gotchas learned
-- Pass `UV=.tools/uv/uv.exe` to Make because uv is workspace-local; set `UV_SYSTEM_CERTS=true`, `UV_CACHE_DIR=.tools/uv-cache`, and `UV_PROJECT_ENVIRONMENT=.tools/reports-venv`.
-- Reopen the IDE terminal to load the updated user PATH for `make` and `ollama`.
-- `make setup` removes QA-only packages not declared in `pyproject.toml`; it removed `pypdfium2`, so use a separate QA environment for PDF rendering.
-- ADR-045 records that every Ollama tool turn must retain its assistant `tool_calls` message and the matching `role=tool` result, with retrieved content kept explicitly untrusted.
-- A live `ara run` with `--max-revisions 0` still needs planning, researcher tool selection, structured writer output, critique, and report rendering; the local CPU model can exceed 300 seconds on the writer retry.
-- The fresh clone `.tools/p7_5_clone/` is historical at P7.4 and lacks ignored model/voice assets. Use a new clone only after committing current changes.
+- Reopen terminals after changing PATH.
+- `make setup` removes QA-only packages such as `pypdfium2`; use a separate QA environment for PDF rendering.
+- The current default shell cannot read the Ollama install folder or Windows native certificate store; use the approved process context for the move and verified-TLS web calls.
+- The writer's structured schema constrains citations to supplied chunk IDs, one per claim, and permits a safe abstention. A complete live report bundle still needs verification.
+- A historical shared clone `.tools/p7_5_clone/` is at P7.4 and lacks ignored model/voice assets; create a fresh clone only after the current commit and D: migration are stable.

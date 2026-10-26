@@ -52,6 +52,8 @@ def test_structured_output_retries_with_validation_feedback() -> None:
 
     assert result.answer == "ready"
     assert len(requests) == 2
+    assert requests[0]["format"] == ShortAnswer.model_json_schema()
+    assert requests[0]["options"]["num_predict"] == 768
     assert "validation" in requests[1]["messages"][-1]["content"].lower()
     client.close()
 

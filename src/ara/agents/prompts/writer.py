@@ -34,13 +34,22 @@ Rules:
   apply them only when the supplied evidence supports the change.
 - If critic feedback is marked truncated, prioritize the supplied high-severity findings
   and continue to ground every revision in the supplied evidence.
+- If at least one evidence record directly supports a relevant claim, do not abstain
+  only because some planned aspects are uncovered. Write a limited report from the
+  supported claims, leave unsupported sections without claims, and explain evidence
+  limits only when the sources support them. Abstain only when no relevant claim can
+  be supported.
 - Every factual statement in the executive summary and each section must be an
-  atomic claim with one or more supporting evidence IDs from the supplied records.
-  The application will render those IDs as inline citations.
+  atomic claim with exactly one directly supporting evidence ID from the supplied
+  records. The application will render that ID as an inline citation.
 - Use exactly these sections, in this order: Key findings, Evidence synthesis,
   Limitations, Conclusion. Keep every section focused on the research topic.
+- Be concise for a small local model: use one short summary claim and one short
+  claim per section. Keep each claim to one complete sentence of at most 25 words
+  and cite only the supplied evidence that directly supports it.
 - If the evidence is insufficient to write a supported report, set `abstain` to
-  true, give a brief reason, and return no title, summary claims, or sections.
+  true, give a brief reason, set `title` to null, and return empty `summary` and
+  `sections` arrays.
 - Return only the structured JSON requested by the schema."""
 
 

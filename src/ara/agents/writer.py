@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from datetime import UTC, datetime
-from typing import Literal, Protocol, Self
+from typing import Any, Literal, Protocol, Self
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
 
@@ -13,7 +13,7 @@ from ara.agents.state import AgentState, EvidenceItem
 from ara.llm.client import ChatMessage, OllamaClient
 
 _MAX_REPORT_LENGTH = 20_000
-_MAX_CLAIM_LENGTH = 5_000
+_MAX_CLAIM_LENGTH = 180
 
 
 class WriterError(RuntimeError):
@@ -26,7 +26,7 @@ class WriterClaim(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     text: str = Field(min_length=1, max_length=_MAX_CLAIM_LENGTH)
-    evidence_ids: list[str] = Field(min_length=1, max_length=20)
+    evidence_ids: list[str] = Field(min_length=1, max_length=1)
 
     @field_validator("text")
     @classmethod
@@ -34,6 +34,8 @@ class WriterClaim(BaseModel):
         normalized = " ".join(value.split())
         if not normalized:
             raise ValueError("claim text must not be blank")
+        if normalized[-1] not in ".!?":
+            raise ValueError("claim text must be a complete sentence")
         return normalized
 
     @field_validator("evidence_ids")
@@ -58,7 +60,7 @@ class WriterSection(BaseModel):
         "Limitations",
         "Conclusion",
     ]
-    claims: list[WriterClaim] = Field(min_length=1, max_length=20)
+    claims: list[WriterClaim] = Field(max_length=1)
 
 
 class ReportDraft(BaseModel):
@@ -68,9 +70,17 @@ class ReportDraft(BaseModel):
 
     abstain: bool
     abstention_reason: str | None = Field(default=None, max_length=1_000)
-    title: str = Field(default="", max_length=200)
-    summary: list[WriterClaim] = Field(default_factory=list, max_length=10)
+    title: str | None = Field(default=None, min_length=1, max_length=200)
+    summary: list[WriterClaim] = Field(default_factory=list, max_length=1)
     sections: list[WriterSection] = Field(default_factory=list, max_length=4)
+
+    @model_validator(mode="before")
+    @classmethod
+    def discard_content_when_abstaining(cls, value: Any) -> Any:
+        """Fail closed when the model marks a draft as abstained but fills content."""
+        if isinstance(value, dict) and value.get("abstain") is True:
+            return {**value, "title": None, "summary": [], "sections": []}
+        return value
 
     @field_validator("abstention_reason", "title")
     @classmethod
@@ -85,8 +95,6 @@ class ReportDraft(BaseModel):
     @model_validator(mode="after")
     def validate_report_shape(self) -> Self:
         if self.abstain:
-            if self.summary or self.sections or self.title:
-                raise ValueError("abstaining reports must not contain title or report claims")
             if not self.abstention_reason:
                 raise ValueError("abstaining reports must include a reason")
             return self
@@ -108,6 +116,7 @@ class StructuredWriterLLM(Protocol):
         schema: type[ReportDraft],
         *,
         max_retries: int = 3,
+        json_schema: Mapping[str, Any] | None = None,
     ) -> ReportDraft: ...
 
 
@@ -130,8 +139,8 @@ class Writer:
         llm_client: StructuredWriterLLM | None = None,
         *,
         max_retries: int = 3,
-        max_evidence_items: int = 20,
-        max_evidence_chars: int = 30_000,
+        max_evidence_items: int = 8,
+        max_evidence_chars: int = 10_000,
     ) -> None:
         if (
             isinstance(max_retries, bool)
@@ -177,6 +186,7 @@ class Writer:
                 ),
                 ReportDraft,
                 max_retries=self.max_retries,
+                json_schema=_report_output_schema(evidence),
             )
         except Exception as exc:
             raise WriterError("Could not produce a validated evidence-grounded report.") from exc
@@ -232,6 +242,20 @@ def _positive_int(value: int, name: str, maximum: int) -> int:
     return value
 
 
+def _report_output_schema(evidence: Sequence[EvidenceItem]) -> dict[str, Any]:
+    """Constrain generated citations to IDs in the writer's selected evidence."""
+    schema = ReportDraft.model_json_schema()
+    definitions = schema.get("$defs")
+    claim = definitions.get("WriterClaim") if isinstance(definitions, dict) else None
+    properties = claim.get("properties") if isinstance(claim, dict) else None
+    identifiers = properties.get("evidence_ids") if isinstance(properties, dict) else None
+    items = identifiers.get("items") if isinstance(identifiers, dict) else None
+    if not isinstance(items, dict):
+        raise WriterError("Could not construct the report citation schema.")
+    items["enum"] = list(dict.fromkeys(item.chunk_id for item in evidence))
+    return schema
+
+
 def _select_evidence(
     items: Iterable[EvidenceItem],
     *,
@@ -253,6 +277,8 @@ def _select_evidence(
 
 
 def _render_markdown(draft: ReportDraft) -> str:
+    if draft.title is None:
+        raise WriterError("A non-abstaining report must have a title.")
     lines = [f"# {draft.title}", "", "## Executive summary", ""]
     lines.extend(_render_claim(claim) for claim in draft.summary)
     for section in draft.sections:

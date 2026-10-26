@@ -50,6 +50,7 @@ class OllamaClient:
         self.model = resolved.llm_model
         self.timeout_seconds = resolved.llm_request_timeout_seconds
         self.temperature = resolved.llm_temperature
+        self.num_predict = resolved.llm_num_predict
         self._http_client = http_client
         self._owns_http_client = http_client is None
 
@@ -58,12 +59,14 @@ class OllamaClient:
         messages: Sequence[ChatMessage],
         *,
         temperature: float | None = None,
+        output_format: Mapping[str, Any] | str | None = None,
     ) -> str:
         """Send a non-streaming chat request and return assistant text."""
         response = self._post_chat(
             messages,
             stream=False,
             temperature=temperature,
+            output_format=output_format,
         )
         message = response.get("message")
         content = message.get("content") if isinstance(message, dict) else None
@@ -77,13 +80,17 @@ class OllamaClient:
         schema: type[ModelT],
         *,
         max_retries: int = 3,
+        json_schema: Mapping[str, Any] | None = None,
     ) -> ModelT:
         """Ask for JSON, validate it, retry with errors, then attempt JSON repair."""
         if max_retries < 0:
             raise ValueError("max_retries must be non-negative")
         schema_prompt = (
             "Return only a JSON object matching this JSON Schema. Do not add markdown.\n"
-            + json.dumps(schema.model_json_schema(), ensure_ascii=False)
+            + json.dumps(
+                schema.model_json_schema() if json_schema is None else json_schema,
+                ensure_ascii=False,
+            )
         )
         retry_messages: list[ChatMessage] = [
             {"role": "system", "content": schema_prompt},
@@ -91,7 +98,13 @@ class OllamaClient:
         ]
         last_content = ""
         for attempt in range(max_retries + 1):
-            last_content = self.chat(retry_messages, temperature=0.0)
+            last_content = self.chat(
+                retry_messages,
+                temperature=0.0,
+                output_format=(
+                    schema.model_json_schema() if json_schema is None else json_schema
+                ),
+            )
             try:
                 return schema.model_validate(_decode_json(last_content))
             except (json.JSONDecodeError, ValidationError, ValueError) as exc:
@@ -205,8 +218,14 @@ class OllamaClient:
         stream: bool,
         temperature: float | None,
         tools: Sequence[Mapping[str, Any]] | None = None,
+        output_format: Mapping[str, Any] | str | None = None,
     ) -> dict[str, Any]:
-        payload = self._chat_payload(messages, stream=stream, temperature=temperature)
+        payload = self._chat_payload(
+            messages,
+            stream=stream,
+            temperature=temperature,
+            output_format=output_format,
+        )
         if tools is not None:
             payload["tools"] = list(tools)
         try:
@@ -230,13 +249,23 @@ class OllamaClient:
         *,
         stream: bool,
         temperature: float | None,
+        output_format: Mapping[str, Any] | str | None = None,
     ) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "model": self.model,
             "messages": [dict(message) for message in messages],
             "stream": stream,
-            "options": {"temperature": self.temperature if temperature is None else temperature},
+            "options": {
+                "temperature": self.temperature if temperature is None else temperature,
+                "num_predict": self.num_predict,
+            },
         }
+        if output_format is not None:
+            payload["format"] = (
+                dict(output_format)
+                if isinstance(output_format, Mapping)
+                else output_format
+            )
         return payload
 
     def _http(self) -> httpx.Client:

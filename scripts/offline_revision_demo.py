@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import argparse
 import json
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Literal, cast
+from typing import Any, Literal, cast
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -130,6 +130,7 @@ class _ScriptedWriterLLM:
         schema: type[ReportDraft],
         *,
         max_retries: int = 3,
+        json_schema: Mapping[str, Any] | None = None,
     ) -> ReportDraft:
         if schema is not ReportDraft or max_retries != 3 or not self._drafts:
             raise ValueError("unexpected scripted writer request")
