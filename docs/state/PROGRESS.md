@@ -423,3 +423,9 @@ Done: Added one bounded MCP `search_knowledge_base` fallback when a task uses we
 Evidence: `python -m pytest -q tests/test_researcher.py` → 20 passed; full `make test` → 299 passed in 30.46s; Ruff clean; MyPy clean in 55 files. The live RRF run gathered six local chunks across three tasks, but the writer request timed out after 300 seconds; the report bundle remains NOT RUN/NOT PASSED.
 Files: `src/ara/agents/researcher.py`, `tests/test_researcher.py`, `docs/state/DECISIONS.md`, and `docs/state/BLOCKERS.md`.
 Notes: Local evidence retrieval is fixed, but writer prompt/runtime bounds still need work for this CPU host. See RUN-001.
+
+### 2026-10-26 — ENV-006 — Retire the duplicate OneDrive checkout
+Status: BLOCKED after D: migration was committed and runtime data backups were removed.
+Evidence: `Remove-Item -LiteralPath 'C:\Users\ketaki more\OneDrive\Documents\DL CP' -Recurse -Force` stopped at `.pytest_cache` with Access Denied. `icacls` on the parent reports an inherited `Everyone` deny for deleting children; `Get-Acl` on the cache returns unauthorized operation. All C: Ollama/MSYS2/uv compatibility junctions point to D:, and the D: checkout at commit `a9acee5` is clean and verified. No ACL changes were made.
+Files: `docs/state/ENVIRONMENT.md`, `docs/state/TODO.md`, `docs/state/BLOCKERS.md`, and `docs/state/HANDOFF.md`.
+Notes: The D: copy is canonical and usable; the C: OneDrive copy remains until that deny is resolved or the folder is removed through OneDrive itself.

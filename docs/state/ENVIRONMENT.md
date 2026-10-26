@@ -47,7 +47,7 @@ GNU Make and Ollama are installed on this host. In a new PowerShell session, run
 
 ## D: relocation
 
-- Working tree and Git history: `D:\DL CP` (HEAD was `f7db79a` before the current researcher fix and state update). The C: OneDrive checkout is retained until this D: state commit is complete, then removed without a junction so it does not sync the project back from D:.
+- Working tree and Git history: `D:\DL CP` (commit `a9acee5`). The original `C:\Users\ketaki more\OneDrive\Documents\DL CP` copy remains because Windows denies access to its `.pytest_cache`; `icacls` shows an inherited `Everyone` deny for deleting children on the OneDrive folder, and `Get-Acl` cannot read the cache. No ACL changes were made. The D: checkout is canonical and has no junction back into OneDrive; source retirement is tracked as ENV-006.
 - Ollama install: `D:\Ollama\app`; models, keys, and user data: `D:\Ollama\user-data`; app data: `D:\Ollama\appdata`.
 - GNU Make/MSYS2: `D:\msys64`; uv cache: `D:\DL CP\.tools\uv-cache`; uv Python: `D:\DL CP\.tools\uv-python`.
 - Compatibility junctions at the former C: Ollama, MSYS2, uv-cache, and uv-Python paths point to their D: locations. The user Ollama and MSYS2 shortcuts were changed to D: targets.

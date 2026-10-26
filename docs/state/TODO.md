@@ -3,7 +3,8 @@
 Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 
 ## Environment maintenance
-- [x] ENV-005 Relocate the full checkout, uv/Python runtime, Make/MSYS2, Ollama install, model store, and user launch paths to D:; verify the D: environment before removing the OneDrive checkout copy.
+- [x] ENV-005 Relocate the full checkout, uv/Python runtime, Make/MSYS2, Ollama install, model store, and user launch paths to D:; D: tests and inference pass.
+- [!] ENV-006 Retire the original OneDrive checkout at C: — Windows denies traversal/deletion through an inherited `Everyone` deny-child-delete ACL; see `docs/state/BLOCKERS.md`.
 
 ## Phase 0 — Foundations
 - [x] P0.1 Create repo skeleton, pyproject, uv lock, Makefile, ruff/mypy/pytest config (uv.lock created; full tests, Ruff, and mypy pass)
