@@ -69,7 +69,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P7.2 README (Mermaid architecture, verified usage, measured DL table, explicit NOT RUN retrieval table, demo caveats, troubleshooting)
 - [x] P7.3 docs/design_decisions.md + architecture.md (implementation-grounded diagrams, rationale, measured tradeoffs, limitations, and next steps)
 - [x] P7.4 Three complete curated report bundles in outputs/examples/ (MD/HTML/PDF, Mermaid/SVG, Piper WAV, stored source chunks; four real chunk IDs validated; all PDFs visually inspected)
-- [ ] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works
+- [!] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (fresh clone sync and CLI help pass; GNU Make is absent; direct ingest/run fail because Ollama is not running; ENV-002)
 - [ ] P7.6 (stretch) LoRA fine-tune for report style, with before/after comparison
 - [ ] P7.7 Final Acceptance Checklist verification
 

@@ -22,6 +22,7 @@ Updated: 2026-10-26 (session 1)
 - Services/ports: none started or checked.
 
 - Report generation: `.tools/reports-venv` synced with locked `dev`, `dl`, and `tts` extras; Markdown-it `4.2.0`, ReportLab `5.1.0`, and svglib `2.3.2` are core locked dependencies. Poppler is NOT FOUND. `pypdfium2 5.14.0` is installed only in the ignored report QA environment for PDF-to-PNG visual inspection and is not a project dependency. Demo report bundle and rendered page are ignored under `outputs/generated/p6_3_demo/`.
+- Fresh-clone regression probe: `.tools/p7_5_clone/` is a local shared clone at P7.4, with a fresh `.venv` created by `.tools/uv/uv.exe sync --locked --extra dev --extra dl --extra tts`; 137 packages installed and `ara --help` succeeded. `ara ingest` read all 21 corpus sources but could not connect to Ollama at `localhost:11434`; the research command likewise failed at the chat request. Neither GNU Make nor Ollama is installed, and ignored model/voice files are absent from the clone.
 
 ## Model choice
 
