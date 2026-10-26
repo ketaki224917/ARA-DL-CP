@@ -100,7 +100,7 @@ def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
     assert settings.vector_store_dir == Path("data/indexes/chroma")
     assert settings.llm_request_timeout_seconds == 120
     assert settings.llm_num_predict == 768
-    assert settings.llm_writer_num_predict == 384
+    assert settings.llm_writer_num_predict == 768
     assert settings.dl_seed == 42
     assert settings.dl_data_path == Path("data/dl_data/synthetic_pairs_offline.jsonl")
     assert settings.dl_public_data_dir == Path("data/dl_data/scifact_subset")

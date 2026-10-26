@@ -435,3 +435,15 @@ Done: Kept the 768-token shared LLM setting for planning/research; added a confi
 Evidence: `make test` → 302 passed in 25.49s; `make lint` → all checks passed; `mypy src/ara` → no issues in 55 source files. Targeted writer/client/config regression tests → 28 passed. Live RRF rerun → NOT RUN yet; RUN-001 remains open pending the end-to-end output check.
 Files: `config.yaml`, `.env.example`, `src/ara/config.py`, `src/ara/llm/client.py`, `src/ara/agents/writer.py`, `src/ara/cli.py`, tests, and state files.
 Notes: The separate cap affects only the report writer; prompts remain evidence-only and citations remain schema-constrained. Two test doubles were updated to accept the optional cap.
+
+### 2026-10-26 — P7.5 — Measure live writer output caps
+Done: Ran two live RRF research/report attempts on D: with reduced writer evidence context and distinct writer output caps; both completed the research stage and reached the writer.
+Evidence: `make run TOPIC="Explain reciprocal rank fusion and compare it with score-based fusion."` with `ARA_LLM_WRITER_NUM_PREDICT=384` → trace `ba7f2991d03d4a20aa2d4bd74062d81d`, three tasks completed, five evidence chunks, writer JSON truncated at 1,353 characters in all four attempts; no report artifacts. Same command with cap `640` → trace `7949dbe60cba4ecd8a4d0dd7afa6be78`, three tasks completed in 118 seconds, five chunks, incomplete claim sentences in all four attempts; no report artifacts.
+Files: `traces/ba7f2991d03d4a20aa2d4bd74062d81d.jsonl`, `traces/7949dbe60cba4ecd8a4d0dd7afa6be78.jsonl`, `docs/state/BLOCKERS.md`, and `docs/state/TODO.md`.
+Notes: Keep claim validation fail-closed; the next experiment raises only the writer output cap while retaining the reduced context.
+
+### 2026-10-26 — P7.5 — Shorten writer claims after live validation failures
+Done: Kept fail-closed sentence validation, limited each claim to 120 characters and 14 prompted words, and set the configurable writer-only output budget to 768 tokens. Updated the controlled revision example to satisfy the concise claim limit.
+Evidence: `make test` → 303 passed in 25.30s; `make lint` → all checks passed; `mypy src/ara` → no issues in 55 source files. Targeted writer/config/client tests → 29 passed. Live 768-token run → NOT RUN yet.
+Files: `src/ara/agents/writer.py`, `src/ara/agents/prompts/writer.py`, `src/ara/config.py`, `config.yaml`, `.env.example`, `scripts/offline_revision_demo.py`, writer/config tests, and state files.
+Notes: ADR-050 supersedes ADR-049's 384-token writer default. No claims about live report quality are made until the next run returns a valid report bundle.

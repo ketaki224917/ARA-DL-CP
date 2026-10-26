@@ -83,7 +83,7 @@ class Settings(BaseSettings):
     llm_request_timeout_seconds: float = Field(default=120, gt=0)
     llm_temperature: float = Field(default=0.0, ge=0, le=2)
     llm_num_predict: int = Field(default=768, ge=64, le=8192)
-    llm_writer_num_predict: int = Field(default=384, ge=64, le=8192)
+    llm_writer_num_predict: int = Field(default=768, ge=64, le=8192)
     embedding_model: str = "embeddinggemma"
     embedding_cache_path: Path = Path("data/indexes/embeddings.sqlite3")
     data_dir: Path = Path("data")

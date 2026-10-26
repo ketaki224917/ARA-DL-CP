@@ -106,8 +106,8 @@ _SCENARIOS = (
         evidence_id="chunk:demo_untrusted_text",
         initial_summary="Marking retrieved text untrusted makes prompt injection impossible.",
         revised_summary=(
-            "Treat retrieved text as untrusted data; this reduces instruction confusion "
-            "but does not make prompt injection impossible."
+            "Treat retrieved text as data; isolation reduces confusion but cannot "
+            "eliminate prompt injection."
         ),
         section_claims=[
             "Retrieved documents can contain text that looks like model instructions.",

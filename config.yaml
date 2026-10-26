@@ -4,7 +4,7 @@ llm:
   request_timeout_seconds: 120
   temperature: 0.0
   num_predict: 768
-  writer_num_predict: 384
+  writer_num_predict: 768
 embeddings:
   model: embeddinggemma
   cache_path: data/indexes/embeddings.sqlite3
