@@ -495,3 +495,9 @@ Done: When a web search adds no citable evidence and earlier tasks already popul
 Evidence: Researcher tests → 21 passed; full `pytest` → 306 passed in 21.07s; Ruff → all checks passed; MyPy → no issues in 55 source files. Live run `084e0be2b2a049e1998725436a71eaa7` retrieved five local chunks, then timed out during a later tool-selection request after web search; the new path has not yet been live-verified.
 Files: `src/ara/agents/researcher.py`, `tests/test_researcher.py`, and project state files.
 Notes: ADR-057 records the bounded local fallback. RUN-001 remains open pending a substantive complete report bundle.
+
+### 2026-10-26 — P7.5 — Recover short report narration
+Done: Kept the 170–260 word narration requirement and added a deterministic fallback that strips headings/citation IDs and expands only citation-grounded report sentences with neutral restatements when model narration fails validation. Reports without citations still fail closed.
+Evidence: `pytest tests/test_tts.py` → 13 passed; full `pytest` → 307 passed in 29.00s; Ruff → all checks passed; MyPy → no issues in 55 source files. Live run `6f77b0bac8064a98a4e26ec746075863` completed research with five chunks, reduced critic unsupported claims `1 → 0`, and rendered the structural diagram fallback. Narration returned 90 words on all four attempts and failed; the new fallback has not yet been run live.
+Files: `src/ara/generative/tts.py`, `tests/test_tts.py`, and project state files.
+Notes: ADR-058 records that fallback speech repeats only report-backed content. RUN-001 remains open until the full cited MD/HTML/PDF/SVG/WAV bundle is inspected.

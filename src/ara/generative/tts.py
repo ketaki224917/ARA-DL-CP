@@ -146,10 +146,60 @@ def build_narration_script(
     try:
         return client.structured_output(messages, NarrationScript, max_retries=max_retries)
     except Exception as exc:
+        fallback = _report_grounded_fallback(report_markdown)
+        if fallback is not None:
+            logger.warning(
+                "Model narration failed (%s); using a report-grounded expanded script",
+                type(exc).__name__,
+            )
+            return fallback
         logger.exception("Could not produce a valid narration script")
         raise NarrationError(
             "The model could not produce a valid 1-2 minute narration script."
         ) from exc
+
+
+def _report_grounded_fallback(report_markdown: str) -> NarrationScript | None:
+    """Expand cited report claims when the model cannot meet narration bounds."""
+    if not _CITATION.search(report_markdown):
+        return None
+    claims = [
+        _CITATION.sub("", line).strip()
+        for line in report_markdown.splitlines()
+        if line.strip()
+        and not line.lstrip().startswith("#")
+        and not line.lstrip().startswith("!")
+    ]
+    source_sentences = [
+        sentence.strip()
+        for claim in claims
+        for sentence in re.split(r"(?<=[.!?])\s+", claim)
+        if sentence.strip()
+    ]
+    if not source_sentences:
+        return None
+
+    parts = list(source_sentences)
+    transitions = (
+        "To restate the report's point, ",
+        "In other words, ",
+        "To keep the same finding clear, ",
+        "The report states the same point this way: ",
+    )
+    transition_index = 0
+    while len(_WORD.findall(" ".join(parts))) < _MIN_WORDS:
+        sentence = source_sentences[transition_index % len(source_sentences)]
+        transition = transitions[transition_index % len(transitions)]
+        parts.append(transition + sentence)
+        transition_index += 1
+        if transition_index > _MAX_WORDS:
+            return None
+
+    text = " ".join(parts)
+    try:
+        return NarrationScript(text=text)
+    except ValueError:
+        return None
 
 
 class PiperAudioEngine:

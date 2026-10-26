@@ -64,7 +64,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 
 ## Phase 6 — Generative layer
 - [x] P6.1 Diagram generation (constrained Mermaid flowchart) + Graphviz/SVG rendering + syntax validation/retry and deterministic report-heading fallback (12 focused tests; live invalid Mermaid now falls back safely)
-- [x] P6.2 TTS narration script generation + audio synthesis (Pydantic 170–260 word script; pinned local Piper voice; 185-word CPU smoke rendered 68.79-second WAV; live Ollama script generation NOT RUN)
+- [x] P6.2 TTS narration script generation + audio synthesis (Pydantic 170–260 word script; pinned local Piper voice; 185-word CPU smoke rendered 68.79-second WAV; citation-grounded expansion added for short reports when model misses duration)
 - [x] P6.3 report_builder (Markdown/HTML/PDF, figures, references, audio link; 10 focused tests; full suite 289 passed)
 - [~] P6.4 Stable Diffusion illustration flag - dropped: optional stretch is outside the CPU-first acceptance path; Mermaid diagrams and Piper narration cover required generated visuals/audio.
 
@@ -73,7 +73,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P7.2 README (Mermaid architecture, verified usage, measured DL table, explicit NOT RUN retrieval table, demo caveats, troubleshooting)
 - [x] P7.3 docs/design_decisions.md + architecture.md (implementation-grounded diagrams, rationale, measured tradeoffs, limitations, and next steps)
 - [x] P7.4 Three complete curated report bundles in outputs/examples/ (MD/HTML/PDF, Mermaid/SVG, Piper WAV, stored source chunks; four real chunk IDs validated; all PDFs visually inspected)
-- [>] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (D: environment/ingestion verified; validated diagram fallback, critic-filter recovery, and bounded researcher local fallback added; rerun live to verify a substantive cited report with diagram/audio under RUN-001)
+- [>] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (D: environment/ingestion verified; researcher fallback, critic-filter recovery, and diagram fallback all exercised live; live TTS returned only 90 words and failed its 170-word bound; citation-grounded TTS fallback added, rerun under RUN-001)
 - [~] P7.6 (stretch) LoRA fine-tune for report style, with before/after comparison - dropped for this CPU-only pass; no local chat model is available and LoRA is outside final acceptance (ADR-044)
 - [x] P7.7 Final Acceptance Checklist verification (audit recorded in PROGRESS.md; project remains incomplete on open environment/evaluation gates)
 
