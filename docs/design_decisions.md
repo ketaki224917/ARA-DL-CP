@@ -6,8 +6,8 @@ This document summarizes why ARA uses its current local models, retrieval approa
 
 | Decision | Reason | Cost or limit |
 |---|---|---|
-| Local Ollama for chat and embeddings | Keeps private documents on the user's machine and avoids a paid API dependency. | Users install Ollama and pull weights; model behavior and speed depend on local hardware. The configured models were not live-tested on the current host. |
-| Dense + BM25 retrieval with RRF | Semantic matching and lexical matching provide complementary candidate lists; RRF uses ranks instead of mixing scores with different scales. | Equal weights and `k=60` are baselines. ARA's fixed RAG evaluation is still `NOT RUN`, so fusion has not demonstrated a measured win here. |
+| Local Ollama for chat and embeddings | Keeps private documents on the user's machine and avoids a paid API dependency. A full report run and 52-query embedding evaluation completed on the CPU host. | Users install Ollama and pull weights; model behavior and speed depend on local hardware. Small-model diagram and narration outputs needed deterministic fallbacks. |
+| Dense + BM25 retrieval with RRF | Semantic matching and lexical matching provide complementary candidate lists; RRF uses ranks instead of mixing scores with different scales. The fixed 52-query run improved MRR from 0.924/0.943 to 0.989 over dense/BM25. | Equal weights and `k=60` are baselines. The result is descriptive on a small corpus; no uncertainty interval was measured. |
 | Separate stdio MCP servers | Keeps local RAG, public web access, and custom scoring as independently discoverable tools behind a standard client protocol. | More subprocesses, configuration, and startup work; Claude Desktop UI integration was not exercised. |
 | Typed state and a hand-rolled sequential orchestrator | Makes plans, evidence IDs, budgets, run status, revisions, and traces explicit without a graph-framework dependency. | The flow is sequential. Parallel research and branching recovery could justify a graph framework later. |
 | MiniLM cross-encoder for second-stage ranking | Reuses a compact public pair-scoring model and spends its inference cost only on a bounded candidate union. | It is only a ranking aid. It does not determine claim truth or source credibility, and current ranking metrics are from a small internal split. |
@@ -18,7 +18,7 @@ This document summarizes why ARA uses its current local models, retrieval approa
 
 ### Local model service
 
-The model client speaks Ollama's local HTTP API behind a small `OllamaClient` interface. The default chat model is `qwen2.5:1.5b`, selected after the hardware probe found 18 logical processors and 15.52 GiB RAM without a supported CUDA/MPS accelerator. `embeddinggemma` is the configurable dense embedding model. The defaults target a laptop-scale CPU path; they are not backed by live inference measurements from this host because Ollama and both model weights are absent here.
+The model client speaks Ollama's local HTTP API behind a small `OllamaClient` interface. The default chat model is `qwen2.5:1.5b`, selected after the hardware probe found 18 logical processors and 15.52 GiB RAM without a supported CUDA/MPS accelerator. `embeddinggemma` is the configurable dense embedding model. Both models were exercised in live local report and retrieval runs. On this CPU host, the chat model produced invalid Mermaid and short narration that required the documented fallbacks.
 
 Local service calls keep source text inside the user's machine by default and keep the application independent of paid model APIs. The trade-off is an extra install/download step and variable response time/quality across machines. The client interface and configuration keep a future local provider replaceable; any provider switch should preserve lazy loading and structured-output validation.
 
@@ -26,7 +26,7 @@ Local service calls keep source text inside the user's machine by default and ke
 
 BM25 retrieves exact terms, names, and identifiers. Dense retrieval can find semantically related wording. ARA queries both and combines one-based ranks using weighted RRF (`k=60`, equal weights by default). RRF avoids adding cosine similarity values to BM25 scores that have unrelated scales. Chroma persists dense vectors; the local BM25 index stores versioned chunk data as JSON; a manifest records hashes and indexing configuration so unchanged ingestion can skip embedding work.
 
-The chosen RRF weights and constant are a starting point, not an ARA benchmark result. The project has 52 labeled questions over 19 sample notes, but dense, BM25, hybrid, and hybrid-plus-reranker metrics are all still `NOT RUN`. The metric definitions and required comparison are in [`evaluation.md`](evaluation.md). The next retrieval task is to run all four systems against that fixed set and report recall, MRR, nDCG, citation precision, answer rate, and unanswerable abstention together.
+The fixed evaluation has 52 labeled questions (34 factoid, 10 multi-hop, 8 unanswerable) over 21 documents and 33 chunks. At candidate depth 20 and cutoff 5, dense scored recall/MRR/nDCG 0.989/0.924/0.923; BM25 scored 0.977/0.943/0.935; RRF scored 0.989/0.989/0.971; and RRF plus MiniLM reranking scored 0.989/1.000/0.982. Candidate-chunk citation precision ranged from 0.200 to 0.204. The runner does not generate answers, so answer rate, abstention, and answer-level citation correctness remain unmeasured. See [`evaluation.md`](evaluation.md) for the run metadata and resume command. These metrics support RRF on this sample, not a general claim that fusion always wins.
 
 ### MCP boundaries
 
@@ -40,7 +40,7 @@ The cost is process management and path/configuration work for desktop clients. 
 
 The writer returns structured claims with evidence IDs, and code renders citations as `[chunk:<id>]` or `[web:<id>]`. A separate deterministic parser rejects malformed or unknown IDs. The critic checks citation membership before reviewing claim support, plan gaps, and contradictions. The revision loop defaults to at most three revisions and records per-iteration unsupported counts. This is easier to inspect than free-form recursive prompting, though claim support remains an LLM judgment rather than a formal proof.
 
-The three-topic reduction experiment used the production Writer, Critic, and RevisionLoop with deliberately scripted drafts and critic responses. It reduced one scripted unsupported claim to zero per topic. That confirms feedback propagation and counters; it is not a live-model quality result. Live measurement remains unavailable until Ollama is running.
+The three-topic reduction experiment used the production Writer, Critic, and RevisionLoop with deliberately scripted drafts and critic responses. It reduced one scripted unsupported claim to zero per topic, confirming feedback propagation and counters. A separate live report run also removed one critic-flagged claim and re-reviewed the remaining four with zero unsupported; the required live three-topic quality comparison is still open.
 
 ### Why the custom MiniLM model
 
@@ -66,29 +66,29 @@ This keeps the required generated report path runnable without a browser-based P
 | Random-negative control | recall@10 0.9667, MRR 0.9026, nDCG@10 0.9175 | Matched RRF, so the fine-tuned differences are not evidence of a robust training win. |
 | Three-topic Writer/Critic loop | Scripted unsupported counts 1 to 0, one revision each | Verifies loop mechanics; not live-model quality. |
 | Researcher scorer A/B | Synthetic gold rank 2 to rank 1; MCP calls 1 to 2 | Verifies integration ordering; not a benchmark. |
-| Four-way RAG evaluation | NOT RUN | No measured dense/BM25/RRF/RRF-plus-rerank comparison yet. |
-| Full local Ollama report run | NOT RUN on the development host | Ollama and configured chat/embedding weights were unavailable. |
+| Four-way RAG evaluation | 52 questions, 33 chunks; RRF MRR 0.989 vs. dense 0.924 and BM25 0.943; RRF+reranker MRR 1.000 | Small, CPU-only sample; citation precision is retrieved-candidate precision, and no statistical uncertainty was computed. |
+| Full local Ollama report run | Fresh-clone setup/ingest/run passed; generated cited MD/HTML/PDF/SVG/WAV | Used a structural report-heading diagram and citation-grounded narration after the small model returned invalid Mermaid and short scripts. |
 
 For full result tables and reproduction details, see [`outputs/dl_evaluation_metrics.md`](../outputs/dl_evaluation_metrics.md), [`outputs/dl_researcher_ab.md`](../outputs/dl_researcher_ab.md), [`state/PROGRESS.md`](state/PROGRESS.md), and [`state/BLOCKERS.md`](state/BLOCKERS.md).
 
 ## Trade-offs and limitations
 
 - **Privacy vs. setup:** local models keep inputs local by default, but users must install Ollama and download chat, embedding, and optional reranker/TTS weights.
-- **Complementary retrieval vs. unmeasured fusion:** dense/BM25/RRF has a clear score-scale rationale, but ARA's own four-way RAG comparison is still missing.
+- **Complementary retrieval vs. small-sample evidence:** the 52-query run favors RRF on MRR/nDCG, but the 33-chunk corpus is small and the result has no uncertainty interval.
+- **Candidate precision vs. answer citations:** the retrieval table measures gold evidence among top-k chunks; answer-level citation accuracy and abstention need an answerer evaluation.
 - **Auditable citations vs. semantic uncertainty:** citation IDs and provenance are deterministic; whether a cited passage truly supports a claim still requires model critique and human review.
 - **Separate services vs. operational overhead:** MCP isolates tools and is protocol-tested, but each process and desktop-client path must be configured.
 - **Small reranker vs. broad generalization:** the CPU-friendly MiniLM run used a narrow 30-query internal SciFact split with no multi-seed analysis or statistical tests.
 - **Optional features vs. default footprint:** the custom scorer and Piper synthesis add separate weights/dependencies. Stable Diffusion remains out of scope for this pass.
-- **Host validation gaps:** the full live Ollama path, Claude Desktop UI, and GNU Make targets could not be exercised on the current Windows host.
+- **Host validation gaps:** the live report and Make targets passed on Windows, but a live three-topic revision-quality experiment and Claude Desktop UI check remain open.
 
 ## What I would do next
 
-1. Install Ollama and pull the configured chat/embedding models, then run `ara ingest` and `ara run --topic ...` from a fresh environment. Save the full generated bundle and trace.
-2. Execute dense, BM25, hybrid RRF, and hybrid-plus-rerank on all 52 RAG questions with identical corpus/configuration; record the six metrics from [`evaluation.md`](evaluation.md), including abstention and citation precision.
-3. Expand reranker evaluation to more queries and multiple seeds, quantify uncertainty, and add a source-credibility dataset before enabling the credibility head.
-4. Verify the configuration in a live Claude Desktop UI session and test Makefile targets on a host with GNU Make.
-5. Complete the fresh-environment CLI regression and final acceptance review when Ollama is available.
+1. Run the live writer/critic loop on at least three distinct topics and record before/after unsupported-claim counts.
+2. Expand held-out DL ranking evaluation until at least 20 meaningful error cases can be analyzed; quantify uncertainty across additional queries/seeds.
+3. Evaluate generated-answer citation precision and abstention separately from retrieved-candidate precision.
+4. Verify the configuration in a live Claude Desktop UI session.
 
 ## Short interview answer
 
-ARA combines local BM25 and dense retrieval because exact lexical matches and semantic matches cover different failure modes; it uses RRF to fuse their ranks without calibrating incomparable scores. The research agents share typed, citation-keyed state and call local RAG, public web, and optional reranking tools through independent MCP stdio servers. A custom MiniLM cross-encoder reranks only retrieved candidates. On a 30-query internal SciFact split it ties RRF recall and slightly improves MRR/nDCG, while a random-negative control matches the baseline, so the result is promising but inconclusive. The main engineering trade-offs are local setup/model cost, unmeasured RAG fusion, LLM-based claim checking, and limited benchmark size. The next steps are a real local end-to-end run, the fixed 52-question retrieval comparison, and broader multi-seed reranker evaluation.
+ARA combines local BM25 and dense retrieval because exact lexical matches and semantic matches cover different failure modes; it uses RRF to fuse their ranks without calibrating incomparable scores. On 52 fixed questions and 33 chunks, RRF reached MRR 0.989 versus 0.924 for dense and 0.943 for BM25; MiniLM reranking reached 1.000 with unchanged recall. The evidence is descriptive and small, and the citation metric measures retrieved chunks rather than generated answers. The research agents share typed cited state and call local RAG, public web, and optional reranking tools through independent MCP stdio servers. The full local report path works with structural diagram and citation-grounded speech fallbacks. The remaining quality work is a live three-topic critic experiment and a larger DL error review.

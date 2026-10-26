@@ -26,7 +26,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P1.7 Reranker (lazy CrossEncoder adapter; tests pass; model weights not installed)
 - [x] P1.8 answer() with citations + abstention (tests pass)
 - [x] P1.9 Eval set ≥ 40 Q/A (52 rows; factoid, multi-hop, and unanswerable with validated gold chunk IDs)
-- [>] P1.10 Eval harness + comparison table (metrics are implemented; build a resumable real-system runner and record the four-way 52-query comparison)
+- [x] P1.10 Eval harness + comparison table (resumable runner; real 52-query dense/BM25/RRF/reranker metrics and query-level predictions committed under outputs/rag_retrieval_evaluation/)
 - [x] P1.11 `make ingest` idempotent; CLI `ara ingest`/`ara ask` (tests pass; live Ollama CLI run not available)
 
 ## Phase 2 — MCP
@@ -50,7 +50,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P4.2 Citation parser/validator (deterministic check that cited IDs exist; handles chunk/web markers, malformed syntax, and unknown IDs; 199 tests pass)
 - [x] P4.3 Critic (claim-level verification vs cited chunk, gap and contradiction checks, strict structured schema, state updates; 209 tests pass)
 - [x] P4.4 Revision loop + stopping logic + per-iteration stats (writer consumes bounded critic feedback; stops clean/abstained/unchanged/cap; 221 tests pass)
-- [x] P4.5 Loop-effect experiment on ≥ 3 topics; table in PROGRESS.md (scripted controlled demonstration; live-model quality effect remains NOT RUN under ENV-002)
+- [>] P4.5 Loop-effect experiment on ≥ 3 topics; table in PROGRESS.md (scripted three-topic control passed; live-model effect still needs three topics; one live run measured unsupported claims 1 → 0)
 
 ## Phase 5 — Custom DL model
 - [x] P5.1 Synthetic data generator (queries, positives, hard negatives via BM25/dense mining) + quality filtering (local-LLM path implemented and mocked; offline fallback dataset committed; live generation NOT RUN under ENV-002)
@@ -70,7 +70,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 
 ## Phase 7 — Polish & ship
 - [x] P7.1 CLI polish, Makefile targets (`setup|ingest|serve|run|eval|train|test`); command help and delegation tests pass (full suite 295 passed; GNU Make 4.4.1 now installed)
-- [x] P7.2 README (Mermaid architecture, verified usage, measured DL table, explicit NOT RUN retrieval table, demo caveats, troubleshooting)
+- [x] P7.2 README (Mermaid architecture, verified usage, measured DL and RAG tables, demo caveats, troubleshooting)
 - [x] P7.3 docs/design_decisions.md + architecture.md (implementation-grounded diagrams, rationale, measured tradeoffs, limitations, and next steps)
 - [x] P7.4 Three complete curated report bundles in outputs/examples/ (MD/HTML/PDF, Mermaid/SVG, Piper WAV, stored source chunks; four real chunk IDs validated; all PDFs visually inspected)
 - [x] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (`.tools/p7_5_clean` at `0dfd734`; 137 packages installed, 21 documents/33 chunks indexed, and MD/HTML/PDF/SVG/WAV generated; citation references match; three-page PDF and 68.82-second WAV verified; see CLONE-001)

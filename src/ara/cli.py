@@ -31,6 +31,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _delegate_dl_command("ara.dl.evaluate", passthrough)
         if args.command == "train":
             return _delegate_dl_command("ara.dl.train", passthrough)
+        if args.command == "rag-eval":
+            if passthrough:
+                parser.error(f"unrecognized arguments: {' '.join(passthrough)}")
+            from ara.rag.evaluation_runner import run_retrieval_evaluation
+
+            result = run_retrieval_evaluation(
+                load_settings(),
+                evaluation_path=args.evaluation_set,
+                output_dir=args.output_dir,
+                candidate_k=args.candidate_k,
+                k=args.k,
+                resume=not args.fresh,
+            )
+            logger.info(
+                "RAG retrieval evaluation complete: queries=%d resumed=%d table=%s",
+                result.total_queries,
+                result.resumed_queries,
+                result.table_path,
+            )
+            return 0
         if passthrough:
             parser.error(f"unrecognized arguments: {' '.join(passthrough)}")
 
@@ -308,6 +328,17 @@ def _build_parser() -> argparse.ArgumentParser:
         "eval",
         help="evaluate the custom cross-encoder against retrieval baselines",
         add_help=False,
+    )
+    rag_eval = commands.add_parser(
+        "rag-eval",
+        help="compare dense, BM25, hybrid, and hybrid-plus-rerank retrieval",
+    )
+    rag_eval.add_argument("--evaluation-set", type=Path, default=None)
+    rag_eval.add_argument("--output-dir", type=Path, default=None)
+    rag_eval.add_argument("--candidate-k", type=int, default=20)
+    rag_eval.add_argument("--k", type=int, default=5)
+    rag_eval.add_argument(
+        "--fresh", action="store_true", help="restart instead of resuming query checkpoints"
     )
     commands.add_parser(
         "train",

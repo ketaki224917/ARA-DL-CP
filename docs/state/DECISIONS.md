@@ -353,3 +353,9 @@ Context: Visual QA of the full live report PDF showed the `Diagrams` heading str
 Options considered: Accept the heading split; move every figure to a dedicated page; scale SVGs to leave vertical room for the heading, spacer, and caption.
 Decision: Deduct a fixed 80 points of figure overhead when scaling PDF SVGs, so `KeepTogether` can place the section heading, diagram, and caption in one frame. Add a tall-SVG regression that checks the heading and figure share a page.
 Consequences / how to reverse: Tall figures render slightly smaller but remain legible and no longer leave orphaned headings. If future PDF style changes alter heading/caption dimensions, update the reserved overhead or use a page-level figure layout.
+
+## ADR-060: Evaluate retrievers without LLM answer-generation confounds [DECISION] Date: 2026-10-26 Status: active
+Context: P1.10 requires a four-way retrieval comparison over 52 fixed questions, but measuring generated-answer citation quality would add 208 local model calls and conflate retrieval ranking with answer generation.
+Options considered: Generate and critique an answer for every query/system; compare only ranked chunk IDs against gold IDs and label citation precision as candidate-chunk precision; omit citation precision.
+Decision: Use the existing fixed gold chunk labels to measure recall@5, MRR, nDCG@5, and micro candidate citation precision@5 across all 52 queries. State explicitly that answer-level citation correctness, answer rate, and abstention are not measured by this retrieval-only table. Persist all four rankings for each completed query and validate checkpoint metadata before resuming.
+Consequences / how to reverse: The four systems receive a controlled, reproducible comparison without LLM output variability, and interrupted runs resume. Candidate-chunk precision is a proxy, not answer-level citation quality; add a separate answerer evaluation if that acceptance metric is required.

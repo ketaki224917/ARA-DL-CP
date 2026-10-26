@@ -2,7 +2,7 @@
 
 ARA is a local-first research agent that searches local documents and the public web, gathers citation-ready evidence through MCP tools, drafts and critiques a report, then assembles Markdown, HTML, PDF, diagrams, and narrated audio. Reports preserve chunk IDs beside factual claims so readers can trace claims to retrieved passages.
 
-ARA is a research prototype. The components, offline workflows, and model experiments have been tested. On 2026-10-26 this Windows CPU host was provisioned with GNU Make and Ollama and completed model-backed planning and research; the writer timed out while retrying an invalid structured draft, so the complete live report path and the four-way RAG evaluation remain unverified. See [measured results](#measured-results) and [known limits](#known-limits).
+ARA is a research prototype. On 2026-10-26 the Windows CPU host completed a fresh-clone setup, ingestion, and full local report run, and measured all four retrieval systems on the fixed 52-question set. The live report used the structural diagram and citation-grounded narration fallbacks after the small local model returned invalid Mermaid and a short narration script. See [measured results](#measured-results) and [known limits](#known-limits).
 
 ## Architecture
 
@@ -31,11 +31,12 @@ The researcher calls tools through the MCP client. Retrieved documents and web t
 
 ## Known limits
 
-- The host has Ollama 0.40.11 with the configured Qwen2.5 and EmbeddingGemma models. A live run completed research with six evidence chunks, but the writer's structured-output retry exceeded 300 seconds on this CPU host; no complete live report bundle is claimed.
-- The 52-question dense/BM25/RRF/RRF-plus-reranker comparison is still unmeasured; the evaluation protocol leaves each metric as `NOT RUN`.
+- The full report path passed both in the main checkout and in a fresh clone using Ollama 0.40.11, Qwen2.5, and EmbeddingGemma. The live run used validated fallbacks for invalid Mermaid and too-short narration; the local model's diagram and narration generation were not validated directly.
+- The four-way retrieval table is measured on 52 questions and 33 chunks, but the sample corpus is small. Citation precision is candidate-chunk precision; answer-level citation accuracy, answer rate, and abstention were not measured.
 - The DL model comparison covers 30 queries from an internal SciFact split. It is not the official test set, and the measured differences have no confidence intervals or significance tests.
+- The scripted three-topic revision demonstration is not a live three-topic quality experiment; one live report run reduced unsupported claims from one to zero. The required 20-case reranker error review also remains incomplete because the held-out split yielded only four first-rank failures.
 - MCP stdio startup and tool discovery were verified with the SDK client. The Claude Desktop UI was not launched.
-- GNU Make 4.4.1 is installed through MSYS2. The fresh-clone run and full report path still need verification.
+- GNU Make 4.4.1 is installed through MSYS2. A clean clone completed `make setup`, `make ingest`, and `make run`; the local Ollama service and ignored Piper voice files were reused.
 
 ## Quickstart
 
@@ -68,10 +69,11 @@ Three complete, curated examples exercise citation validation and the Markdown/H
 | `ara ask QUESTION [--rerank]` | Answer from local hybrid retrieval with citations and abstention. `--rerank` needs the optional `rerank` extra and model weights. |
 | `ara run --topic TOPIC [--until research]` | Run planning and research; by default continue through writing, critique, diagram, narration, and report assembly. |
 | `ara serve-mcp --server {rag,web-search,dl-model}` | Start one MCP server over stdio. |
+| `ara rag-eval [OPTIONS]` | Compare dense, BM25, hybrid RRF, and reranked RRF retrieval; checkpoints each query for resume. |
 | `ara train [OPTIONS]` | Train the custom evidence cross-encoder. Options are forwarded to `ara.dl.train`. |
 | `ara eval [OPTIONS]` | Evaluate the custom cross-encoder against the retrieval baselines. Options are forwarded to `ara.dl.evaluate`. |
 
-With GNU Make installed, `make setup`, `make ingest`, `make serve`, `make serve-web-search`, `make serve-dl-model`, `make run TOPIC="..."`, `make train`, `make eval`, `make test`, and `make lint` use locked uv commands. `make serve` starts the RAG server; each MCP server also has a separate target. Pass extra run, train, or eval flags with `ARGS`, for example `make run TOPIC="battery storage" ARGS="--until research"`.
+With GNU Make installed, `make setup`, `make ingest`, `make serve`, `make serve-web-search`, `make serve-dl-model`, `make run TOPIC="..."`, `make train`, `make eval`, `make eval-rag`, `make test`, and `make lint` use locked uv commands. `make serve` starts the RAG server; each MCP server also has a separate target. Pass extra run, train, or eval flags with `ARGS`, for example `make run TOPIC="battery storage" ARGS="--until research"`; `make eval-rag ARGS=--fresh` starts a new 52-query evaluation and plain `make eval-rag` resumes it.
 
 ### Windows fallback without GNU Make
 
@@ -105,14 +107,14 @@ Start a server directly with `uv run --locked ara serve-mcp --server web-search`
 
 ### Four-way RAG evaluation
 
-The repository contains 52 labeled questions over its 19-note sample corpus: 34 factoid, 10 multi-hop, and 8 unanswerable. The required dense, BM25, hybrid RRF, and hybrid-plus-reranker runs have **not been measured** in this environment. The table remains explicitly unmeasured in the [evaluation protocol](docs/evaluation.md); synthetic metric smoke values are not reported as retrieval results.
+The repository contains 52 labeled questions over the sample corpus: 34 factoid, 10 multi-hop, and 8 unanswerable. The live run indexed 21 documents into 33 chunks. Results use candidate depth 20 and metric cutoff 5; citation precision measures gold chunks among retrieved candidate IDs and does not run LLM answer generation. Full query rankings and reproduction details are in the [evaluation protocol](docs/evaluation.md).
 
-| System | Recall@k | MRR | nDCG@k | Citation precision | Answer rate | Unanswerable abstention |
-|---|---:|---:|---:|---:|---:|---:|
-| Dense | NOT RUN | NOT RUN | NOT RUN | NOT RUN | NOT RUN | NOT RUN |
-| BM25 | NOT RUN | NOT RUN | NOT RUN | NOT RUN | NOT RUN | NOT RUN |
-| Hybrid RRF | NOT RUN | NOT RUN | NOT RUN | NOT RUN | NOT RUN | NOT RUN |
-| Hybrid RRF + reranker | NOT RUN | NOT RUN | NOT RUN | NOT RUN | NOT RUN | NOT RUN |
+| System | Recall@5 | MRR | nDCG@5 | Citation precision@5 |
+|---|---:|---:|---:|---:|
+| Dense | 0.989 | 0.924 | 0.923 | 0.204 |
+| BM25 | 0.977 | 0.943 | 0.935 | 0.200 |
+| Hybrid RRF | 0.989 | 0.989 | 0.971 | 0.204 |
+| Hybrid RRF + reranker | 0.989 | 1.000 | 0.982 | 0.204 |
 
 ### Custom DL reranker
 
@@ -143,7 +145,7 @@ The controlled researcher A/B uses one synthetic two-passage fixture. With the s
 
 ### Test and MCP checks
 
-On the Windows CPU development host, the full suite passed **295 tests**; Ruff and MyPy were clean for 61 source files. The [stdio integration test record](docs/stdio_verification.md) covers the three MCP server processes. These checks verify component behavior and local protocol wiring; they do not substitute for a complete live report run or the RAG metric table above.
+On the Windows CPU development host, the full suite passed **311 tests**; Ruff and MyPy were clean. The [stdio integration test record](docs/stdio_verification.md) covers the three MCP server processes. The report bundle and four-way RAG table were also generated in live local runs; the 52-question retrieval sample remains small and descriptive.
 
 ## Data, configuration, and artifacts
 

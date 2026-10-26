@@ -1,4 +1,4 @@
-.PHONY: setup ingest serve serve-rag serve-web-search serve-dl-model run eval train test lint tts-model tts-smoke
+.PHONY: setup ingest serve serve-rag serve-web-search serve-dl-model run eval eval-rag train test lint tts-model tts-smoke
 
 UV ?= uv
 
@@ -25,6 +25,9 @@ run:
 
 eval:
 	$(UV) run --locked ara eval $(ARGS)
+
+eval-rag:
+	$(UV) run --locked ara rag-eval $(ARGS)
 
 train:
 	$(UV) run --locked ara train $(ARGS)

@@ -1,5 +1,6 @@
 """Tests for command parsing and the ingestion command dispatch."""
 
+from dataclasses import dataclass
 from pathlib import Path
 
 from ara import cli
@@ -34,6 +35,9 @@ def test_parser_accepts_mcp_run_eval_and_train_commands() -> None:
         ["eval", "--no-random-negative-ablation"]
     )
     train, train_args = cli._build_parser().parse_known_args(["train", "--epochs", "1"])
+    rag_eval = cli._build_parser().parse_args(
+        ["rag-eval", "--candidate-k", "24", "--k", "5", "--fresh"]
+    )
 
     assert serve.command == "serve-mcp"
     assert serve.server == "web-search"
@@ -45,6 +49,10 @@ def test_parser_accepts_mcp_run_eval_and_train_commands() -> None:
     assert evaluate_args == ["--no-random-negative-ablation"]
     assert train.command == "train"
     assert train_args == ["--epochs", "1"]
+    assert rag_eval.command == "rag-eval"
+    assert rag_eval.candidate_k == 24
+    assert rag_eval.k == 5
+    assert rag_eval.fresh is True
 
 
 def test_main_dispatches_ingest_with_loaded_settings(monkeypatch) -> None:
@@ -84,6 +92,51 @@ def test_main_delegates_eval_and_train_arguments(monkeypatch) -> None:
     assert calls == [
         ("ara.dl.evaluate", ["--no-random-negative-ablation"]),
         ("ara.dl.train", ["--epochs", "1"]),
+    ]
+
+
+def test_main_dispatches_rag_evaluation(monkeypatch) -> None:
+    settings = Settings(_env_file=None)
+    calls: list[tuple[Settings, dict[str, object]]] = []
+
+    @dataclass(frozen=True)
+    class Result:
+        table_path: Path
+        total_queries: int
+        resumed_queries: int
+
+    monkeypatch.setattr("ara.logging_setup.configure_logging", lambda: None)
+    monkeypatch.setattr(cli, "load_settings", lambda: settings)
+    monkeypatch.setattr(
+        "ara.rag.evaluation_runner.run_retrieval_evaluation",
+        lambda received, **kwargs: calls.append((received, kwargs))
+        or Result(Path("outputs/rag_eval/metrics.md"), total_queries=52, resumed_queries=0),
+    )
+
+    assert (
+        cli.main(
+            [
+                "rag-eval",
+                "--candidate-k",
+                "24",
+                "--k",
+                "5",
+                "--fresh",
+            ]
+        )
+        == 0
+    )
+    assert calls == [
+        (
+            settings,
+            {
+                "evaluation_path": None,
+                "output_dir": None,
+                "candidate_k": 24,
+                "k": 5,
+                "resume": False,
+            },
+        )
     ]
 
 

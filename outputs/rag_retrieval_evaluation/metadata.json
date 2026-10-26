@@ -1,0 +1,20 @@
+{
+  "format_version": 1,
+  "evaluation_set_sha256": "2fb04982740405ec61e503bf1aa044db20be1dbee7e4da27cc7893d8dba55c99",
+  "question_count": 52,
+  "corpus_chunk_count": 33,
+  "corpus_ids_sha256": "75353213db1735480bbf77e2a5bc953ab9be52c771b5518f707fc2723cb7655c",
+  "bm25_index_sha256": "84287a88119a7765128ed78717efb2a1b0c33cf5b34f12189d9adcdb67465c88",
+  "embedding_model": "embeddinggemma",
+  "reranker_model": "cross-encoder/ms-marco-MiniLM-L6-v2",
+  "reranker_revision": "df500e56a59fc34f37322735a40eff666200312e",
+  "device": "cpu",
+  "candidate_k": 20,
+  "metric_k": 5,
+  "systems": [
+    "Dense",
+    "BM25",
+    "Hybrid RRF",
+    "Hybrid RRF + reranker"
+  ]
+}
