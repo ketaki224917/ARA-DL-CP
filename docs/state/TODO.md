@@ -56,7 +56,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P5.5 evaluate.py vs baselines + ablations + error analysis (30-query internal SciFact test split; fine-tuned model ties recall and improves MRR/nDCG slightly over RRF; only four first-rank failures existed, all four reviewed)
 - [x] P5.6 export + load in dl_model_server (`score_chunks`) + tests (atomic inference bundle; lazy scorer; real MCP client smoke returned ordered relevance probabilities; 251 tests pass)
 - [x] P5.7 Integrate in researcher; A/B end-to-end comparison (optional MCP-only scoring with validated IDs/fallback; real local model moved gold evidence rank 2→1 on one controlled fixture)
-- [ ] P5.8 docs/model_card.md
+- [x] P5.8 docs/model_card.md (training, internal held-out evaluation, four observed ranking failures, integration fixture, and limitations documented; checks pass)
 
 ## Phase 6 — Generative layer
 - [ ] P6.1 Diagram generation (Mermaid/Graphviz) + render + validate/retry
