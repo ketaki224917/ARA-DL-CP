@@ -3,7 +3,7 @@
 Updated: 2026-10-26 | Session #: 1
 Current phase/task: Phase 7 / P7.7 - final acceptance audit | Status: audit complete; project blocked on ENV-002 and a larger held-out error set
 
-Last source commit: `e225232 [P7.4] Add reproducible example report bundles`; last state commit: `cfdbd01 [P7.6] Defer optional LoRA stretch`. Final audit state update is pending its state commit.
+Last source commit: `e225232 [P7.4] Add reproducible example report bundles`; P7.5 blocker commit: `d3beada`; P7.6 decision commit: `cfdbd01`; final audit commit: `e5b871c`. The final acceptance audit is committed.
 
 ## Do next (exact)
 1. Provide a host with GNU Make and Ollama 0.11.10 or newer installed/running; pull `qwen2.5:1.5b` and `embeddinggemma`, then download the pinned Piper voice.
@@ -14,7 +14,7 @@ Last source commit: `e225232 [P7.4] Add reproducible example report bundles`; la
 Windows 11; PowerShell; Python 3.12.15; uv 0.13.4; CPU-only, 18 logical processors, 15.52 GiB RAM; GPU/VRAM details unknown. Workspace-local uv cache and `.tools/reports-venv` are active. A fresh clone/venv at `.tools/p7_5_clone/` installed 137 packages from `uv.lock`, and its CLI help succeeded. Pinned Piper voice and reranker weights are present in the main checkout's ignored `models/`, but absent from the fresh clone. Configured Ollama chat/embed models are not pulled, and no service is running. Poppler, Node, GNU Make, and Ollama were not found.
 
 ## WIP / uncommitted
-P7.4 code and all three complete report bundles are committed. P7.5 blocker and P7.6 decision are recorded. PDF QA previews and the fresh clone/venv remain ignored under `.tools/` and `outputs/generated/`. Only the P7.7 final audit state update is pending its state commit. No product-code WIP is expected.
+P7.4 code and all three complete report bundles are committed. P7.5 blocker, P7.6 decision, and P7.7 final audit are committed. PDF QA previews and the fresh clone/venv remain ignored under `.tools/` and `outputs/generated/`. No product-code or state WIP is expected.
 
 ## Known failing tests / issues
 No known pytest, Ruff, or MyPy failures. Latest full suite: 295 passed in 62.19s; focused report tests: 12 passed; Ruff clean; MyPy clean for 61 source files. Fresh-clone `uv sync` and `ara --help` passed; direct `ara ingest` and `ara run --topic ... --until research` both failed because the local Ollama endpoint refused connections. P7.5 and the four-way 52-question RAG metrics remain NOT RUN. The 30-query internal SciFact split produced only four first-rank errors; the required 20-case review is incomplete. DL metrics remain descriptive. Claude Desktop UI was not launched.
