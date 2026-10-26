@@ -308,7 +308,13 @@ def _write_pdf_atomically(path: Path, markdown: str, title: str, output_dir: Pat
         from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
         from reportlab.pdfbase import pdfmetrics
         from reportlab.pdfbase.ttfonts import TTFont
-        from reportlab.platypus import HRFlowable, Paragraph, SimpleDocTemplate, Spacer
+        from reportlab.platypus import (
+            HRFlowable,
+            KeepTogether,
+            Paragraph,
+            SimpleDocTemplate,
+            Spacer,
+        )
         from svglib.svglib import svg2rlg
     except ImportError as exc:
         raise ReportBuildError(
@@ -373,6 +379,8 @@ def _write_pdf_atomically(path: Path, markdown: str, title: str, output_dir: Pat
     }
     soup = BeautifulSoup(MarkdownIt("commonmark", {"html": False}).render(markdown), "html.parser")
     story: list[Any] = []
+    pending_figure_heading: Any | None = None
+    pending_reference_heading: Any | None = None
     page_width, page_height = A4
     available_width = page_width - 108
     available_height = page_height - 126
@@ -382,7 +390,13 @@ def _write_pdf_atomically(path: Path, markdown: str, title: str, output_dir: Pat
         if element.name in {"h1", "h2", "h3"}:
             text = _pdf_safe_text(element.get_text(" ", strip=True))
             style = styles[element.name]
-            story.append(Paragraph(html.escape(text), style))
+            heading = Paragraph(html.escape(text), style)
+            if text == "Diagrams":
+                pending_figure_heading = heading
+            elif text == "References":
+                pending_reference_heading = heading
+            else:
+                story.append(heading)
         elif element.name == "p":
             image = element.find("img")
             if isinstance(image, Tag):
@@ -401,16 +415,27 @@ def _write_pdf_atomically(path: Path, markdown: str, title: str, output_dir: Pat
                 drawing.scale(scale, scale)
                 drawing.width *= scale
                 drawing.height *= scale
-                story.extend(
+                figure: list[Any] = []
+                if pending_figure_heading is not None:
+                    figure.append(pending_figure_heading)
+                    pending_figure_heading = None
+                figure.extend(
                     [Spacer(1, 8), drawing, Paragraph(html.escape(alt), styles["caption"])]
                 )
+                story.append(KeepTogether(figure))
             else:
                 story.append(Paragraph(_pdf_paragraph_text(element), styles["body"]))
         elif element.name in {"ul", "ol"}:
+            list_items: list[Any] = []
             for index, item in enumerate(element.find_all("li", recursive=False), start=1):
                 text = html.escape(_pdf_safe_text(item.get_text(" ", strip=True)))
                 bullet = f"{index}." if element.name == "ol" else "-"
-                story.append(Paragraph(text, styles["body"], bulletText=bullet))
+                list_items.append(Paragraph(text, styles["body"], bulletText=bullet))
+            if pending_reference_heading is not None:
+                story.append(KeepTogether([pending_reference_heading, *list_items]))
+                pending_reference_heading = None
+            else:
+                story.extend(list_items)
         elif element.name == "blockquote":
             text = html.escape(_pdf_safe_text(element.get_text(" ", strip=True)))
             quote_style = ParagraphStyle(
@@ -422,6 +447,11 @@ def _write_pdf_atomically(path: Path, markdown: str, title: str, output_dir: Pat
             story.append(Paragraph(text, quote_style))
         elif element.name == "hr":
             story.extend([Spacer(1, 4), HRFlowable(width="100%", color=colors.HexColor("#cbd5e1"))])
+
+    if pending_figure_heading is not None:
+        story.append(pending_figure_heading)
+    if pending_reference_heading is not None:
+        story.append(pending_reference_heading)
 
     temporary_path: str | None = None
     try:

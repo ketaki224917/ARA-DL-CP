@@ -94,12 +94,17 @@ def test_build_report_writes_cited_md_html_pdf_and_local_assets(tmp_path: Path) 
 
     pdf = PdfReader(result.pdf_path)
     assert len(pdf.pages) >= 1
-    pdf_text = "\n".join(page.extract_text() or "" for page in pdf.pages)
+    page_texts = [page.extract_text() or "" for page in pdf.pages]
+    pdf_text = "\n".join(page_texts)
     assert "Grid storage - findings" in pdf_text
     assert "[chunk:storage-1]" in pdf_text
     assert "grid-storage.pdf" in pdf_text
     assert "https://example.org/policy?region=north&year=2026" in pdf_text
     assert "Page 1" in pdf_text
+    diagram_page = next(text for text in page_texts if "Diagram 1" in text)
+    assert "Diagrams" in diagram_page
+    reference_page = next(text for text in page_texts if "References" in text)
+    assert "[web:policy-2]" in reference_page
 
 
 @pytest.mark.parametrize(

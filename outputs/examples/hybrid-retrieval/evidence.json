@@ -1,0 +1,17 @@
+{
+  "chunk_size": 900,
+  "chunk_overlap": 120,
+  "license": "CC BY 4.0",
+  "evidence": [
+    {
+      "chunk_id": "chunk:17e7d4229fecde32779b",
+      "text": "# Hybrid retrieval combines independent candidate lists\n\nA hybrid retriever runs more than one search method for the same question. A common pairing is dense semantic search and sparse lexical search. Dense search can surface a paraphrase, while lexical search can preserve a rare token or exact code. The combined candidate pool is then ordered by a fusion rule.\n\nFusion cannot recover a passage that none of the component searches returned. Candidate depth therefore matters: each retrieval leg must pass enough plausible results into the fusion stage. Evaluate the full pipeline on labeled questions; a hybrid label by itself does not demonstrate better retrieval.\n\nReference: [Qdrant hybrid queries](https://qdrant.tech/documentation/search/hybrid-queries/); [Qdrant text hybrid search](https://qdrant.tech/documentation/search/text-search/hybrid-search/).",
+      "source": "data/sample_corpus/03_hybrid_retrieval.md",
+      "source_type": "local",
+      "page": null,
+      "url": null,
+      "score": null,
+      "is_untrusted": true
+    }
+  ]
+}

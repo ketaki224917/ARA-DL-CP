@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hybrid Retrieval: Complementary Signals Need Evaluation</title>
+<style>
+:root { color-scheme: light; font-family: Arial, Helvetica, sans-serif; color: #172033; }
+body { margin: 0; background: #f4f6f9; line-height: 1.62; }
+.report { max-width: 860px; margin: 32px auto; padding: 48px 58px; background: #fff;
+          box-shadow: 0 8px 30px #17203318; }
+h1, h2, h3 { color: #183454; line-height: 1.25; }
+h1 { font-size: 2.1rem; margin-top: 0; }
+h2 { margin-top: 2.2em; border-bottom: 1px solid #d9e1e9; padding-bottom: .35em; }
+p, li { font-size: 1rem; }
+li { margin: .35em 0; }
+img { display: block; max-width: 100%; height: auto; margin: 1.25em auto; }
+.audio-player { margin: 1.5em 0; padding: 1em; background: #f1f5f9; border-radius: 8px; }
+audio { width: 100%; }
+code { color: #155e75; overflow-wrap: anywhere; }
+@media print { body { background: #fff; } .report { margin: 0; padding: 1.5cm;
+  max-width: none; box-shadow: none; } }
+</style>
+</head>
+<body><main class="report"><h1>Hybrid Retrieval: Complementary Signals Need Evaluation</h1>
+<h2>Summary</h2>
+<p>Hybrid retrieval combines dense semantic search with sparse lexical search, then orders the combined candidates with a fusion rule. [chunk:17e7d4229fecde32779b]</p>
+<p>Dense search can surface a paraphrase, while lexical search can retain a rare token or exact code. [chunk:17e7d4229fecde32779b]</p>
+<h2>Evaluation considerations</h2>
+<p>Fusion cannot recover a passage that neither component retrieved, so candidate depth sets a limit on the evidence available to later stages. [chunk:17e7d4229fecde32779b]</p>
+<p>The source recommends evaluating the complete pipeline on labeled questions; calling a method hybrid does not itself show that retrieval improved. [chunk:17e7d4229fecde32779b]</p>
+<h2>Scope</h2>
+<p>This example summarizes one ARA corpus note. It reports no retrieval benchmark measurements. [chunk:17e7d4229fecde32779b]</p>
+<h2>Diagrams</h2>
+<p><img src="figures/diagram-01.svg" alt="Diagram 1" /></p>
+<h2>Audio summary</h2>
+<p><a href="audio/narration.wav">Listen to the 73-second narrated summary</a></p>
+<h2>References</h2>
+<ul>
+<li>Citation ID: <code>chunk:17e7d4229fecde32779b</code> - Source: 03_hybrid_retrieval.md</li>
+</ul>
+<section class="audio-player" aria-label="Narrated summary"><audio controls preload="metadata"><source src="audio/narration.wav" type="audio/wav">Your browser does not support audio playback.</audio><p><a href="audio/narration.wav">Download the narration</a></p></section></main></body>
+</html>

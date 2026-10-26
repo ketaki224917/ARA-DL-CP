@@ -94,6 +94,6 @@ Indexes are written under `data/indexes/`, model checkpoints/voice assets under 
 
 ## Validation status
 
-The Python test suite covers loaders, chunking, indexing, retrievers, citations, agent state, MCP in-memory and stdio flows, scripted Writer/Critic runs, DL training/inference wrappers, diagrams, TTS, and report output. The last full suite passed 293 tests on a CPU-only Windows host; Ruff and MyPy were clean.
+The Python test suite covers loaders, chunking, indexing, retrievers, citations, agent state, MCP in-memory and stdio flows, scripted Writer/Critic runs, DL training/inference wrappers, diagrams, TTS, and report output. The checked-in [example reports](../outputs/examples/README.md) are curated, source-grounded bundles generated through the report pipeline. The last full suite passed 295 tests on a CPU-only Windows host; Ruff and MyPy were clean.
 
 Live Ollama planning/research/report generation and the required four-way RAG retrieval evaluation are still unverified on that host. The custom ranker result is measured on 30 queries from an internal SciFact test split, not the official test set; the differences are descriptive. See [`evaluation.md`](evaluation.md), [`model_card.md`](model_card.md), and [`state/BLOCKERS.md`](state/BLOCKERS.md) for detail.

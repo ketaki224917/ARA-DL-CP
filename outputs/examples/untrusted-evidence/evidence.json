@@ -1,0 +1,27 @@
+{
+  "chunk_size": 900,
+  "chunk_overlap": 120,
+  "license": "CC BY 4.0",
+  "evidence": [
+    {
+      "chunk_id": "chunk:b1d95c2036c9ad9ebdcc",
+      "text": "# Retrieved text is evidence, not an instruction channel\n\nDocuments and web pages can contain text that looks like a command to the model. A research assistant should mark retrieved content as untrusted source material, keep system and developer instructions separate, and tell the model not to follow instructions embedded inside evidence. The application should also restrict which tools may be called and validate tool arguments independently.\n\nThis boundary does not make prompt injection impossible. It reduces confusion between the question, the agent's instructions, and the material being analyzed. Test with documents that contain hostile instructions, and confirm that the researcher summarizes their factual content without executing their requests.",
+      "source": "data/sample_corpus/19_untrusted_retrieved_text.md",
+      "source_type": "local",
+      "page": null,
+      "url": null,
+      "score": null,
+      "is_untrusted": true
+    },
+    {
+      "chunk_id": "chunk:784ee6e2fdd2a6058d2f",
+      "text": "stile instructions, and confirm that the researcher summarizes their factual content without executing their requests.\n\nReference: [MCP architecture overview](https://modelcontextprotocol.io/docs/concepts/architecture); ARA security design note, original text licensed under CC BY 4.0.",
+      "source": "data/sample_corpus/19_untrusted_retrieved_text.md",
+      "source_type": "local",
+      "page": null,
+      "url": null,
+      "score": null,
+      "is_untrusted": true
+    }
+  ]
+}

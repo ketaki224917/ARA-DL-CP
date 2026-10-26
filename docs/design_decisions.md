@@ -85,9 +85,9 @@ For full result tables and reproduction details, see [`outputs/dl_evaluation_met
 
 1. Install Ollama and pull the configured chat/embedding models, then run `ara ingest` and `ara run --topic ...` from a fresh environment. Save the full generated bundle and trace.
 2. Execute dense, BM25, hybrid RRF, and hybrid-plus-rerank on all 52 RAG questions with identical corpus/configuration; record the six metrics from [`evaluation.md`](evaluation.md), including abstention and citation precision.
-3. Finish three complete example reports and run the deterministic citation validator over each output.
-4. Expand reranker evaluation to more queries and multiple seeds, quantify uncertainty, and add a source-credibility dataset before enabling the credibility head.
-5. Verify the configuration in a live Claude Desktop UI session and test Makefile targets on a host with GNU Make.
+3. Expand reranker evaluation to more queries and multiple seeds, quantify uncertainty, and add a source-credibility dataset before enabling the credibility head.
+4. Verify the configuration in a live Claude Desktop UI session and test Makefile targets on a host with GNU Make.
+5. Complete the fresh-environment CLI regression and final acceptance review when Ollama is available.
 
 ## Short interview answer
 

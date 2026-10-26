@@ -1,0 +1,17 @@
+{
+  "chunk_size": 900,
+  "chunk_overlap": 120,
+  "license": "CC BY 4.0",
+  "evidence": [
+    {
+      "chunk_id": "chunk:d0294bd3e2035d9f5328",
+      "text": "# Chunk identifiers preserve citation provenance\n\nEach indexed passage needs a stable identifier that connects it to its source text. Useful metadata includes the source path or URL, page when available, and character offsets in the extracted document. A citation ID should be deterministic for the same source and chunking settings so an evaluation set can continue to point to the same evidence.\n\nWhen a report cites a chunk, validate that the ID exists in the evidence store. Resolve the ID to the stored text and metadata before the critic checks the claim. This turns a citation from decorative text into a verifiable link between a statement and the passage offered as support.\n\nReference: [Chroma Query and Get](https://docs.trychroma.com/docs/querying-collections/query-and-get); ARA corpus note, original text licensed under CC BY 4.0.",
+      "source": "data/sample_corpus/11_chunk_citation_metadata.md",
+      "source_type": "local",
+      "page": null,
+      "url": null,
+      "score": null,
+      "is_untrusted": true
+    }
+  ]
+}

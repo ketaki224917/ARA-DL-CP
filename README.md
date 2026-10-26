@@ -56,6 +56,10 @@ Ollama must be running at the URL in `config.yaml` (default `http://localhost:11
 
 A completed `ara run` starts the RAG and web-search servers as stdio child processes, writes a JSONL trace under `traces/`, and writes `report.md`, `report.html`, `report.pdf`, a diagram SVG, and a narration WAV under `outputs/<run-id>/`. Use `--until research` to stop after planning and evidence collection. Use `--max-revisions 0` to have the writer and critic make one pass without rewrites.
 
+### Example report bundles
+
+Three complete, curated examples exercise citation validation and the Markdown/HTML/PDF, SVG, and Piper audio outputs: [hybrid retrieval](outputs/examples/hybrid-retrieval/report.md), [citation provenance](outputs/examples/citation-provenance/report.md), and [untrusted evidence](outputs/examples/untrusted-evidence/report.md). They summarize local sample corpus notes with IDs from the production chunker; they are not live agent runs. Rebuild or validate them with the [example report guide](outputs/examples/README.md).
+
 ### CLI and Make targets
 
 | Command | Purpose |
