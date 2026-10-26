@@ -3,7 +3,7 @@
 Updated: 2026-10-26 | Session #: 1
 Current phase/task: Phase 7 / P7.5 - live full-report regression | Status: in progress; RUN-001 is open
 
-Last committed audit: `e5b871c [P7.7] Audit final acceptance checklist`. This checkpoint has source and state changes pending commit.
+Last task commit: `12cfdaa [P7.5] Fix Ollama tool history and provision runtime`. This handoff-only refresh follows that commit.
 
 ## Do next (exact)
 1. Inspect the writer's prompt and structured-output payload: `rg -n "class ReportDraft|def structured_output|writer_messages" src/ara/agents/writer.py src/ara/agents/prompts/writer.py src/ara/llm/client.py`; reduce CPU generation cost or add a bounded output setting, with tests.
@@ -14,7 +14,7 @@ Last committed audit: `e5b871c [P7.7] Audit final acceptance checklist`. This ch
 Windows 11, PowerShell, Python 3.12.15, uv 0.13.4, CPU-only, 18 logical processors, 15.52 GiB RAM. GNU Make 4.4.1 is installed at `C:\msys64\usr\bin\make.exe`; that folder and `%LOCALAPPDATA%\Programs\Ollama` are in the user PATH (restart existing terminals). Ollama 0.40.11 is running at `http://localhost:11434`; `qwen2.5:1.5b` and `embeddinggemma` are pulled. The root checkout uses `.tools/reports-venv`, `.tools/uv-cache`, and the managed `.tools/uv/uv.exe`. `make setup` and `make ingest` passed; ingestion indexed 21 documents into 33 chunks. The pinned Piper voice already exists in the root `models/tts/`. Last disk check showed about 1.8 GB free.
 
 ## WIP / uncommitted
-Researcher tool-call history fix and regression assertions, README corrections, and updated ADR/progress/environment/handoff/blocker/TODO/session state files are pending commit. The incomplete abstention-only probe created before the tool-history fix has been removed; its trace remains as an ignored diagnostic artifact.
+No source or project documentation changes remain uncommitted. The incomplete abstention-only probe created before the tool-history fix has been removed; its trace remains as an ignored diagnostic artifact.
 
 ## Known failing tests / issues
 No known failing automated tests. `make test UV=.tools/uv/uv.exe` passed 295 tests in 60.71s; `make lint UV=.tools/uv/uv.exe` passed. The full live run completed research with six evidence chunks, but the writer returned an invalid structured draft and its retry exceeded a 300-second request timeout. P7.5 has not produced a complete live bundle or been verified in a clean clone. The 52-question four-way RAG evaluation remains NOT RUN. P5.5 has only four observed held-out ranking failures, short of the required 20. Live P4.5 and P5.1 measurements remain unrun. Web search from the restricted managed process could not access the Windows native certificate store; verified TLS search succeeded in the approved process context.
