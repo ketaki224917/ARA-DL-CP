@@ -1,0 +1,29 @@
+{
+  "experiment": "controlled two-passage researcher/MCP wiring demo",
+  "query": "Does folic acid and vitamin B6 intake reduce homocysteine levels?",
+  "interpretation": "One synthetic fixture verifies the MCP integration and evidence ordering; it is not a statistical quality evaluation.",
+  "systems": [
+    {
+      "scorer_enabled": false,
+      "ranked_chunk_ids": [
+        "chunk:other",
+        "chunk:gold"
+      ],
+      "gold_rank": 2,
+      "gold_mrr": 0.5,
+      "mcp_tool_calls": 1,
+      "scorer_status": "disabled"
+    },
+    {
+      "scorer_enabled": true,
+      "ranked_chunk_ids": [
+        "chunk:gold",
+        "chunk:other"
+      ],
+      "gold_rank": 1,
+      "gold_mrr": 1.0,
+      "mcp_tool_calls": 2,
+      "scorer_status": "status=ready; scored=2; evidence_reordered=true"
+    }
+  ]
+}

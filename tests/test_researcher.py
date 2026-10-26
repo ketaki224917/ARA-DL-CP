@@ -99,6 +99,29 @@ def _local_result(
     )
 
 
+def _multi_local_result() -> CallToolResult:
+    return _result(
+        {
+            "results": [
+                {
+                    "chunk_id": "chunk:other",
+                    "text": "Related passage without the target finding.",
+                    "source": "other.md",
+                    "page": None,
+                    "score": 0.92,
+                },
+                {
+                    "chunk_id": "chunk:gold",
+                    "text": "Passage with the target finding.",
+                    "source": "gold.md",
+                    "page": 4,
+                    "score": 0.88,
+                },
+            ]
+        }
+    )
+
+
 def _state(tasks: list[PlanTask] | None = None) -> AgentState:
     return AgentState(
         topic="Researcher test topic",
@@ -180,6 +203,172 @@ def test_researcher_uses_mcp_and_deduplicates_local_evidence() -> None:
     }
     assert tool_events[0].latency_ms is not None
     assert tool_events[0].is_untrusted is True
+
+
+def test_dl_mcp_reranking_improves_top_evidence_in_controlled_ab_comparison(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("ARA_DL_USE_SCORER", "true")
+    search = _call("search_knowledge_base", {"query": "target finding"})
+    scorer_result = _result(
+        {
+            "status": "ready",
+            "scores": [
+                {
+                    "chunk_id": "chunk:other",
+                    "relevance_score": 0.12,
+                    "credibility_score": None,
+                },
+                {
+                    "chunk_id": "chunk:gold",
+                    "relevance_score": 0.96,
+                    "credibility_score": None,
+                },
+            ],
+            "message": None,
+        }
+    )
+    answers = {}
+    traces: list[TraceEvent] = []
+    for label, enabled in (("baseline", False), ("dl_reranked", None)):
+        llm = FakeLLM([[search], [], [], []])
+        mcp = FakeMCPClient(
+            {
+                ("rag", "search_knowledge_base"): _multi_local_result(),
+                ("dl-model", "score_chunks"): scorer_result,
+            }
+        )
+        state = _state()
+        summary = asyncio.run(
+            Researcher(mcp, llm, use_dl_scorer=enabled).research(
+                state,
+                trace_callback=traces.append,
+            )
+        )
+        ranked_ids = list(state.evidence_store)
+        relevant_rank = ranked_ids.index("chunk:gold") + 1
+        answers[label] = (1 / relevant_rank, ranked_ids, summary, mcp)
+
+    baseline_mrr, baseline_ids, baseline_summary, baseline_mcp = answers["baseline"]
+    reranked_mrr, reranked_ids, reranked_summary, reranked_mcp = answers["dl_reranked"]
+    assert baseline_ids == ["chunk:other", "chunk:gold"]
+    assert reranked_ids == ["chunk:gold", "chunk:other"]
+    assert baseline_mrr == pytest.approx(0.5)
+    assert reranked_mrr == pytest.approx(1.0)
+    assert baseline_summary.tool_calls_made == 1
+    assert reranked_summary.tool_calls_made == 2
+    assert [call[1] for call in baseline_mcp.calls] == ["search_knowledge_base"]
+    assert [call[0:2] for call in reranked_mcp.calls] == [
+        ("rag", "search_knowledge_base"),
+        ("dl-model", "score_chunks"),
+    ]
+    assert reranked_mcp.calls[1][2] == {
+        "query": "target finding",
+        "chunk_ids": ["chunk:other", "chunk:gold"],
+    }
+    score_events = [event for event in traces if event.server_name == "dl-model"]
+    assert len(score_events) == 1
+    assert score_events[0].result_summary == (
+        "status=ready; scored=2; evidence_reordered=true"
+    )
+
+
+def test_dl_scorer_not_ready_preserves_retrieval_order() -> None:
+    llm = FakeLLM(
+        [[_call("search_knowledge_base", {"query": "target finding"})], [], [], []]
+    )
+    mcp = FakeMCPClient(
+        {
+            ("rag", "search_knowledge_base"): _multi_local_result(),
+            ("dl-model", "score_chunks"): _result(
+                {"status": "not_ready", "scores": [], "message": "model unavailable"}
+            ),
+        }
+    )
+    state = _state()
+    traces: list[TraceEvent] = []
+
+    summary = asyncio.run(
+        Researcher(mcp, llm, use_dl_scorer=True).research(
+            state,
+            trace_callback=traces.append,
+        )
+    )
+
+    assert list(state.evidence_store) == ["chunk:other", "chunk:gold"]
+    assert summary.tool_calls_made == 2
+    assert [call[1] for call in mcp.calls] == ["search_knowledge_base", "score_chunks"]
+    assert any(
+        event.server_name == "dl-model"
+        and event.result_summary == "status=not_ready; fallback=true"
+        for event in traces
+    )
+
+
+def test_dl_scorer_malformed_ids_fall_back_without_losing_evidence() -> None:
+    llm = FakeLLM(
+        [[_call("search_knowledge_base", {"query": "target finding"})], [], [], []]
+    )
+    mcp = FakeMCPClient(
+        {
+            ("rag", "search_knowledge_base"): _multi_local_result(),
+            ("dl-model", "score_chunks"): _result(
+                {
+                    "status": "ready",
+                    "scores": [
+                        {
+                            "chunk_id": "chunk:unknown",
+                            "relevance_score": 0.99,
+                            "credibility_score": None,
+                        }
+                    ],
+                    "message": None,
+                }
+            ),
+        }
+    )
+    state = _state()
+    traces: list[TraceEvent] = []
+
+    asyncio.run(
+        Researcher(mcp, llm, use_dl_scorer=True).research(
+            state,
+            trace_callback=traces.append,
+        )
+    )
+
+    assert list(state.evidence_store) == ["chunk:other", "chunk:gold"]
+    assert any(
+        event.server_name == "dl-model"
+        and event.result_summary == "status=fallback; error_type=ResearcherError"
+        for event in traces
+    )
+
+
+def test_dl_scorer_is_skipped_when_tool_budget_is_spent() -> None:
+    llm = FakeLLM(
+        [[_call("search_knowledge_base", {"query": "target finding"})], [], [], []]
+    )
+    mcp = FakeMCPClient({("rag", "search_knowledge_base"): _multi_local_result()})
+    state = _state()
+    traces: list[TraceEvent] = []
+
+    summary = asyncio.run(
+        Researcher(
+            mcp,
+            llm,
+            max_tool_calls=1,
+            use_dl_scorer=True,
+        ).research(state, trace_callback=traces.append)
+    )
+
+    assert summary.tool_calls_made == 1
+    assert [call[1] for call in mcp.calls] == ["search_knowledge_base"]
+    assert list(state.evidence_store) == ["chunk:other", "chunk:gold"]
+    assert any(
+        event.event == "scorer_skipped" and event.result_summary == "tool_budget_limit"
+        for event in traces
+    )
 
 
 def test_researcher_uses_search_result_to_fetch_citable_web_text() -> None:

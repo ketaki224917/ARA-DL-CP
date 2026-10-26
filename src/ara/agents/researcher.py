@@ -11,7 +11,15 @@ from typing import Any, Literal, Protocol
 from urllib.parse import urlsplit
 
 from mcp.types import CallToolResult
-from pydantic import BaseModel, ConfigDict, Field, StrictStr, ValidationError, field_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    StrictFloat,
+    StrictStr,
+    ValidationError,
+    field_validator,
+)
 
 from ara.agents.prompts.researcher import observation_message, researcher_messages
 from ara.agents.state import AgentState, EvidenceItem, PlanTask
@@ -134,6 +142,33 @@ class FetchPageArguments(BaseModel):
         return normalized
 
 
+class DLChunkScore(BaseModel):
+    """Validated score for a previously retrieved local evidence chunk."""
+
+    model_config = ConfigDict(extra="forbid", strict=True)
+
+    chunk_id: StrictStr = Field(min_length=1, max_length=128)
+    relevance_score: StrictFloat
+    credibility_score: StrictFloat | None = None
+
+    @field_validator("relevance_score", "credibility_score")
+    @classmethod
+    def validate_probability(cls, value: float | None) -> float | None:
+        if value is not None and (not math.isfinite(value) or not 0 <= value <= 1):
+            raise ValueError("score must be a finite probability between zero and one")
+        return value
+
+
+class DLScoreResponse(BaseModel):
+    """Strict envelope returned by the optional DL MCP server."""
+
+    model_config = ConfigDict(extra="forbid", strict=True)
+
+    status: Literal["ready", "not_ready"]
+    scores: list[DLChunkScore]
+    message: StrictStr | None = None
+
+
 class WebSearchResultPayload(BaseModel):
     """Validated untrusted search result used to choose a page URL."""
 
@@ -172,8 +207,9 @@ class _ValidatedCall(BaseModel):
 class Researcher:
     """Research plan tasks with LLM-selected calls to named MCP servers.
 
-    The MCP client must already have `rag` and `web` servers connected. Each
-    tool invocation is made once with retries disabled, so the configured call
+    The MCP client must already have `rag` and `web` servers connected. When
+    enabled, local search results are reranked through the optional `dl-model`
+    server. Every invocation is made once with retries disabled, so the call
     budget bounds MCP invocations as well as model-selected actions.
     """
 
@@ -188,6 +224,7 @@ class Researcher:
         local_top_k: int = 5,
         web_max_results: int = 5,
         mcp_timeout_seconds: float = 20.0,
+        use_dl_scorer: bool | None = None,
     ) -> None:
         self._mcp = mcp_client
         self._llm = llm_client if llm_client is not None else OllamaClient()
@@ -204,6 +241,13 @@ class Researcher:
         )
         self.local_top_k = _positive_int(local_top_k, "local_top_k", maximum=50)
         self.web_max_results = _positive_int(web_max_results, "web_max_results", maximum=10)
+        if use_dl_scorer is None:
+            from ara.config import load_settings
+
+            use_dl_scorer = load_settings().dl_use_scorer
+        if not isinstance(use_dl_scorer, bool):
+            raise ValueError("use_dl_scorer must be a boolean")
+        self.use_dl_scorer = use_dl_scorer
         if (
             isinstance(mcp_timeout_seconds, bool)
             or not isinstance(mcp_timeout_seconds, (int, float))
@@ -330,6 +374,95 @@ class Researcher:
                                     local_top_k=self.local_top_k,
                                     web_max_results=self.web_max_results,
                                 )
+                                if (
+                                    self.use_dl_scorer
+                                    and validated_call.tool_name == "search_knowledge_base"
+                                    and candidates
+                                ):
+                                    if tool_calls_made < self.max_tool_calls:
+                                        query = validated_call.arguments["query"]
+                                        if not isinstance(query, str):
+                                            raise ResearcherError(
+                                                "validated local query was not text"
+                                            )
+                                        score_ids = [item.chunk_id for item in candidates]
+                                        score_arguments = {
+                                            "query": query,
+                                            "chunk_ids": score_ids,
+                                        }
+                                        tool_calls_made += 1
+                                        score_started = time.perf_counter()
+                                        score_summary = "status=fallback; error_type=unknown"
+                                        try:
+                                            score_result = await self._mcp.call_tool(
+                                                "dl-model",
+                                                "score_chunks",
+                                                score_arguments,
+                                                timeout_seconds=self.mcp_timeout_seconds,
+                                                retries=0,
+                                            )
+                                            if score_result.is_error:
+                                                score_summary = (
+                                                    "status=fallback; reason=mcp_error"
+                                                )
+                                            elif not isinstance(
+                                                score_result.structured_content, Mapping
+                                            ):
+                                                score_summary = (
+                                                    "status=fallback; reason=missing_response"
+                                                )
+                                            else:
+                                                score_payload = DLScoreResponse.model_validate(
+                                                    score_result.structured_content
+                                                )
+                                                if score_payload.status == "not_ready":
+                                                    score_summary = (
+                                                        "status=not_ready; fallback=true"
+                                                    )
+                                                else:
+                                                    candidates, response = _apply_dl_scores(
+                                                        candidates,
+                                                        response,
+                                                        score_payload,
+                                                    )
+                                                    scored_count = len(score_payload.scores)
+                                                    score_summary = (
+                                                        f"status=ready; scored={scored_count}; "
+                                                        "evidence_reordered=true"
+                                                    )
+                                        except Exception as exc:
+                                            score_summary = (
+                                                "status=fallback; "
+                                                f"error_type={type(exc).__name__}"
+                                            )
+                                        _emit_trace(
+                                            trace_callback,
+                                            state,
+                                            event="tool_call",
+                                            task_id=task.task_id,
+                                            tool_name="score_chunks",
+                                            server_name="dl-model",
+                                            tool_arguments=_trace_arguments(
+                                                {
+                                                    "query": query,
+                                                    "chunk_ids": ",".join(score_ids),
+                                                    "candidate_count": len(score_ids),
+                                                }
+                                            ),
+                                            result_summary=score_summary,
+                                            latency_ms=(time.perf_counter() - score_started)
+                                            * 1_000,
+                                            is_untrusted=True,
+                                        )
+                                    else:
+                                        _emit_trace(
+                                            trace_callback,
+                                            state,
+                                            event="scorer_skipped",
+                                            task_id=task.task_id,
+                                            server_name="dl-model",
+                                            result_summary="tool_budget_limit",
+                                        )
                                 added, evidence_limit_hit = _add_evidence(
                                     state,
                                     candidates,
@@ -542,6 +675,41 @@ def _evidence_from_result(
             raise ResearcherError("fetched page result did not match the evidence schema") from exc
         return [item]
     raise ResearcherError(f"no evidence conversion is defined for tool {tool_name!r}")
+
+
+def _apply_dl_scores(
+    candidates: Sequence[EvidenceItem],
+    response: Mapping[str, Any],
+    payload: DLScoreResponse,
+) -> tuple[list[EvidenceItem], Mapping[str, Any]]:
+    """Rank only the exact local candidates returned by the retrieval tool."""
+    score_by_id = {score.chunk_id: score.relevance_score for score in payload.scores}
+    candidate_ids = [candidate.chunk_id for candidate in candidates]
+    if len(score_by_id) != len(payload.scores) or set(score_by_id) != set(candidate_ids):
+        raise ResearcherError("DL scorer returned missing, duplicate, or unknown chunk IDs")
+
+    ranked_candidates = sorted(
+        candidates,
+        key=lambda candidate: -score_by_id[candidate.chunk_id],
+    )
+    raw_records = response.get("results")
+    if not isinstance(raw_records, list):
+        raise ResearcherError("local search result did not contain a results list")
+    candidate_id_set = set(candidate_ids)
+    record_by_id = {
+        record.get("chunk_id"): record
+        for record in raw_records
+        if isinstance(record, Mapping)
+        and isinstance(record.get("chunk_id"), str)
+        and record.get("chunk_id") in candidate_id_set
+    }
+    if set(record_by_id) != set(candidate_ids):
+        raise ResearcherError("local search result IDs changed before DL reranking")
+    ranked_response = {
+        **response,
+        "results": [record_by_id[item.chunk_id] for item in ranked_candidates],
+    }
+    return ranked_candidates, ranked_response
 
 
 def _local_evidence(record: object) -> EvidenceItem:

@@ -55,6 +55,7 @@ _ENV_FIELDS = {
     "ARA_DL_CURVES_PATH": "dl_curves_path",
     "ARA_DL_METRICS_PATH": "dl_metrics_path",
     "ARA_DL_USE_SYNTHETIC_PAIRS": "dl_use_synthetic_pairs",
+    "ARA_DL_USE_SCORER": "dl_use_scorer",
     "ARA_DL_DENSE_MODEL": "dl_dense_model",
     "ARA_DL_DENSE_MODEL_REVISION": "dl_dense_model_revision",
     "ARA_DL_EVAL_CANDIDATE_K": "dl_eval_candidate_k",
@@ -101,6 +102,7 @@ class Settings(BaseSettings):
     dl_curves_path: Path = Path("outputs/dl_training_loss.png")
     dl_metrics_path: Path = Path("outputs/dl_training_metrics.json")
     dl_use_synthetic_pairs: bool = True
+    dl_use_scorer: bool = False
     dl_dense_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     dl_dense_model_revision: str = "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
     dl_eval_candidate_k: int = Field(default=20, ge=1, le=200)
@@ -181,6 +183,7 @@ def load_settings(
         "dl_curves_path": paths.get("dl_curves_path"),
         "dl_metrics_path": paths.get("dl_metrics_path"),
         "dl_use_synthetic_pairs": dl.get("use_synthetic_pairs"),
+        "dl_use_scorer": dl.get("use_scorer"),
         "dl_dense_model": dl.get("dense_model"),
         "dl_dense_model_revision": dl.get("dense_model_revision"),
         "dl_eval_candidate_k": dl.get("eval_candidate_k"),

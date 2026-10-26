@@ -49,6 +49,7 @@ dl:
   early_stopping_patience: 2
   early_stopping_min_delta: 0.0
   use_synthetic_pairs: true
+  use_scorer: false
   dense_model: sentence-transformers/all-MiniLM-L6-v2
   dense_model_revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
   eval_candidate_k: 20
