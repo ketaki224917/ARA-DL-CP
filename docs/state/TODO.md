@@ -65,7 +65,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [~] P6.4 Stable Diffusion illustration flag - dropped: optional stretch is outside the CPU-first acceptance path; Mermaid diagrams and Piper narration cover required generated visuals/audio.
 
 ## Phase 7 — Polish & ship
-- [ ] P7.1 CLI polish, Makefile targets (`setup|ingest|serve|run|eval|train|test`)
+- [x] P7.1 CLI polish, Makefile targets (`setup|ingest|serve|run|eval|train|test`); command help and delegation tests pass (full suite 293 passed; GNU Make unavailable on host)
 - [ ] P7.2 README (Mermaid architecture, real results, usage, troubleshooting)
 - [ ] P7.3 docs/design_decisions.md + architecture.md
 - [ ] P7.4 Three finished example reports in outputs/

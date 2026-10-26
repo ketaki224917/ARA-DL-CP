@@ -344,3 +344,9 @@ Done: Marked the optional illustration flag dropped with reason. The host is CPU
 Evidence: Hardware probe in ENVIRONMENT.md records no supported CUDA/MPS accelerator; P6.1 verified Mermaid-to-SVG and P6.2 verified local Piper WAV synthesis. No diffusion model was downloaded or run.
 Files: `docs/state/TODO.md`, `docs/state/DECISIONS.md`, `docs/state/PROGRESS.md`, `docs/state/HANDOFF.md`, and `docs/state/SESSIONS.md`.
 Notes: Reopen only after a pinned model/license review and a measured run on available hardware.
+
+### 2026-10-26 - P7.1 - Polish the CLI and Makefile targets
+Done: Added `ara serve-mcp --server`, `ara run --topic` with research/report stopping points and bounded revision count, and `ara train`/`ara eval` argument forwarding to the existing DL entry points. Kept `ask` and `ingest`. Updated locked Makefile commands, added independent MCP-server targets and argument passthrough, and documented invocation in README. Logged ADR-041.
+Evidence: `.tools/reports-venv/Scripts/python.exe -m pytest tests/test_cli.py -q` -> 7 passed. Full suite -> 293 passed in 62.27s. Ruff -> clean; MyPy -> no issues in 59 source files; `git diff --check` -> passed. `.tools/reports-venv/Scripts/ara.exe --help` listed the new commands; `python -m ara.cli eval --help` and `train --help` showed delegated module flags. GNU Make and a bundled Make executable were NOT FOUND, so Make targets could not be invoked here.
+Files: `src/ara/cli.py`, `tests/test_cli.py`, `Makefile`, `README.md`, and state files. Source commit: `6b89e02`.
+Notes: Live `ara run` was not executed because Ollama is unavailable under ENV-002. `ara eval` requires the prepared SciFact split and model weights; its default also trains the random-negative control.
