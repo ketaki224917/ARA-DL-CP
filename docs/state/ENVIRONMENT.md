@@ -1,25 +1,25 @@
 # Environment
 
-Updated: 2026-10-26 (session 1)
+Updated: 2026-10-26 (session 1; D: relocation and live run verification)
 
 - OS/shell: Windows 11; PowerShell.
 - CPU: Intel64 Family 6 Model 170 Stepping 4, GenuineIntel; 18 logical processors.
 - RAM: 16,660,357,120 bytes (15.52 GiB), detected through `psutil.virtual_memory()`.
 - GPU/VRAM: No supported CUDA/MPS adapter detected; CPU PyTorch reports `torch.cuda.is_available() == False`. `nvidia-smi` is unavailable, so exact display adapter/VRAM details remain unknown.
-- Python: 3.12.15 managed by uv at `.tools/python/cpython-3.12.15-windows-x86_64-none`; no PATH or registry change.
-- uv: 0.13.4 at `.tools/uv/uv.exe`.
-- Project environments: `.venv` is the original dev environment. A clean `.tools/dl-venv` was synced with `uv sync --locked --extra dev --extra dl` after stale `.venv` metadata caused an access-denied cleanup error. The DL environment has Python 3.12.15, PyTorch `2.14.1+cpu`, Transformers `4.57.6`, Matplotlib `3.11.2`, pytest 8.4.2, Ruff 0.17.2, and mypy 1.20.2. `uv.lock` pins the full dependency graph.
+- Python: 3.12.15 managed by uv at `D:\DL CP\.tools\uv-python\cpython-3.12.15-windows-x86_64-none`.
+- uv: 0.13.4 at `D:\DL CP\.tools\uv\uv.exe`; package cache at `D:\DL CP\.tools\uv-cache`.
+- Project environments: `.venv` was rebuilt on D: with `uv sync --locked --extra dev --extra dl --extra tts`; it has the complete 137-package locked environment. `.tools/dl-venv`, `.tools/tts-venv`, and `.tools/reports-venv` were copied with the checkout. The D: uv Python runtime also keeps the old C: interpreter path working through a compatibility junction. `uv.lock` pins the full dependency graph.
 - TTS environment: `.tools/tts-venv` was synced with `uv sync --locked --extra dev --extra dl --extra tts`; it includes Piper `1.8.0`, ONNX Runtime `1.31.0`, Hugging Face Hub `0.36.2`, and truststore `0.10.5`. Piper is an optional `tts` extra and is GPL-3.0-or-later. The selected `en_US-sam-medium` voice files are cached at ignored `models/tts/` from pinned `rhasspy/piper-voices` revision `b145f2ac26522d6a2ccde0164b7b0e48b1e3199c`; the voice model card points to an Apache-2.0 training dataset. Re-download with `python -m ara.generative.tts --download-voice` or `make tts-model` after installing the TTS extra.
-- Package index: PyPI resolution/download works when `UV_SYSTEM_CERTS=true`. Default uv cache lock access was denied outside the workspace; set `UV_CACHE_DIR=.tools/uv-cache` for commands.
-- Git: 2.55.0 available. GNU Make 4.4.1 is installed at `C:\msys64\usr\bin\make.exe`; `C:\msys64\usr\bin` is in the current user's PATH. Ollama's install folder is also in the user PATH. Existing terminals need to be restarted to pick up these PATH entries.
-- Ollama/model weights: Ollama 0.40.11 is installed under `%LOCALAPPDATA%\Programs\Ollama`; its API responds at `http://localhost:11434`. `qwen2.5:1.5b` (986,061,892 bytes, Q4_K_M) and `embeddinggemma:latest` (621,875,917 bytes, BF16) are pulled under the user model cache. The chat endpoint and embedding endpoint both returned HTTP 200. The `cross-encoder/ms-marco-MiniLM-L6-v2` checkpoint and tokenizer are cached under ignored `models/huggingface/` at revision `df500e56a59fc34f37322735a40eff666200312e`; CPU inference returned one finite relevance logit. The 90,870,598-byte weights file and tokenizer cache are not committed.
+- Package index: PyPI resolution/download works when `UV_SYSTEM_CERTS=true`; uv uses the D: cache and managed Python paths configured in the current user's environment.
+- Git: 2.55.0 available. GNU Make 4.4.1 is at `D:\msys64\usr\bin\make.exe`; `D:\msys64\usr\bin`, `D:\Ollama\app`, and `D:\DL CP\.tools\uv` are in the user's PATH. Existing terminals need to be restarted to pick up the new entries.
+- Ollama/model weights: Ollama 0.40.11 is installed at `D:\Ollama\app`; its model/config data is at `D:\Ollama\user-data` and `OLLAMA_MODELS` points to `D:\Ollama\user-data\models`. Its API responds at `http://localhost:11434`. `qwen2.5:1.5b` (986,061,892 bytes, Q4_K_M) and `embeddinggemma:latest` (621,875,917 bytes, BF16) are available. The `cross-encoder/ms-marco-MiniLM-L6-v2` checkpoint and tokenizer are cached under ignored `models/huggingface/` at revision `df500e56a59fc34f37322735a40eff666200312e`; CPU inference returned one finite relevance logit. The 90,870,598-byte weights file and tokenizer cache are not committed.
 - Training artifacts: three CPU epochs completed with best validation BCE `0.309428`; metrics and loss curve are tracked at `outputs/dl_training_metrics.json` and `outputs/dl_training_loss.png`. The fine-tuned 90,891,664-byte checkpoint currently exists at ignored `models/checkpoints/reranker.pt` but is not committed and must be recreated by training in a fresh checkout.
 - Export/inference: `python -m ara.dl.export` writes the validated 90,891,152-byte bundle to ignored `models/exported/reranker.pt`. `ara-dl-model-mcp` loads the bundle and tokenizer lazily on its first valid scoring call; a real MCP client scored two in-memory chunks on CPU with `dl_batch_size=1`. Recreate the source checkpoint by training, then run the export command. Neither trained checkpoint nor exported bundle is committed.
 - Researcher reranking: optional and disabled by default (`dl.use_scorer: false`, `ARA_DL_USE_SCORER=false`). Enable it only when the caller connects the named `dl-model` MCP server and the exported bundle exists; unavailable scores preserve the original retrieval order.
 - Evaluation artifacts: the pinned `sentence-transformers/all-MiniLM-L6-v2` encoder is cached under ignored `models/huggingface/` at revision `1110a243fdf4706b3f48f1d95db1a4f5529b4d41`; its document embedding cache is ignored at `data/indexes/dl_eval_test_embeddings.pt`. P5.5 compared 30 internal held-out SciFact queries. The random-negative control checkpoint is also ignored at `models/checkpoints/reranker_random_negatives.pt`; both learned checkpoints can be regenerated with `python -m ara.dl.train` and the evaluator's default ablation.
 - Diagram tools: `dot`, Mermaid CLI (`mmdc`), Node, and npm were not found on PATH. ARA renders the constrained Mermaid subset with its standard-library SVG fallback; the optional Graphviz subprocess path is covered by a mocked test but has not been run against an installed Graphviz binary.
 - Audio smoke: `python scripts/tts_synthesis_smoke.py` synthesized a controlled 185-word narration to ignored `outputs/generated/p6_2_voice_smoke.wav`; the last run was 68.79 seconds, 22,050 Hz, mono, 3,033,644 bytes. The pinned voice is present under `models/tts/`; live LLM narration remains unverified because the report writer timed out.
-- Services/ports: the Ollama app is running and serves `localhost:11434`; `GET /api/version` returned `0.40.11`.
+- Services/ports: the D: Ollama server is running and serves `localhost:11434`; `GET /api/version` returned `0.40.11`.
 
 - Report generation: `.tools/reports-venv` synced with locked `dev`, `dl`, and `tts` extras; Markdown-it `4.2.0`, ReportLab `5.1.0`, and svglib `2.3.2` are core locked dependencies. Poppler is NOT FOUND. The `make setup` sync removed QA-only `pypdfium2 5.14.0` because it is not a project dependency; recreate a separate PDF rendering environment before visual QA. Demo report bundle and rendered page are ignored under `outputs/generated/p6_3_demo/`.
 - Fresh-clone regression probe: `.tools/p7_5_clone/` remains a historical local shared clone at P7.4, with 137 packages installed and `ara --help` verified. The current main checkout now passes `make setup UV=.tools/uv/uv.exe` and `make ingest UV=.tools/uv/uv.exe`; ingestion loaded 21 documents into 33 chunks. A clean clone at the current commit has not yet been exercised. The full live run completed research with six evidence chunks, but the writer's structured-output retry exceeded a 300-second request timeout on this CPU-only host.
@@ -32,14 +32,24 @@ Hardware probing found a CPU-only runtime with 18 logical processors and 15.52 G
 
 ```powershell
 $env:UV_SYSTEM_CERTS = 'true'
-$env:UV_CACHE_DIR = '.tools/uv-cache'
-$env:UV_PROJECT_ENVIRONMENT = '.tools/dl-venv'
-.tools/uv/uv.exe sync --locked --extra dev --extra dl
-.tools/uv/uv.exe run --locked --extra dev --extra dl pytest
-.tools/uv/uv.exe run --locked --extra dev --extra dl ruff check .
-.tools/uv/uv.exe run --locked --extra dev --extra dl mypy src scripts
+$env:UV_CACHE_DIR = 'D:\DL CP\.tools\uv-cache'
+$env:UV_PYTHON_INSTALL_DIR = 'D:\DL CP\.tools\uv-python'
+make setup
+make test
+make lint
+uv run --locked mypy src/ara
+make ingest
 ```
 
 On this Windows host, Hugging Face HTTPS needed `truststore.inject_into_ssl()` before importing Transformers because `requests`' bundled CA store did not trust the available system chain. Keep certificate validation enabled. Hugging Face warns that symlinks are unavailable under the current permissions; its cache falls back to copies and remains usable.
 
-GNU Make and Ollama are installed on this host. In a new PowerShell session, use `make setup UV=.tools/uv/uv.exe`, `make ingest UV=.tools/uv/uv.exe`, and `make run TOPIC="..." UV=.tools/uv/uv.exe`. Set `UV_SYSTEM_CERTS=true`, `UV_CACHE_DIR=.tools/uv-cache`, and `UV_PROJECT_ENVIRONMENT=.tools/reports-venv` for this workspace. The current Ollama service is running on `localhost:11434` with both configured models pulled.
+GNU Make and Ollama are installed on this host. In a new PowerShell session, run `make setup`, `make ingest`, and `make run TOPIC="..."`. The user's PATH and `UV_CACHE_DIR`, `UV_PYTHON_INSTALL_DIR`, `UV_SYSTEM_CERTS`, and `OLLAMA_MODELS` variables now point to D:. No project-wide `UV_PROJECT_ENVIRONMENT` override is set; uv uses the rebuilt `.venv` at the D: checkout by default.
+
+## D: relocation
+
+- Working tree and Git history: `D:\DL CP` (HEAD was `f7db79a` before the current researcher fix and state update). The C: OneDrive checkout is retained until this D: state commit is complete, then removed without a junction so it does not sync the project back from D:.
+- Ollama install: `D:\Ollama\app`; models, keys, and user data: `D:\Ollama\user-data`; app data: `D:\Ollama\appdata`.
+- GNU Make/MSYS2: `D:\msys64`; uv cache: `D:\DL CP\.tools\uv-cache`; uv Python: `D:\DL CP\.tools\uv-python`.
+- Compatibility junctions at the former C: Ollama, MSYS2, uv-cache, and uv-Python paths point to their D: locations. The user Ollama and MSYS2 shortcuts were changed to D: targets.
+- Verification: `make test` → 299 passed; `make lint` → all checks passed; `mypy src/ara` → no issues in 55 source files; `make ingest` → 21 sources and 33 chunks, skipped as current. Ollama 0.40.11 found both models, generated a chat response, and returned 768-dimensional embeddings from the D: model store.
+- A live RRF run (`traces/68977c5a620d42338654bb2a051229c5.jsonl`) completed three research tasks and stored six local evidence chunks; the writer hit the 300-second CPU timeout. It did not produce a report bundle; RUN-001 remains open.

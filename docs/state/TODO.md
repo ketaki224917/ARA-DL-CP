@@ -2,6 +2,9 @@
 
 Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 
+## Environment maintenance
+- [x] ENV-005 Relocate the full checkout, uv/Python runtime, Make/MSYS2, Ollama install, model store, and user launch paths to D:; verify the D: environment before removing the OneDrive checkout copy.
+
 ## Phase 0 — Foundations
 - [x] P0.1 Create repo skeleton, pyproject, uv lock, Makefile, ruff/mypy/pytest config (uv.lock created; full tests, Ruff, and mypy pass)
 - [x] P0.2 Create `docs/state/*` from templates; write `AGENTS.md` from supplied prompt
@@ -69,7 +72,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P7.2 README (Mermaid architecture, verified usage, measured DL table, explicit NOT RUN retrieval table, demo caveats, troubleshooting)
 - [x] P7.3 docs/design_decisions.md + architecture.md (implementation-grounded diagrams, rationale, measured tradeoffs, limitations, and next steps)
 - [x] P7.4 Three complete curated report bundles in outputs/examples/ (MD/HTML/PDF, Mermaid/SVG, Piper WAV, stored source chunks; four real chunk IDs validated; all PDFs visually inspected)
-- [>] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (Make/Ollama installed; setup and ingest pass in main checkout; researcher completes locally; writer now has a 768-token cap, bounded claims, and citation IDs constrained to evidence, but the MCP-topic live probe safely abstained; full report bundle remains open under RUN-001)
+- [>] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (D: environment and ingestion verified; researcher now adds local RAG evidence after a web-only task; live RRF run gathered six chunks but the writer hit the 300-second CPU timeout; complete report bundle remains open under RUN-001)
 - [~] P7.6 (stretch) LoRA fine-tune for report style, with before/after comparison - dropped for this CPU-only pass; no local chat model is available and LoRA is outside final acceptance (ADR-044)
 - [x] P7.7 Final Acceptance Checklist verification (audit recorded in PROGRESS.md; project remains incomplete on open environment/evaluation gates)
 

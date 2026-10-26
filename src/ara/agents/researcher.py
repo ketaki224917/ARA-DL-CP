@@ -307,6 +307,8 @@ class Researcher:
                 task.status = "in_progress"
                 task_tool_calls_start = tool_calls_made
                 task_evidence_start = len(evidence_ids_added)
+                task_had_web_search = False
+                task_had_local_search = False
                 _emit_trace(
                     trace_callback,
                     state,
@@ -322,21 +324,36 @@ class Researcher:
                             TOOL_DEFINITIONS,
                             temperature=0.0,
                         )
+                        fallback_selected = False
                         if not calls:
-                            task.status = "completed"
-                            completed_task_ids.append(task.task_id)
-                            _emit_trace(
-                                trace_callback,
-                                state,
-                                event="task_completed",
-                                task_id=task.task_id,
-                                result_summary=(
-                                    f"tool_calls={tool_calls_made - task_tool_calls_start}; "
-                                    f"evidence_added="
-                                    f"{len(evidence_ids_added) - task_evidence_start}"
-                                ),
+                            needs_local_fallback = (
+                                task_had_web_search
+                                and not task_had_local_search
+                                and len(evidence_ids_added) == task_evidence_start
                             )
-                            break
+                            if needs_local_fallback and tool_calls_made < self.max_tool_calls:
+                                calls = [
+                                    ToolCall(
+                                        name="search_knowledge_base",
+                                        arguments={"query": task.question},
+                                    )
+                                ]
+                                fallback_selected = True
+                            else:
+                                task.status = "completed"
+                                completed_task_ids.append(task.task_id)
+                                _emit_trace(
+                                    trace_callback,
+                                    state,
+                                    event="task_completed",
+                                    task_id=task.task_id,
+                                    result_summary=(
+                                        f"tool_calls={tool_calls_made - task_tool_calls_start}; "
+                                        f"evidence_added="
+                                        f"{len(evidence_ids_added) - task_evidence_start}"
+                                    ),
+                                )
+                                break
 
                         for call in calls:
                             _emit_trace(
@@ -346,6 +363,12 @@ class Researcher:
                                 task_id=task.task_id,
                                 tool_name=call.name,
                                 tool_arguments=_trace_arguments(call.arguments),
+                                result_summary=(
+                                    "selected_by=local_evidence_fallback; "
+                                    "reason=web_search_added_no_evidence"
+                                    if fallback_selected
+                                    else None
+                                ),
                             )
                         validated_calls = [
                             _validate_tool_call(
@@ -361,6 +384,10 @@ class Researcher:
                                 tool_budget_exhausted = True
                                 budget_blocking = True
                                 break
+                            if validated_call.tool_name == "web_search":
+                                task_had_web_search = True
+                            elif validated_call.tool_name == "search_knowledge_base":
+                                task_had_local_search = True
                             tool_calls_made += 1
                             call_started = time.perf_counter()
                             try:

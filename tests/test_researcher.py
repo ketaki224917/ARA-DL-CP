@@ -440,6 +440,52 @@ def test_researcher_uses_search_result_to_fetch_citable_web_text() -> None:
     assert malicious_snippet == observed_snippet
 
 
+def test_web_search_without_citable_evidence_falls_back_to_local_rag() -> None:
+    llm = FakeLLM(
+        [
+            [_call("web_search", {"query": "reciprocal rank fusion"})],
+            [],
+            [],
+            [],
+            [],
+        ]
+    )
+    mcp = FakeMCPClient(
+        {
+            ("web", "web_search"): _web_search_payload("Search snippets are leads only."),
+            ("rag", "search_knowledge_base"): _local_result(
+                text="RRF combines ranked lists using reciprocal rank contributions."
+            ),
+        }
+    )
+    state = _state()
+    traces: list[TraceEvent] = []
+
+    summary = asyncio.run(
+        Researcher(mcp, llm).research(state, trace_callback=traces.append)
+    )
+
+    assert summary.tool_calls_made == 2
+    assert summary.evidence_ids_added == ["chunk:local-one"]
+    assert summary.completed_task_ids == ["first", "second", "third"]
+    assert [call[1] for call in mcp.calls] == [
+        "web_search",
+        "search_knowledge_base",
+    ]
+    assert mcp.calls[1][2] == {
+        "query": "Find the first evidence.",
+        "top_k": 5,
+        "candidate_k": 20,
+    }
+    assert llm.requests[2][-1]["tool_name"] == "search_knowledge_base"
+    assert any(
+        event.event == "tool_selected"
+        and event.result_summary
+        == "selected_by=local_evidence_fallback; reason=web_search_added_no_evidence"
+        for event in traces
+    )
+
+
 @pytest.mark.parametrize(
     "tool_call",
     [
