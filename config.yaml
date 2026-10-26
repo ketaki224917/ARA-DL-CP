@@ -17,6 +17,7 @@ paths:
   dl_public_archive_path: data/dl_data/cache/scifact.tar.gz
   dl_model_cache_dir: models/huggingface
   dl_checkpoint_path: models/checkpoints/reranker.pt
+  dl_export_path: models/exported/reranker.pt
   dl_curves_path: outputs/dl_training_loss.png
   dl_metrics_path: outputs/dl_training_metrics.json
   dl_eval_metrics_path: outputs/dl_evaluation_metrics.json

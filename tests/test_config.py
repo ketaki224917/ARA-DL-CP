@@ -40,6 +40,7 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
             "ARA_DL_LEARNING_RATE": "0.001",
             "ARA_DL_EARLY_STOPPING_PATIENCE": "4",
             "ARA_DL_CHECKPOINT_PATH": "checkpoints/test.pt",
+            "ARA_DL_EXPORT_PATH": "exports/test.pt",
             "ARA_DL_USE_SYNTHETIC_PAIRS": "false",
             "ARA_DL_DENSE_MODEL": "tiny-dense-test",
             "ARA_DL_EVAL_CANDIDATE_K": "12",
@@ -65,6 +66,7 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
     assert settings.dl_learning_rate == pytest.approx(0.001)
     assert settings.dl_early_stopping_patience == 4
     assert settings.dl_checkpoint_path == Path("checkpoints/test.pt")
+    assert settings.dl_export_path == Path("exports/test.pt")
     assert settings.dl_use_synthetic_pairs is False
     assert settings.dl_dense_model == "tiny-dense-test"
     assert settings.dl_eval_candidate_k == 12
@@ -94,6 +96,7 @@ def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
     assert settings.dl_weight_decay == pytest.approx(0.01)
     assert settings.dl_early_stopping_patience == 2
     assert settings.dl_checkpoint_path == Path("models/checkpoints/reranker.pt")
+    assert settings.dl_export_path == Path("models/exported/reranker.pt")
     assert settings.dl_curves_path == Path("outputs/dl_training_loss.png")
     assert settings.dl_metrics_path == Path("outputs/dl_training_metrics.json")
     assert settings.dl_use_synthetic_pairs is True

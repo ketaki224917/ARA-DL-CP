@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import sys
 from pathlib import Path
 
@@ -13,7 +14,11 @@ from ara.mcp_client.client import MCPClient
 _PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_all_ara_servers_start_over_stdio_and_expose_expected_tools() -> None:
+def test_all_ara_servers_start_over_stdio_and_expose_expected_tools(
+    monkeypatch, tmp_path
+) -> None:
+    monkeypatch.setenv("ARA_DL_EXPORT_PATH", str(tmp_path / "missing-model.pt"))
+
     async def exercise() -> None:
         server_modules = {
             "rag": "ara.mcp_servers.rag_server",
@@ -28,6 +33,14 @@ def test_all_ara_servers_start_over_stdio_and_expose_expected_tools() -> None:
                         command=sys.executable,
                         args=["-m", module],
                         cwd=str(_PROJECT_ROOT),
+                        env=(
+                            {
+                                **os.environ,
+                                "ARA_DL_EXPORT_PATH": str(tmp_path / "missing-model.pt"),
+                            }
+                            if name == "dl-model"
+                            else None
+                        ),
                     ),
                 )
 
