@@ -45,8 +45,8 @@ Rules:
 - Use exactly these sections, in this order: Key findings, Evidence synthesis,
   Limitations, Conclusion. Keep every section focused on the research topic.
 - Be concise for a small local model: use one short summary claim and at most one
-  claim per section. Keep each claim to one complete sentence of at most 10 words
-  and 80 characters, then cite only the supplied evidence that directly supports it.
+  claim per section. Keep each claim to one complete sentence of at most 30 words
+  and 256 characters, then cite only the supplied evidence that directly supports it.
 - If the evidence is insufficient to write a supported report, set `abstain` to
   true, give a brief reason, set `title` to null, and return empty `summary` and
   `sections` arrays.

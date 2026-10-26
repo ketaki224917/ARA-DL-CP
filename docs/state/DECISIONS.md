@@ -311,3 +311,9 @@ Context: Live runs at three output caps reached each claim's character bound wit
 Options considered: Accept incomplete fragments; perform text repair after generation; add a JSON Schema pattern and matching Pydantic field constraint for a terminal `.`, `!`, or `?`.
 Decision: Keep sentence validation fail-closed and put `pattern: ".*[.!?]\\s*$"` in the generated JSON Schema through the Pydantic `Field` definition. Keep the 80-character/10-word cap and 768-token writer budget from ADR-051.
 Consequences / how to reverse: The local model receives a machine-readable sentence-ending requirement, and deterministic Pydantic validation remains in place. This is unit-tested but not yet live-verified; do not claim the writer works until a live report passes.
+
+## ADR-053: Allow complete local writer sentences up to 256 characters [DECISION] Date: 2026-10-26 Status: active
+Context: The punctuation schema caused Qwen to finish sentences, but direct calls returned completed summary sentences longer than the 80- and 180-character caps. At 256 characters, one direct call produced a valid five-section report with all sentence and citation checks passing.
+Options considered: Drop the maximum and rely on prompt guidance; keep the 180-character limit despite the direct live failure; set a 256-character cap and retain the terminal punctuation pattern and one-ID citation schema.
+Decision: Supersede ADR-051's 80-character/10-word limit with a 256-character/30-word bound. Keep the JSON Schema terminal punctuation pattern from ADR-052, keep the 768-token output cap and reduced evidence context, and retain fail-closed Pydantic validation.
+Consequences / how to reverse: A real local writer call returned a validated report with five sections and two known citation IDs in about 20 seconds. This validates only the writer stage; RUN-001 still requires the complete MCP/revision/diagram/TTS/report pipeline and artifact inspection.

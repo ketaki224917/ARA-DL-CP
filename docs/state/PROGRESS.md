@@ -459,3 +459,9 @@ Done: Added a JSON Schema `pattern` and matching Pydantic `Field` constraint req
 Evidence: `make test` → 303 passed in 23.59s; `make lint` → all checks passed; `mypy src/ara` → no issues in 55 source files; focused writer/revision tests → 18 passed. Live test with the punctuation pattern → NOT RUN.
 Files: `src/ara/agents/writer.py`, `tests/test_writer.py`, and state files.
 Notes: ADR-052 records the change. Previous live failures show the model reaching the claim bound without punctuation; this pattern is exposed in its JSON Schema before the next run.
+
+### 2026-10-26 — P7.5 — Validate the writer with schema-visible punctuation
+Done: Increased the writer claim bound to 256 characters/30 words while keeping the 768-token cap, four-item/3,600-character context, and the JSON Schema terminal-punctuation pattern.
+Evidence: A direct call to the configured Qwen model using two passages from `data/sample_corpus/04_reciprocal_rank_fusion.md`, `Writer(max_retries=0, num_predict=768)`, returned a five-section cited report with both known chunk IDs and no abstention in about 20 seconds. `make test` → 303 passed in 27.30s; `make lint` → all checks passed; `mypy src/ara` → no issues in 55 files; targeted writer/revision tests → 18 passed. Full MCP report bundle → NOT RUN yet.
+Files: `src/ara/agents/writer.py`, `src/ara/agents/prompts/writer.py`, writer tests, and state files.
+Notes: ADR-053 supersedes ADR-051's 80-character limit. The direct writer result demonstrates only the writer stage, not full pipeline acceptance.
