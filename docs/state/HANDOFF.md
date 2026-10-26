@@ -1,20 +1,20 @@
 # HANDOFF (overwritten after every task)
 
 Updated: 2026-10-26 | Session #: 1
-Current phase/task: Phase 7 / P7.5 - fresh-clone regression | Status: blocked on ENV-002; probe recorded
+Current phase/task: Phase 7 / P7.6 - optional LoRA stretch | Status: dropped under ADR-044; next is P7.7
 
-Last source commit: `e225232 [P7.4] Add reproducible example report bundles`; last committed state checkpoint: `c8cbdf7 [STATE] Record P7.4 example report bundles`. P7.5 state update is pending its state commit.
+Last source commit: `e225232 [P7.4] Add reproducible example report bundles`; last state commit: `d3beada [P7.5] Record fresh-clone regression blocker`. P7.6 state update is pending its state commit.
 
 ## Do next (exact)
-1. Finalize the P7.5 state record (`docs/state/TODO.md`, `BLOCKERS.md`, `ENVIRONMENT.md`, `PROGRESS.md`, and this handoff) and commit the recorded probe.
-2. Handle optional P7.6: append a decision explaining whether to defer LoRA on this CPU-only, no-chat-model host; update TODO/progress/handoff and commit.
-3. Audit every final checklist item for P7.7, leave all unrun model/evaluation gates explicit, and request the missing Ollama/Make environment only after the audit.
+1. Commit the P7.6 decision and status in `docs/state/DECISIONS.md`, `TODO.md`, `PROGRESS.md`, `SESSIONS.md`, and this handoff.
+2. For P7.7, compare each final acceptance item with its recorded command/artifact and add an explicit `[x]` or `[!]` result to `docs/state/PROGRESS.md`.
+3. Record the incomplete project status in `docs/state/HANDOFF.md`; ask for the missing Ollama/Make host only after the audit is concrete.
 
 ## Environment state
 Windows 11; PowerShell; Python 3.12.15; uv 0.13.4; CPU-only, 18 logical processors, 15.52 GiB RAM; GPU/VRAM details unknown. Workspace-local uv cache and `.tools/reports-venv` are active. A fresh clone/venv at `.tools/p7_5_clone/` installed 137 packages from `uv.lock`, and its CLI help succeeded. Pinned Piper voice and reranker weights are present in the main checkout's ignored `models/`, but absent from the fresh clone. Configured Ollama chat/embed models are not pulled, and no service is running. Poppler, Node, GNU Make, and Ollama were not found.
 
 ## WIP / uncommitted
-P7.4 code and all three complete report bundles are committed. PDF QA previews and the fresh clone/venv remain ignored under `.tools/` and `outputs/generated/`. Only the P7.5 state update is pending its state commit; no product-code WIP is expected.
+P7.4 code and all three complete report bundles are committed. PDF QA previews and the fresh clone/venv remain ignored under `.tools/` and `outputs/generated/`. P7.5 blocker evidence is committed; only the P7.6 state update is pending its state commit. No product-code WIP is expected.
 
 ## Known failing tests / issues
 No known pytest, Ruff, or MyPy failures. Latest full suite: 295 passed in 62.19s; focused report tests: 12 passed; Ruff clean; MyPy clean for 61 source files. Fresh-clone `uv sync` and `ara --help` passed; direct `ara ingest` and `ara run --topic ... --until research` both failed because the local Ollama endpoint refused connections. P7.5 and the four-way 52-question RAG metrics remain NOT RUN. DL results are descriptive metrics from a 30-query internal SciFact split. Claude Desktop UI was not launched.

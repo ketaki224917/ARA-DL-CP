@@ -257,3 +257,9 @@ Context: Visual QA of the P7.4 examples showed the `Diagrams` heading could rema
 Options considered: Leave the PDF flow unchanged; use page-specific manual spacing; group each figure heading with its SVG/caption and the references heading with its list, then keep diagrams concise enough for the available page area.
 Decision: Build the figure heading, SVG, and caption as one ReportLab `KeepTogether` group. Group the references heading with the list and simplify the provenance example diagram to four nodes.
 Consequences / how to reverse: Section headings remain with their content, and the three current example PDFs render in two pages each. Existing report-builder tests assert that diagram and reference headings share pages with their content. A different page-layout policy should preserve those grouping checks and be visually reviewed after rendering.
+
+## ADR-044: Defer the optional report-style LoRA fine-tune [ASSUMPTION] Date: 2026-10-26 Status: active
+Context: P7.6 is explicitly marked stretch. The detected host is CPU-only, the configured local chat model is not installed, and the required acceptance path does not depend on report-style fine-tuning.
+Options considered: Add and validate a small LoRA training path with an unverified base model; download a larger base model and run a CPU fine-tune without live report comparisons; defer the optional stretch and retain the tested evidence-only Writer/Critic prompts.
+Decision: Mark P7.6 dropped for this pass. Keep the existing deterministic prompts and citation checks; do not claim a style-tuning benefit without a before/after comparison.
+Consequences / how to reverse: No adapter weights, training workflow, or before/after claim are shipped. Revisit when a pinned, licensed base model and enough compute are available for a measured comparison.

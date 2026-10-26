@@ -374,3 +374,8 @@ Done: Created an ignored local shared clone at `.tools/p7_5_clone`, synced its f
 Evidence: `git clone --shared --local . .tools/p7_5_clone` -> clone created. In the clone, `.tools/uv/uv.exe sync --locked --extra dev --extra dl --extra tts` -> installed 137 packages; `.tools/uv/uv.exe run --locked ara --help` -> listed all six CLI commands. `ara ingest` -> loaded 21 source documents, then `httpx.ConnectError [WinError 10061]` for `localhost:11434` during embedding. `ara run --topic "Grid-scale battery storage" --until research` -> same refused connection during the first chat request. `Get-Command make,ollama` -> neither command found. The full regression is NOT RUN to completion; no output report is claimed. P7.5 remains `[!]` under ENV-002.
 Files: `docs/state/TODO.md`, `docs/state/BLOCKERS.md`, `docs/state/ENVIRONMENT.md`, and state files.
 Notes: The fresh clone also omits ignored voice/model weights. README documents the required Ollama model pulls and Piper voice download; those need to be present before the full report command can produce audio.
+
+### 2026-10-26 - P7.6 - Defer optional report-style LoRA
+Done: Dropped the stretch task for this pass under ADR-044. The core report acceptance path does not require LoRA; no adapter benefit is claimed without a pinned base model and measured before/after comparison.
+Evidence: `docs/state/ENVIRONMENT.md` records CPU-only hardware; the configured Ollama chat model is not downloaded or running. No adapter was trained or evaluated.
+Files: `docs/state/TODO.md`, `docs/state/DECISIONS.md`, `docs/state/PROGRESS.md`, and state files.
