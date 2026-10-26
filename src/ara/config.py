@@ -18,6 +18,7 @@ _ENV_FIELDS = {
     "ARA_LLM_REQUEST_TIMEOUT_SECONDS": "llm_request_timeout_seconds",
     "ARA_LLM_TEMPERATURE": "llm_temperature",
     "ARA_LLM_NUM_PREDICT": "llm_num_predict",
+    "ARA_LLM_WRITER_NUM_PREDICT": "llm_writer_num_predict",
     "ARA_EMBEDDING_MODEL": "embedding_model",
     "ARA_EMBEDDING_CACHE_PATH": "embedding_cache_path",
     "ARA_DATA_DIR": "data_dir",
@@ -82,6 +83,7 @@ class Settings(BaseSettings):
     llm_request_timeout_seconds: float = Field(default=120, gt=0)
     llm_temperature: float = Field(default=0.0, ge=0, le=2)
     llm_num_predict: int = Field(default=768, ge=64, le=8192)
+    llm_writer_num_predict: int = Field(default=384, ge=64, le=8192)
     embedding_model: str = "embeddinggemma"
     embedding_cache_path: Path = Path("data/indexes/embeddings.sqlite3")
     data_dir: Path = Path("data")
@@ -169,6 +171,7 @@ def load_settings(
         "llm_request_timeout_seconds": llm.get("request_timeout_seconds"),
         "llm_temperature": llm.get("temperature"),
         "llm_num_predict": llm.get("num_predict"),
+        "llm_writer_num_predict": llm.get("writer_num_predict"),
         "embedding_model": embeddings.get("model"),
         "embedding_cache_path": embeddings.get("cache_path"),
         "data_dir": paths.get("data_dir"),

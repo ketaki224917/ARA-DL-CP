@@ -131,6 +131,7 @@ class _ScriptedWriterLLM:
         *,
         max_retries: int = 3,
         json_schema: Mapping[str, Any] | None = None,
+        num_predict: int | None = None,
     ) -> ReportDraft:
         if schema is not ReportDraft or max_retries != 3 or not self._drafts:
             raise ValueError("unexpected scripted writer request")

@@ -26,7 +26,9 @@ class FakeWriterLLM:
     def __init__(self, draft: ReportDraft | None = None, error: Exception | None = None) -> None:
         self.draft = draft
         self.error = error
-        self.calls: list[tuple[Sequence[ChatMessage], type[ReportDraft], int]] = []
+        self.calls: list[
+            tuple[Sequence[ChatMessage], type[ReportDraft], int, int | None]
+        ] = []
 
     def structured_output(
         self,
@@ -35,9 +37,10 @@ class FakeWriterLLM:
         *,
         max_retries: int = 3,
         json_schema: Mapping[str, Any] | None = None,
+        num_predict: int | None = None,
     ) -> ReportDraft:
         del json_schema
-        self.calls.append((messages, schema, max_retries))
+        self.calls.append((messages, schema, max_retries, num_predict))
         if self.error is not None:
             raise self.error
         if self.draft is None:
@@ -98,9 +101,10 @@ def test_writer_renders_structured_claims_with_inline_known_citations() -> None:
     assert result.markdown.count("[chunk:one]") == 5
     assert result.cited_evidence_ids == ["chunk:one"]
     assert state.draft == result.markdown
-    messages, schema, retries = llm.calls[0]
+    messages, schema, retries, num_predict = llm.calls[0]
     assert schema is ReportDraft
     assert retries == 3
+    assert num_predict is None
     assert "untrusted data" in messages[0]["content"]
     payload = json.loads(messages[1]["content"].partition("\n")[2])
     assert payload["evidence"][0]["is_untrusted"] is True
@@ -179,8 +183,21 @@ def test_writer_uses_cpu_sized_default_evidence_context() -> None:
     Writer(llm).write(_state(*items))
 
     request = json.loads(llm.calls[0][0][1]["content"].partition("\n")[2])
-    assert len(request["evidence"]) == 8
-    assert sum(len(item["text"]) for item in request["evidence"]) == 10_000
+    assert len(request["evidence"]) <= 4
+    assert sum(len(item["text"]) for item in request["evidence"]) == 3_600
+
+
+def test_writer_passes_configured_output_limit() -> None:
+    llm = FakeWriterLLM(_draft())
+
+    Writer(llm, num_predict=256).write(_state(_evidence()))
+
+    assert llm.calls[0][3] == 256
+
+
+def test_writer_rejects_invalid_output_limit() -> None:
+    with pytest.raises(ValueError, match="num_predict must be between"):
+        Writer(num_predict=32)
 
 
 def test_writer_frames_prompt_injection_inside_evidence_as_untrusted_data() -> None:

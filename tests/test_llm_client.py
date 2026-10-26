@@ -58,6 +58,27 @@ def test_structured_output_retries_with_validation_feedback() -> None:
     client.close()
 
 
+def test_structured_output_accepts_writer_output_limit_override() -> None:
+    import json
+
+    requests: list[dict[str, Any]] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(json.loads(request.read()))
+        return json_response({"message": {"content": '{"answer": "brief"}'}})
+
+    client = make_client(handler)
+    result = client.structured_output(
+        [{"role": "user", "content": "answer briefly"}],
+        ShortAnswer,
+        num_predict=256,
+    )
+
+    assert result.answer == "brief"
+    assert requests[0]["options"]["num_predict"] == 256
+    client.close()
+
+
 def test_structured_output_uses_json_repair_as_fallback() -> None:
     def handler(_: httpx.Request) -> httpx.Response:
         return json_response({"message": {"content": '{"answer": "fixed",}'}})

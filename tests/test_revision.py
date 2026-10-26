@@ -241,6 +241,7 @@ class QueueWriterLLM:
         *,
         max_retries: int = 3,
         json_schema: Mapping[str, Any] | None = None,
+        num_predict: int | None = None,
     ) -> ReportDraft:
         assert schema is ReportDraft
         self.messages.append(messages)

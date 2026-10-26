@@ -60,6 +60,7 @@ class OllamaClient:
         *,
         temperature: float | None = None,
         output_format: Mapping[str, Any] | str | None = None,
+        num_predict: int | None = None,
     ) -> str:
         """Send a non-streaming chat request and return assistant text."""
         response = self._post_chat(
@@ -67,6 +68,7 @@ class OllamaClient:
             stream=False,
             temperature=temperature,
             output_format=output_format,
+            num_predict=num_predict,
         )
         message = response.get("message")
         content = message.get("content") if isinstance(message, dict) else None
@@ -81,6 +83,7 @@ class OllamaClient:
         *,
         max_retries: int = 3,
         json_schema: Mapping[str, Any] | None = None,
+        num_predict: int | None = None,
     ) -> ModelT:
         """Ask for JSON, validate it, retry with errors, then attempt JSON repair."""
         if max_retries < 0:
@@ -104,6 +107,7 @@ class OllamaClient:
                 output_format=(
                     schema.model_json_schema() if json_schema is None else json_schema
                 ),
+                num_predict=num_predict,
             )
             try:
                 return schema.model_validate(_decode_json(last_content))
@@ -219,12 +223,14 @@ class OllamaClient:
         temperature: float | None,
         tools: Sequence[Mapping[str, Any]] | None = None,
         output_format: Mapping[str, Any] | str | None = None,
+        num_predict: int | None = None,
     ) -> dict[str, Any]:
         payload = self._chat_payload(
             messages,
             stream=stream,
             temperature=temperature,
             output_format=output_format,
+            num_predict=num_predict,
         )
         if tools is not None:
             payload["tools"] = list(tools)
@@ -250,14 +256,21 @@ class OllamaClient:
         stream: bool,
         temperature: float | None,
         output_format: Mapping[str, Any] | str | None = None,
+        num_predict: int | None = None,
     ) -> dict[str, Any]:
+        if num_predict is not None and (
+            isinstance(num_predict, bool)
+            or not isinstance(num_predict, int)
+            or not 64 <= num_predict <= 8192
+        ):
+            raise ValueError("num_predict must be between 64 and 8192")
         payload: dict[str, Any] = {
             "model": self.model,
             "messages": [dict(message) for message in messages],
             "stream": stream,
             "options": {
                 "temperature": self.temperature if temperature is None else temperature,
-                "num_predict": self.num_predict,
+                "num_predict": self.num_predict if num_predict is None else num_predict,
             },
         }
         if output_format is not None:

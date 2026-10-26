@@ -196,7 +196,7 @@ async def _run_pipeline(
 
             trace_writer = JSONLTraceWriter(state.run_metadata.run_id, settings.trace_dir)
             revision = RevisionLoop(
-                Writer(llm),
+                Writer(llm, num_predict=settings.llm_writer_num_predict),
                 Critic(llm),
                 trace_callback=trace_writer.write,
             ).run(state)

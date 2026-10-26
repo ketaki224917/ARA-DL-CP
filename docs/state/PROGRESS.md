@@ -429,3 +429,9 @@ Status: BLOCKED after D: migration was committed and runtime data backups were r
 Evidence: `Remove-Item -LiteralPath 'C:\Users\ketaki more\OneDrive\Documents\DL CP' -Recurse -Force` stopped at `.pytest_cache` with Access Denied. `icacls` on the parent reports an inherited `Everyone` deny for deleting children; `Get-Acl` on the cache returns unauthorized operation. All C: Ollama/MSYS2/uv compatibility junctions point to D:, and the D: checkout at commit `a9acee5` is clean and verified. No ACL changes were made.
 Files: `docs/state/ENVIRONMENT.md`, `docs/state/TODO.md`, `docs/state/BLOCKERS.md`, and `docs/state/HANDOFF.md`.
 Notes: The D: copy is canonical and usable; the C: OneDrive copy remains until that deny is resolved or the folder is removed through OneDrive itself.
+
+### 2026-10-26 — P7.5 — Bound writer work for the CPU runtime
+Done: Kept the 768-token shared LLM setting for planning/research; added a configurable 384-token writer cap; reduced the writer's default evidence context from eight items/10,000 characters to four items/3,600 characters.
+Evidence: `make test` → 302 passed in 25.49s; `make lint` → all checks passed; `mypy src/ara` → no issues in 55 source files. Targeted writer/client/config regression tests → 28 passed. Live RRF rerun → NOT RUN yet; RUN-001 remains open pending the end-to-end output check.
+Files: `config.yaml`, `.env.example`, `src/ara/config.py`, `src/ara/llm/client.py`, `src/ara/agents/writer.py`, `src/ara/cli.py`, tests, and state files.
+Notes: The separate cap affects only the report writer; prompts remain evidence-only and citations remain schema-constrained. Two test doubles were updated to accept the optional cap.

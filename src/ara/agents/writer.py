@@ -117,6 +117,7 @@ class StructuredWriterLLM(Protocol):
         *,
         max_retries: int = 3,
         json_schema: Mapping[str, Any] | None = None,
+        num_predict: int | None = None,
     ) -> ReportDraft: ...
 
 
@@ -139,8 +140,9 @@ class Writer:
         llm_client: StructuredWriterLLM | None = None,
         *,
         max_retries: int = 3,
-        max_evidence_items: int = 8,
-        max_evidence_chars: int = 10_000,
+        max_evidence_items: int = 4,
+        max_evidence_chars: int = 3_600,
+        num_predict: int | None = None,
     ) -> None:
         if (
             isinstance(max_retries, bool)
@@ -150,6 +152,13 @@ class Writer:
             raise ValueError("max_retries must be between 0 and 3")
         self._llm = llm_client if llm_client is not None else OllamaClient()
         self.max_retries = max_retries
+        if num_predict is not None and (
+            isinstance(num_predict, bool)
+            or not isinstance(num_predict, int)
+            or not 64 <= num_predict <= 8192
+        ):
+            raise ValueError("num_predict must be between 64 and 8192")
+        self.num_predict = num_predict
         self.max_evidence_items = _positive_int(
             max_evidence_items,
             "max_evidence_items",
@@ -187,6 +196,7 @@ class Writer:
                 ReportDraft,
                 max_retries=self.max_retries,
                 json_schema=_report_output_schema(evidence),
+                num_predict=self.num_predict,
             )
         except Exception as exc:
             raise WriterError("Could not produce a validated evidence-grounded report.") from exc
