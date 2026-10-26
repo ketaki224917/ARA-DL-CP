@@ -26,7 +26,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P1.7 Reranker (lazy CrossEncoder adapter; tests pass; model weights not installed)
 - [x] P1.8 answer() with citations + abstention (tests pass)
 - [x] P1.9 Eval set ≥ 40 Q/A (52 rows; factoid, multi-hop, and unanswerable with validated gold chunk IDs)
-- [!] P1.10 Eval harness + comparison table (metrics implemented; real four-system comparison blocked by unavailable Ollama and model weights)
+- [!] P1.10 Eval harness + comparison table (metrics implemented; four real-system comparison still needs the resumable 52-query run)
 - [x] P1.11 `make ingest` idempotent; CLI `ara ingest`/`ara ask` (tests pass; live Ollama CLI run not available)
 
 ## Phase 2 — MCP
@@ -63,7 +63,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P5.8 docs/model_card.md (training, internal held-out evaluation, four observed ranking failures, integration fixture, and limitations documented; checks pass)
 
 ## Phase 6 — Generative layer
-- [x] P6.1 Diagram generation (constrained Mermaid flowchart) + Graphviz/SVG rendering + syntax validation/retry (11 focused tests; built-in SVG used because Graphviz/Mermaid CLI are absent; live Ollama generation NOT RUN)
+- [x] P6.1 Diagram generation (constrained Mermaid flowchart) + Graphviz/SVG rendering + syntax validation/retry and deterministic report-heading fallback (12 focused tests; live invalid Mermaid now falls back safely)
 - [x] P6.2 TTS narration script generation + audio synthesis (Pydantic 170–260 word script; pinned local Piper voice; 185-word CPU smoke rendered 68.79-second WAV; live Ollama script generation NOT RUN)
 - [x] P6.3 report_builder (Markdown/HTML/PDF, figures, references, audio link; 10 focused tests; full suite 289 passed)
 - [~] P6.4 Stable Diffusion illustration flag - dropped: optional stretch is outside the CPU-first acceptance path; Mermaid diagrams and Piper narration cover required generated visuals/audio.
@@ -73,7 +73,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P7.2 README (Mermaid architecture, verified usage, measured DL table, explicit NOT RUN retrieval table, demo caveats, troubleshooting)
 - [x] P7.3 docs/design_decisions.md + architecture.md (implementation-grounded diagrams, rationale, measured tradeoffs, limitations, and next steps)
 - [x] P7.4 Three complete curated report bundles in outputs/examples/ (MD/HTML/PDF, Mermaid/SVG, Piper WAV, stored source chunks; four real chunk IDs validated; all PDFs visually inspected)
-- [>] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (D: environment and ingestion verified; full run retrieved five local chunks but summary exceeded the shared 256-character cap; direct Qwen writer now passes with separate 512-character summary and 256-character section claim schemas; rerun full pipeline under RUN-001)
+- [>] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (D: environment/ingestion verified; diagram fallback added; latest run abstained after the critic flagged one unsupported claim, so supported-claim revision recovery is the next step under RUN-001)
 - [~] P7.6 (stretch) LoRA fine-tune for report style, with before/after comparison - dropped for this CPU-only pass; no local chat model is available and LoRA is outside final acceptance (ADR-044)
 - [x] P7.7 Final Acceptance Checklist verification (audit recorded in PROGRESS.md; project remains incomplete on open environment/evaluation gates)
 

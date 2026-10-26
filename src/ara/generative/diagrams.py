@@ -67,6 +67,7 @@ class DiagramArtifact:
     mermaid: str
     svg: str
     renderer: Literal["graphviz", "builtin-svg"]
+    generation_method: Literal["llm", "report-structure"] = "llm"
     output_path: Path | None = None
 
 
@@ -134,21 +135,32 @@ def generate_diagram(
 
     source = ""
     parsed: _ParsedDiagram | None = None
+    generation_method: Literal["llm", "report-structure"] = "llm"
     for attempt in range(max_retries + 1):
         try:
             response = client.structured_output(messages, DiagramResponse, max_retries=1)
-        except Exception as exc:
+        except Exception:
             logger.exception("Structured diagram generation failed")
-            raise DiagramError("The model could not return a valid diagram response.") from exc
+            source = _report_structure_mermaid(report_markdown)
+            parsed = _parse_mermaid(source)
+            generation_method = "report-structure"
+            break
         source = response.mermaid
         try:
             parsed = _parse_mermaid(source)
             break
         except ValueError as exc:
             if attempt >= max_retries:
-                raise DiagramError(
-                    f"The model returned invalid Mermaid syntax after {attempt + 1} attempts."
-                ) from exc
+                logger.warning(
+                    "Model returned invalid Mermaid syntax after %d attempts; "
+                    "using report headings for a structural diagram: %s",
+                    attempt + 1,
+                    exc,
+                )
+                source = _report_structure_mermaid(report_markdown)
+                parsed = _parse_mermaid(source)
+                generation_method = "report-structure"
+                break
             logger.warning("Generated Mermaid syntax failed validation: %s", exc)
             messages.extend(
                 [
@@ -174,8 +186,29 @@ def generate_diagram(
         mermaid=source,
         svg=svg,
         renderer=renderer,
+        generation_method=generation_method,
         output_path=saved_path,
     )
+
+
+def _report_structure_mermaid(report_markdown: str) -> str:
+    """Build a safe diagram from report headings when model generation fails."""
+    headings = [
+        re.sub(r"\s+", " ", re.sub(r"[`*_]", "", match.group(1))).strip()
+        for line in report_markdown.splitlines()
+        if (match := re.match(r"^\s{0,3}#{1,6}\s+(.+?)\s*#*\s*$", line))
+    ]
+    headings = [heading[:80] for heading in headings if heading][: _MAX_NODES - 1]
+    labels = ["Report", *headings]
+    if len(labels) == 1:
+        labels.append("Cited content" if "[chunk:" in report_markdown else "Report text")
+
+    lines = ["flowchart TD"]
+    for index, label in enumerate(labels, start=1):
+        safe_label = label.replace('"', "")[:80]
+        lines.append(f'N{index}["{safe_label}"]')
+    lines.extend(f"N{index} --> N{index + 1}" for index in range(1, len(labels)))
+    return "\n".join(lines)
 
 
 def _parse_mermaid(source: str) -> _ParsedDiagram:

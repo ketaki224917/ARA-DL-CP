@@ -477,3 +477,9 @@ Done: Updated writer, revision tests, and controlled demo to use the summary-spe
 Evidence: `make test` → 303 passed in 20.42s; `make lint` → all checks passed; `mypy src/ara` → no issues in 55 files. A real Qwen direct call returned a valid five-section report with both supplied citation IDs.
 Files: Writer and revision modules/tests, offline demo, and project state files.
 Notes: The full `ara run` report after the separate-summary fix remains the next P7.5 gate.
+
+### 2026-10-26 — P7.5 — Keep report generation moving after Mermaid errors
+Done: Retained constrained Mermaid validation and retries, then added a deterministic validated diagram from report headings when the model returns invalid syntax or cannot produce structured output. Diagram artifacts now identify whether their diagram came from the model or report structure.
+Evidence: `pytest tests/test_diagrams.py` → 12 passed; full `pytest` → 304 passed in 22.04s; Ruff → all checks passed; MyPy → no issues in 55 source files. Run `b873b03a2c72427199eb6732c7925305` completed research/writing with five chunks but failed diagram validation after three attempts. Follow-up run `ffb3c61542014d55814699761c1abda8` stored five chunks; critic found four of five claims supported, but the revision writer abstained and produced only the abstention report bundle, so the diagram fallback was not reached.
+Files: `src/ara/generative/diagrams.py`, `tests/test_diagrams.py`, `docs/state/TODO.md`, `docs/state/BLOCKERS.md`, and this state log.
+Notes: ADR-055 records that the fallback is structural, not a model-inferred relationship diagram. RUN-001 remains open until a substantive cited bundle is inspected; next, keep supported claims when revision generation abstains.
