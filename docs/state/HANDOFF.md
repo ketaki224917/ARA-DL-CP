@@ -1,28 +1,27 @@
 # HANDOFF (overwritten after every task)
 
 Updated: 2026-10-26 | Session #: 1
-Current task: P7.5 — verify short-report TTS fallback in full live bundle | Status: ready for rerun
-Environment task: ENV-006 — old OneDrive checkout at C: remains blocked by inherited deny-child-delete ACL; D: project/runtime are canonical and usable
+Current phase/task: P7.5 — fresh-clone full regression | Status: in progress
+Environment task: ENV-006 — duplicate C: OneDrive checkout retirement remains blocked by inherited deny-child-delete ACL; D: project/runtime are canonical.
 
-Last committed task: `4117b3e [P7.5] Fall back for short narration scripts`.
+Last committed task: `98e4785 [P7.5] Keep tall figure heading with diagram`.
 
 ## Do next (exact)
-1. Commit the tested TTS fallback and state updates; verify `git diff --check` first.
-2. Rerun the RRF report topic with `D:\msys64\usr\bin\make.exe "TOPIC=Explain reciprocal rank fusion and compare it with score-based fusion." run` from `D:\DL CP`, setting D: uv/cache/Python paths, `UV_SYSTEM_CERTS=true`, `ARA_LLM_REQUEST_TIMEOUT_SECONDS=300`, and `OLLAMA_MODELS=D:\Ollama\user-data\models`.
-3. Inspect trace and `outputs/<run_id>/`; verify all citations, the recovered report, structural diagram, narration WAV, and MD/HTML/PDF before resolving RUN-001.
+1. Create a new clean clone: `git clone --no-local "D:\DL CP" "D:\DL CP\.tools\p7_5_clean"`.
+2. In that clone, run `make setup` and `make ingest` with D: uv/cache/Python, `UV_SYSTEM_CERTS=true`, `OLLAMA_MODELS=D:\Ollama\user-data\models`, and `ARA_TTS_VOICE_MODEL_PATH=D:\DL CP\models\tts\en_US-sam-medium.onnx`.
+3. Run `make "TOPIC=Explain reciprocal rank fusion and compare it with score-based fusion." run`; inspect outputs/citations and resolve CLONE-001 if the complete MD/HTML/PDF/SVG/WAV bundle passes.
 
 ## Environment state
-Windows 11, PowerShell, Python 3.12.15, uv 0.13.4, CPU-only, 18 logical processors, 15.52 GiB RAM. Canonical checkout: `D:\DL CP`; committed HEAD `16d8a11`. GNU Make 4.4.1/MSYS2: `D:\msys64`. uv executable/cache/managed Python: `D:\DL CP\.tools\uv`, `.tools\uv-cache`, `.tools\uv-python`; `.venv` is on D:. Ollama 0.40.11: `D:\Ollama\app`; models/user data: `D:\Ollama\user-data`; server at `localhost:11434`. Models available: `qwen2.5:1.5b`, `embeddinggemma:latest`.
+Windows 11, PowerShell, Python 3.12.15 CPU-only (18 logical processors, 15.52 GiB RAM). Canonical checkout `D:\DL CP`; uv 0.13.4 at `D:\DL CP\.tools\uv\uv.exe`, cache `.tools\uv-cache`, managed Python `.tools\uv-python`; GNU Make 4.4.1 at `D:\msys64\usr\bin\make.exe`. Ollama 0.40.11 is running on localhost:11434 with `qwen2.5:1.5b` and `embeddinggemma`; Piper voice assets are at `D:\DL CP\models\tts\en_US-sam-medium.onnx` and its `.onnx.json`. The main checkout last passed 308 pytest tests, Ruff, and MyPy. Main-checkout run `cb9bbc9da4d9495eb76f87fe1543d78c` has a complete cited report bundle in `outputs/`; its 73.28-second narration and three-page PDF were checked.
 
 ## WIP / uncommitted
-None. The citation-grounded TTS fallback is committed; focused TTS tests: 13 passed; full suite: 307 passed in 29.00s; Ruff passes; MyPy reports no issues in 55 source files.
+Only this handoff refresh is pending commit. No code or report artifacts are uncommitted.
 
 ## Known failing tests / issues
-Latest live run `6f77b0bac8064a98a4e26ec746075863`: research finished with five local chunks; critic found one unsupported claim; recovery removed it, retained four cited claims, and the critic re-reviewed them with zero unsupported. Qwen Mermaid failed three attempts; structural SVG fallback rendered. TTS returned only 90 words on all four attempts, and the command stopped before report assembly. The TTS fallback is unit-tested but not yet live-verified. The four-way RAG evaluation remains NOT RUN; only four first-rank DL test failures exist, fewer than the required 20-case review. ENV-006 remains open due the C: OneDrive inherited deny-child-delete ACL; no permissions changed.
+No known failing tests. P7.5 fresh-clone run remains unverified (CLONE-001). Four-way RAG evaluation (P1.10), three-topic live revision effect (P4.5), and the 20-case DL error analysis (P5.5) remain incomplete; do not report them as passed. ENV-006 remains open because the old C: OneDrive copy has an inherited deny-child-delete ACL; no permissions have been changed.
 
 ## Gotchas learned
-- This PowerShell did not inherit the new D: PATH; invoke `D:\msys64\usr\bin\make.exe` and add `D:\DL CP\.tools\uv` explicitly. Set uv cache/Python paths to D:.
-- For tests set `TEMP`/`TMP=D:\DL CP\.tools\pytest-tmp`; sandbox access to the D: uv lock may need approved escalation.
-- Keep TLS verification enabled and `UV_SYSTEM_CERTS=true` for uv/web calls.
-- `make setup` removes QA-only `pypdfium2`; use a separate QA environment for PDF rendering.
-- `.tools/p7_5_clone/` is historical P7.4 and lacks ignored model/voice assets; use a fresh clone only after D: is stable.
+- Set `TEMP` and `TMP` to `D:\DL CP\.tools\pytest-tmp` for tests.
+- Use `UV_SYSTEM_CERTS=true`; keep TLS verification enabled.
+- The D: voice/model assets are ignored and absent from a fresh Git clone, so point the clone's TTS configuration at the existing voice file.
+- Keep PDF visual QA dependencies in `.tools\reports-venv`; `make setup` removes them from the project environment.
