@@ -447,7 +447,6 @@ def test_web_search_without_citable_evidence_falls_back_to_local_rag() -> None:
             [],
             [],
             [],
-            [],
         ]
     )
     mcp = FakeMCPClient(
@@ -477,11 +476,55 @@ def test_web_search_without_citable_evidence_falls_back_to_local_rag() -> None:
         "top_k": 5,
         "candidate_k": 20,
     }
-    assert llm.requests[2][-1]["tool_name"] == "search_knowledge_base"
+    assert len(llm.requests) == 4
+    assert llm.requests[1][-1]["tool_name"] == "web_search"
     assert any(
         event.event == "tool_selected"
         and event.result_summary
         == "selected_by=local_evidence_fallback; reason=web_search_added_no_evidence"
+        for event in traces
+    )
+
+
+def test_existing_evidence_triggers_local_fallback_without_reasking_model() -> None:
+    llm = FakeLLM(
+        [
+            [_call("web_search", {"query": "additional evidence"})],
+            [],
+            [],
+        ]
+    )
+    mcp = FakeMCPClient(
+        {
+            ("web", "web_search"): _web_search_payload("Search snippets are leads only."),
+            ("rag", "search_knowledge_base"): _local_result(
+                text="The local source supplies additional supported evidence."
+            ),
+        }
+    )
+    state = _state()
+    state.evidence_store["chunk:earlier"] = EvidenceItem(
+        chunk_id="chunk:earlier",
+        text="Evidence collected by the first research task.",
+        source="earlier.md",
+    )
+    traces: list[TraceEvent] = []
+
+    summary = asyncio.run(
+        Researcher(mcp, llm).research(state, trace_callback=traces.append)
+    )
+
+    assert summary.tool_calls_made == 2
+    assert len(llm.requests) == 3
+    assert summary.evidence_ids_added == ["chunk:local-one"]
+    assert [call[1] for call in mcp.calls] == [
+        "web_search",
+        "search_knowledge_base",
+    ]
+    assert any(
+        event.event == "task_completed"
+        and event.result_summary
+        and "completion=local_fallback" in event.result_summary
         for event in traces
     )
 

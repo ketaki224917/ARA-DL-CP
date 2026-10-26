@@ -489,3 +489,9 @@ Done: Added a deterministic recovery path for revision abstentions. It removes o
 Evidence: Targeted `pytest tests/test_revision.py` → 11 passed; full `pytest` → 305 passed in 22.11s; Ruff → all checks passed; MyPy → no issues in 55 source files. The trigger was live run `ffb3c61542014d55814699761c1abda8`: four of five claims were supported, but the revision writer abstained. Recovery has not yet been exercised in a live run.
 Files: `src/ara/agents/revision.py`, `tests/test_revision.py`, and project state files.
 Notes: ADR-056 documents the conservative fallback. The next live run must verify the recovered draft and continue through diagrams, TTS, PDF, and citation validation.
+
+### 2026-10-26 — P7.5 — Bound web-only researcher continuations
+Done: When a web search adds no citable evidence and earlier tasks already populated the evidence store, the researcher now calls local RAG through MCP directly and completes that task without another model-selection request. The existing model-selected path remains for initial searches with no prior evidence.
+Evidence: Researcher tests → 21 passed; full `pytest` → 306 passed in 21.07s; Ruff → all checks passed; MyPy → no issues in 55 source files. Live run `084e0be2b2a049e1998725436a71eaa7` retrieved five local chunks, then timed out during a later tool-selection request after web search; the new path has not yet been live-verified.
+Files: `src/ara/agents/researcher.py`, `tests/test_researcher.py`, and project state files.
+Notes: ADR-057 records the bounded local fallback. RUN-001 remains open pending a substantive complete report bundle.

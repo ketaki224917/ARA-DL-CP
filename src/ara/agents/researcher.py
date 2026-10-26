@@ -309,6 +309,7 @@ class Researcher:
                 task_evidence_start = len(evidence_ids_added)
                 task_had_web_search = False
                 task_had_local_search = False
+                forced_fallback_calls: list[ToolCall] | None = None
                 _emit_trace(
                     trace_callback,
                     state,
@@ -318,13 +319,17 @@ class Researcher:
                 messages = researcher_messages(state.topic, task)
                 try:
                     while True:
-                        calls = await asyncio.to_thread(
-                            self._llm.tool_calls,
-                            messages,
-                            TOOL_DEFINITIONS,
-                            temperature=0.0,
-                        )
-                        fallback_selected = False
+                        fallback_selected = forced_fallback_calls is not None
+                        if forced_fallback_calls is not None:
+                            calls = forced_fallback_calls
+                            forced_fallback_calls = None
+                        else:
+                            calls = await asyncio.to_thread(
+                                self._llm.tool_calls,
+                                messages,
+                                TOOL_DEFINITIONS,
+                                temperature=0.0,
+                            )
                         if not calls:
                             needs_local_fallback = (
                                 task_had_web_search
@@ -560,6 +565,35 @@ class Researcher:
                             break
                         messages.append(assistant_tool_call_message(calls))
                         messages.extend(observation_messages(observations))
+                        if fallback_selected:
+                            task.status = "completed"
+                            completed_task_ids.append(task.task_id)
+                            _emit_trace(
+                                trace_callback,
+                                state,
+                                event="task_completed",
+                                task_id=task.task_id,
+                                result_summary=(
+                                    f"tool_calls={tool_calls_made - task_tool_calls_start}; "
+                                    f"evidence_added="
+                                    f"{len(evidence_ids_added) - task_evidence_start}; "
+                                    "completion=local_fallback"
+                                ),
+                            )
+                            break
+                        if (
+                            task_had_web_search
+                            and not task_had_local_search
+                            and len(evidence_ids_added) == task_evidence_start
+                            and state.evidence_store
+                            and tool_calls_made < self.max_tool_calls
+                        ):
+                            forced_fallback_calls = [
+                                ToolCall(
+                                    name="search_knowledge_base",
+                                    arguments={"query": task.question},
+                                )
+                            ]
                 except Exception:
                     task.status = "blocked"
                     _emit_trace(
