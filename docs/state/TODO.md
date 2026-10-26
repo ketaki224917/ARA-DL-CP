@@ -26,7 +26,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P1.7 Reranker (lazy CrossEncoder adapter; tests pass; model weights not installed)
 - [x] P1.8 answer() with citations + abstention (tests pass)
 - [x] P1.9 Eval set ≥ 40 Q/A (52 rows; factoid, multi-hop, and unanswerable with validated gold chunk IDs)
-- [!] P1.10 Eval harness + comparison table (metrics implemented; four real-system comparison still needs the resumable 52-query run)
+- [>] P1.10 Eval harness + comparison table (metrics are implemented; build a resumable real-system runner and record the four-way 52-query comparison)
 - [x] P1.11 `make ingest` idempotent; CLI `ara ingest`/`ara ask` (tests pass; live Ollama CLI run not available)
 
 ## Phase 2 — MCP
@@ -73,7 +73,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P7.2 README (Mermaid architecture, verified usage, measured DL table, explicit NOT RUN retrieval table, demo caveats, troubleshooting)
 - [x] P7.3 docs/design_decisions.md + architecture.md (implementation-grounded diagrams, rationale, measured tradeoffs, limitations, and next steps)
 - [x] P7.4 Three complete curated report bundles in outputs/examples/ (MD/HTML/PDF, Mermaid/SVG, Piper WAV, stored source chunks; four real chunk IDs validated; all PDFs visually inspected)
-- [>] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (full live report bundle verified in the D: checkout as `outputs/cb9bbc9da4d9495eb76f87fe1543d78c/`; research, citations, structural diagram, short-narration fallback, and 73.28-second WAV pass; PDF visual QA fixed a stranded diagram heading; clean-clone regression still open under CLONE-001)
+- [x] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (`.tools/p7_5_clean` at `0dfd734`; 137 packages installed, 21 documents/33 chunks indexed, and MD/HTML/PDF/SVG/WAV generated; citation references match; three-page PDF and 68.82-second WAV verified; see CLONE-001)
 - [~] P7.6 (stretch) LoRA fine-tune for report style, with before/after comparison - dropped for this CPU-only pass; no local chat model is available and LoRA is outside final acceptance (ADR-044)
 - [x] P7.7 Final Acceptance Checklist verification (audit recorded in PROGRESS.md; project remains incomplete on open environment/evaluation gates)
 
