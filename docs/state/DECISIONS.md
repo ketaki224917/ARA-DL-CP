@@ -347,3 +347,9 @@ Context: The complete live run produced a report draft whose model-generated nar
 Options considered: Lower the duration requirement; fail the whole report; construct a bounded narration from the report's cited claims with neutral transitions when model output is invalid.
 Decision: Keep the 170–260 word schema. If narration generation fails and the report contains citation markers, strip Markdown headings and citation IDs from its body, then expand only those report sentences with neutral restatement transitions until the result validates in the same word range. If the report has no cited content, preserve the existing error.
 Consequences / how to reverse: This lets short supported reports receive a 1–2 minute audio summary without adding factual content; the fallback may sound repetitive. The model remains the preferred narrator when its script validates. Remove or revise the fallback if live listening shows unacceptable narration quality.
+
+## ADR-059: Reserve room for PDF figure headings and captions [DECISION] Date: 2026-10-26 Status: active
+Context: Visual QA of the full live report PDF showed the `Diagrams` heading stranded at the foot of page 2 while its tall structural SVG began on page 3, despite the figure group using `KeepTogether`.
+Options considered: Accept the heading split; move every figure to a dedicated page; scale SVGs to leave vertical room for the heading, spacer, and caption.
+Decision: Deduct a fixed 80 points of figure overhead when scaling PDF SVGs, so `KeepTogether` can place the section heading, diagram, and caption in one frame. Add a tall-SVG regression that checks the heading and figure share a page.
+Consequences / how to reverse: Tall figures render slightly smaller but remain legible and no longer leave orphaned headings. If future PDF style changes alter heading/caption dimensions, update the reserved overhead or use a page-level figure layout.

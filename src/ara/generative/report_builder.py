@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 _MAX_REPORT_CHARS = 20_000
 _MAX_SVG_BYTES = 2_000_000
+_PDF_FIGURE_VERTICAL_OVERHEAD = 80
 _REPORT_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,63}\Z")
 _UNSAFE_SVG_ELEMENTS = {"script", "foreignobject", "iframe", "image", "audio", "video"}
 _PDF_DASHES = str.maketrans(
@@ -383,7 +384,7 @@ def _write_pdf_atomically(path: Path, markdown: str, title: str, output_dir: Pat
     pending_reference_heading: Any | None = None
     page_width, page_height = A4
     available_width = page_width - 108
-    available_height = page_height - 126
+    available_height = page_height - 126 - _PDF_FIGURE_VERTICAL_OVERHEAD
     for element in soup.contents:
         if not isinstance(element, Tag):
             continue

@@ -107,6 +107,31 @@ def test_build_report_writes_cited_md_html_pdf_and_local_assets(tmp_path: Path) 
     assert "[web:policy-2]" in reference_page
 
 
+def test_tall_diagram_keeps_its_heading_on_the_same_pdf_page(tmp_path: Path) -> None:
+    evidence = _evidence()
+    tall_svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="1500" '
+        'viewBox="0 0 600 1500"><text x="300" y="750" '
+        'text-anchor="middle" font-size="28">Tall evidence flow</text></svg>'
+    )
+    diagram = DiagramArtifact(
+        mermaid='flowchart TD\nA["Evidence"] --> B["Report"]',
+        svg=tall_svg,
+        renderer="builtin-svg",
+    )
+
+    result = build_report(
+        "# Grounded report\n\nThe evidence supports this report. [chunk:storage-1]",
+        evidence,
+        tmp_path / "bundle",
+        diagrams=[diagram],
+    )
+
+    pages = [page.extract_text() or "" for page in PdfReader(result.pdf_path).pages]
+    diagram_page = next(page for page in pages if "Diagram 1" in page)
+    assert "Diagrams" in diagram_page
+
+
 @pytest.mark.parametrize(
     ("draft", "message"),
     [
