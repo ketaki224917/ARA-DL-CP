@@ -45,6 +45,10 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
             "ARA_DL_USE_SCORER": "true",
             "ARA_DL_DENSE_MODEL": "tiny-dense-test",
             "ARA_DL_EVAL_CANDIDATE_K": "12",
+            "ARA_TTS_VOICE_MODEL_PATH": "voices/custom.onnx",
+            "ARA_TTS_MODEL_CACHE_DIR": "cache/tts",
+            "ARA_TTS_VOICE_ID": "en_US-amy-medium",
+            "ARA_TTS_VOICE_REVISION": "pinned-voice-revision",
         },
     )
 
@@ -72,6 +76,10 @@ def test_yaml_defaults_and_environment_overrides(tmp_path: Path) -> None:
     assert settings.dl_use_scorer is True
     assert settings.dl_dense_model == "tiny-dense-test"
     assert settings.dl_eval_candidate_k == 12
+    assert settings.tts_voice_model_path == Path("voices/custom.onnx")
+    assert settings.tts_model_cache_dir == Path("cache/tts")
+    assert settings.tts_voice_id == "en_US-amy-medium"
+    assert settings.tts_voice_revision == "pinned-voice-revision"
 
 
 def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
@@ -115,6 +123,27 @@ def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
     assert settings.dl_random_negative_checkpoint_path == Path(
         "models/checkpoints/reranker_random_negatives.pt"
     )
+    assert settings.tts_voice_model_path == Path("models/tts/en_US-sam-medium.onnx")
+    assert settings.tts_model_cache_dir == Path("models/huggingface/tts")
+    assert settings.tts_voice_id == "en_US-sam-medium"
+    assert settings.tts_voice_revision == "b145f2ac26522d6a2ccde0164b7b0e48b1e3199c"
+
+
+def test_tts_values_load_from_yaml(tmp_path: Path) -> None:
+    config = tmp_path / "config.yaml"
+    config.write_text(
+        "paths:\n  tts_voice_model_path: voice/model.onnx\n"
+        "  tts_model_cache_dir: voice/cache\n"
+        "tts:\n  voice_id: en_US-amy-medium\n  voice_revision: commit123\n",
+        encoding="utf-8",
+    )
+
+    settings = load_settings(config, tmp_path / "missing.env", environ={})
+
+    assert settings.tts_voice_model_path == Path("voice/model.onnx")
+    assert settings.tts_model_cache_dir == Path("voice/cache")
+    assert settings.tts_voice_id == "en_US-amy-medium"
+    assert settings.tts_voice_revision == "commit123"
 
 
 def test_invalid_configuration_section_is_rejected(tmp_path: Path) -> None:
@@ -128,4 +157,3 @@ def test_invalid_configuration_section_is_rejected(tmp_path: Path) -> None:
 def test_settings_validate_ranges() -> None:
     with pytest.raises(ValidationError):
         Settings(_env_file=None, retrieval_chunk_overlap=-1)
-

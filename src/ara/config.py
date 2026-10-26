@@ -64,6 +64,10 @@ _ENV_FIELDS = {
     "ARA_DL_ERROR_ANALYSIS_PATH": "dl_error_analysis_path",
     "ARA_DL_DENSE_EMBEDDINGS_CACHE_PATH": "dl_dense_embeddings_cache_path",
     "ARA_DL_RANDOM_NEGATIVE_CHECKPOINT_PATH": "dl_random_negative_checkpoint_path",
+    "ARA_TTS_VOICE_MODEL_PATH": "tts_voice_model_path",
+    "ARA_TTS_MODEL_CACHE_DIR": "tts_model_cache_dir",
+    "ARA_TTS_VOICE_ID": "tts_voice_id",
+    "ARA_TTS_VOICE_REVISION": "tts_voice_revision",
 }
 
 
@@ -113,6 +117,10 @@ class Settings(BaseSettings):
     dl_random_negative_checkpoint_path: Path = Path(
         "models/checkpoints/reranker_random_negatives.pt"
     )
+    tts_voice_model_path: Path = Path("models/tts/en_US-sam-medium.onnx")
+    tts_model_cache_dir: Path = Path("models/huggingface/tts")
+    tts_voice_id: str = "en_US-sam-medium"
+    tts_voice_revision: str = "b145f2ac26522d6a2ccde0164b7b0e48b1e3199c"
     dl_seed: int = 42
     dl_questions_per_chunk: int = Field(default=2, ge=1, le=5)
     dl_candidate_k: int = Field(default=20, ge=1, le=200)
@@ -152,6 +160,7 @@ def load_settings(
     paths = _mapping(raw_config.get("paths"))
     retrieval = _mapping(raw_config.get("retrieval"))
     dl = _mapping(raw_config.get("dl"))
+    tts = _mapping(raw_config.get("tts"))
     values: dict[str, Any] = {
         "llm_base_url": llm.get("base_url"),
         "llm_model": llm.get("model"),
@@ -192,6 +201,10 @@ def load_settings(
         "dl_error_analysis_path": paths.get("dl_error_analysis_path"),
         "dl_dense_embeddings_cache_path": paths.get("dl_dense_embeddings_cache_path"),
         "dl_random_negative_checkpoint_path": paths.get("dl_random_negative_checkpoint_path"),
+        "tts_voice_model_path": paths.get("tts_voice_model_path"),
+        "tts_model_cache_dir": paths.get("tts_model_cache_dir"),
+        "tts_voice_id": tts.get("voice_id"),
+        "tts_voice_revision": tts.get("voice_revision"),
         "dl_seed": dl.get("seed"),
         "dl_questions_per_chunk": dl.get("questions_per_chunk"),
         "dl_candidate_k": dl.get("candidate_k"),
@@ -229,4 +242,3 @@ def _apply_env(values: dict[str, Any], source: Mapping[str, Any]) -> None:
         value = source.get(env_name)
         if value is not None:
             values[field_name] = value
-

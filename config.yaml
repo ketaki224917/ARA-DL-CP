@@ -24,6 +24,8 @@ paths:
   dl_error_analysis_path: outputs/dl_error_analysis.json
   dl_dense_embeddings_cache_path: data/indexes/dl_eval_test_embeddings.pt
   dl_random_negative_checkpoint_path: models/checkpoints/reranker_random_negatives.pt
+  tts_voice_model_path: models/tts/en_US-sam-medium.onnx
+  tts_model_cache_dir: models/huggingface/tts
   output_dir: outputs
   trace_dir: traces
 retrieval:
@@ -54,4 +56,7 @@ dl:
   dense_model_revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
   eval_candidate_k: 20
   eval_batch_size: 16
+tts:
+  voice_id: en_US-sam-medium
+  voice_revision: b145f2ac26522d6a2ccde0164b7b0e48b1e3199c
 

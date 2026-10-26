@@ -10,6 +10,7 @@ data/indexes/
 models/checkpoints/
 models/exported/
 models/huggingface/
+models/tts/
 outputs/generated/
 traces/*.jsonl
 data/dl_data/cache/
