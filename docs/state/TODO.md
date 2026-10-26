@@ -53,7 +53,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P5.2 Public dataset subset integration + doc-level splits (SciFact; 200 labeled queries; evidence-linked document splits validated with no overlap)
 - [x] P5.3 Dataset/Dataloader + model.py (split-safe pair batches, pinned MiniLM relevance scorer, optional masked credibility head; CPU inference verified)
 - [x] P5.4 train.py (config-driven AdamW/BCE training, seeded split loaders, validation early stopping, atomic best checkpoint, JSON metrics, PNG loss curve; 3-epoch CPU run completed)
-- [ ] P5.5 evaluate.py vs baselines + ablations + error analysis
+- [x] P5.5 evaluate.py vs baselines + ablations + error analysis (30-query internal SciFact test split; fine-tuned model ties recall and improves MRR/nDCG slightly over RRF; only four first-rank failures existed, all four reviewed)
 - [ ] P5.6 export + load in dl_model_server (`score_chunks`) + tests
 - [ ] P5.7 Integrate in researcher; A/B end-to-end comparison
 - [ ] P5.8 docs/model_card.md

@@ -278,3 +278,19 @@ Evidence:
 - `$env:UV_SYSTEM_CERTS='true'; $env:UV_CACHE_DIR='.tools/uv-cache'; $env:UV_PROJECT_ENVIRONMENT='.tools/dl-venv'; .tools/uv/uv.exe run --locked --extra dev --extra dl pytest` → 241 passed in 40.50s; Ruff clean; mypy → no issues in 49 source files; `git diff --check` → passed.
 Files: `src/ara/dl/train.py`, config/env settings, `pyproject.toml`, `uv.lock`, `tests/test_training.py`, `outputs/dl_training_metrics.json`, and `outputs/dl_training_loss.png`. The generated learned checkpoint is ignored at `models/checkpoints/reranker.pt`.
 Notes: This is a training/validation run, not an evaluation against baselines. Validation loss uses BM25 mined, unjudged documents as negatives. The tracked curve and metrics show optimization progress only; P5.5 will score held-out labeled relevance and compare baselines. Code/test/artifact commit: `0e89284`.
+
+### 2026-10-25 — P5.5 — Evaluate the reranker against held-out baselines
+Done: Added a cached, pinned dense encoder and a held-out evaluation harness comparing BM25+dense RRF, the generic MiniLM cross-encoder, the P5.4 fine-tuned model, and a separately trained random-negative control. The test partition is loaded only after control training and is used only for ranking metrics and error review. Logged ADR-034.
+Evidence: `$env:UV_SYSTEM_CERTS='true'; $env:UV_CACHE_DIR='.tools/uv-cache'; $env:UV_PROJECT_ENVIRONMENT='.tools/dl-venv'; .tools/uv/uv.exe run --locked --extra dev --extra dl python -m ara.dl.evaluate` → 30 internal held-out SciFact queries; candidate recall@20 `1.0000`; mean RRF candidate union `32.73`.
+
+| System | Recall@10 | MRR | nDCG@10 |
+|---|---:|---:|---:|
+| BM25+dense RRF | 0.9667 | 0.9026 | 0.9175 |
+| Generic MS MARCO cross-encoder | 0.9667 | 0.8854 | 0.9052 |
+| Fine-tuned cross-encoder | 0.9667 | 0.9194 | 0.9298 |
+| Random-negative control | 0.9667 | 0.9026 | 0.9175 |
+
+The fine-tuned checkpoint ties RRF on recall@10 and modestly improves MRR (`+0.0169`) and nDCG@10 (`+0.0123`) on this small split. The generic model is below RRF on both rank-quality metrics, and the random-negative control matches RRF. The fine-tuned model had four first-rank failures among 30 queries; all four are reviewed in `outputs/dl_error_analysis.json`. The requested 20 failure cases did not exist in this test set, so no successful queries were mislabeled or added to reach 20. This internal split is not the official SciFact test set, and the result is descriptive rather than statistically conclusive.
+Control training: 358 training and 62 validation examples; best validation BCE `0.050674` at epoch 1 (`0.065077` at epoch 2, `0.058376` at epoch 3); the best checkpoint was retained. Test suite: 246 passed in 69.43s; Ruff clean; mypy clean for 52 source files; `git diff --check` passed (Git reported expected LF-to-CRLF working-copy notices).
+Files: `src/ara/dl/dense.py`, `src/ara/dl/hf_compat.py`, `src/ara/dl/evaluate.py`, config/env settings, `pyproject.toml`, `uv.lock`, tests, and `outputs/dl_evaluation_metrics.{json,md}`, `outputs/dl_error_analysis.json`, `outputs/dl_training_metrics_random_negatives.json`, and `outputs/dl_training_loss_random_negatives.png`.
+Notes: Both model checkpoints and the dense document-embedding cache are ignored local artifacts and must be regenerated in a fresh checkout. The pinned dense and cross-encoder weights are cached locally. Evaluation and training run on CPU. Code/test/artifact commit: `482adf4`.

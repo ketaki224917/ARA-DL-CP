@@ -13,6 +13,7 @@ Updated: 2026-10-25 (session 1)
 - Git: 2.55.0 available. GNU `make`: NOT FOUND.
 - Ollama/model weights: Ollama NOT FOUND; chat and embedding models are not pulled. The `cross-encoder/ms-marco-MiniLM-L6-v2` checkpoint and tokenizer are cached under ignored `models/huggingface/` at revision `df500e56a59fc34f37322735a40eff666200312e`; CPU inference returned one finite relevance logit. The 90,870,598-byte weights file and tokenizer cache are not committed.
 - Training artifacts: three CPU epochs completed with best validation BCE `0.309428`; metrics and loss curve are tracked at `outputs/dl_training_metrics.json` and `outputs/dl_training_loss.png`. The fine-tuned 90,891,664-byte checkpoint currently exists at ignored `models/checkpoints/reranker.pt` but is not committed and must be recreated by training in a fresh checkout.
+- Evaluation artifacts: the pinned `sentence-transformers/all-MiniLM-L6-v2` encoder is cached under ignored `models/huggingface/` at revision `1110a243fdf4706b3f48f1d95db1a4f5529b4d41`; its document embedding cache is ignored at `data/indexes/dl_eval_test_embeddings.pt`. P5.5 compared 30 internal held-out SciFact queries. The random-negative control checkpoint is also ignored at `models/checkpoints/reranker_random_negatives.pt`; both learned checkpoints can be regenerated with `python -m ara.dl.train` and the evaluator's default ablation.
 - Services/ports: none started or checked.
 
 ## Model choice
