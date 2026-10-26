@@ -73,7 +73,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P7.2 README (Mermaid architecture, verified usage, measured DL table, explicit NOT RUN retrieval table, demo caveats, troubleshooting)
 - [x] P7.3 docs/design_decisions.md + architecture.md (implementation-grounded diagrams, rationale, measured tradeoffs, limitations, and next steps)
 - [x] P7.4 Three complete curated report bundles in outputs/examples/ (MD/HTML/PDF, Mermaid/SVG, Piper WAV, stored source chunks; four real chunk IDs validated; all PDFs visually inspected)
-- [>] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (D: environment and ingestion verified; researcher now adds local RAG evidence after a web-only task; writer has an 80-character/10-word claim schema and 768-token budget; run live and verify the complete bundle under RUN-001)
+- [>] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (D: environment and ingestion verified; researcher now adds local RAG evidence after a web-only task; writer schema has an 80-character/10-word cap and explicit terminal-punctuation pattern; run live and verify the complete bundle under RUN-001)
 - [~] P7.6 (stretch) LoRA fine-tune for report style, with before/after comparison - dropped for this CPU-only pass; no local chat model is available and LoRA is outside final acceptance (ADR-044)
 - [x] P7.7 Final Acceptance Checklist verification (audit recorded in PROGRESS.md; project remains incomplete on open environment/evaluation gates)
 

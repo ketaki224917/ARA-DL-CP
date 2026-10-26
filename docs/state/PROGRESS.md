@@ -453,3 +453,9 @@ Done: Kept a separate 768-token writer output cap and shortened the schema/promp
 Evidence: Live RRF run `e51717ee0a864ef695045fac2151705b` completed three research tasks in about 153 seconds and collected five local chunks. With the 768-token cap and previous 120-character schema, all four writer attempts produced claims without terminal punctuation and validation failed; no output bundle was emitted. After the change: `make test` → 303 passed in 24.18s; `make lint` → all checks passed; `mypy src/ara` → no issues in 55 source files. Live run with 80-character claims → NOT RUN.
 Files: `src/ara/agents/writer.py`, `src/ara/agents/prompts/writer.py`, `scripts/offline_revision_demo.py`, tests, and state files.
 Notes: ADR-051 supersedes ADR-050's 120-character/14-word limit. Keep sentence validation and citation checks fail-closed.
+
+### 2026-10-26 — P7.5 — Make sentence punctuation a schema constraint
+Done: Added a JSON Schema `pattern` and matching Pydantic `Field` constraint requiring claims to end in `.`, `!`, or `?`. The 80-character/10-word bound and 768-token writer budget remain.
+Evidence: `make test` → 303 passed in 23.59s; `make lint` → all checks passed; `mypy src/ara` → no issues in 55 source files; focused writer/revision tests → 18 passed. Live test with the punctuation pattern → NOT RUN.
+Files: `src/ara/agents/writer.py`, `tests/test_writer.py`, and state files.
+Notes: ADR-052 records the change. Previous live failures show the model reaching the claim bound without punctuation; this pattern is exposed in its JSON Schema before the next run.

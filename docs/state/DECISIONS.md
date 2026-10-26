@@ -305,3 +305,9 @@ Context: A live run with the 768-token writer budget and 120-character maximum s
 Options considered: Accept fragments by adding punctuation; remove the sentence-completeness check; retain sentence validation and reduce the permitted claim length further while making the word limit explicit.
 Decision: Keep fail-closed sentence validation. Supersede ADR-050's 120-character/14-word claim limit with an 80-character/10-word maximum. Keep the writer output budget at 768, the 4-item/3,600-character evidence context, all four sections, and one evidence ID per factual claim.
 Consequences / how to reverse: The output schema gives the small local model a shorter claim target while keeping the same report structure and citation rules. The live behavior under this tighter constraint is not yet measured; verify a complete report before relaxing it.
+
+## ADR-052: Expose sentence-ending punctuation in the writer JSON Schema [DECISION] Date: 2026-10-26 Status: active
+Context: Live runs at three output caps reached each claim's character bound without producing sentence-ending punctuation. The Python validator enforced this, but Pydantic's JSON Schema contained no corresponding pattern, so the model could not see the constraint structurally.
+Options considered: Accept incomplete fragments; perform text repair after generation; add a JSON Schema pattern and matching Pydantic field constraint for a terminal `.`, `!`, or `?`.
+Decision: Keep sentence validation fail-closed and put `pattern: ".*[.!?]\\s*$"` in the generated JSON Schema through the Pydantic `Field` definition. Keep the 80-character/10-word cap and 768-token writer budget from ADR-051.
+Consequences / how to reverse: The local model receives a machine-readable sentence-ending requirement, and deterministic Pydantic validation remains in place. This is unit-tested but not yet live-verified; do not claim the writer works until a live report passes.

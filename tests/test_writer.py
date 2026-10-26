@@ -210,6 +210,8 @@ def test_writer_schema_and_prompt_bound_claim_length() -> None:
     assert "80 characters" in prompt
     with pytest.raises(ValueError, match="at most 80 characters"):
         WriterClaim(text="x" * 81 + ".", evidence_ids=["chunk:one"])
+    with pytest.raises(ValueError):
+        WriterClaim(text="An unfinished factual claim", evidence_ids=["chunk:one"])
 
 
 def test_writer_frames_prompt_injection_inside_evidence_as_untrusted_data() -> None:
@@ -309,6 +311,10 @@ def test_writer_structured_output_retries_invalid_section_template() -> None:
     assert len(requests) == 2
     assert requests[0]["format"]["properties"]["summary"]["maxItems"] == 1
     assert (
+        requests[0]["format"]["$defs"]["WriterClaim"]["properties"]["text"]["pattern"]
+        == r".*[.!?]\s*$"
+    )
+    assert (
         requests[0]["format"]["$defs"]["WriterSection"]["properties"]["claims"]["maxItems"]
         == 1
     )
@@ -360,7 +366,7 @@ def test_report_draft_limits_claims_for_cpu_sized_output() -> None:
         ReportDraft.model_validate(too_many_claims)
     with pytest.raises(ValueError, match="at most 1 item"):
         _claim("A supported statement.", "chunk:one", "chunk:two")
-    with pytest.raises(ValueError, match="complete sentence"):
+    with pytest.raises(ValueError, match="pattern"):
         _claim("An unfinished factual statement", "chunk:one")
 
 

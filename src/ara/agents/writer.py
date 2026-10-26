@@ -25,7 +25,11 @@ class WriterClaim(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    text: str = Field(min_length=1, max_length=_MAX_CLAIM_LENGTH)
+    text: str = Field(
+        min_length=1,
+        max_length=_MAX_CLAIM_LENGTH,
+        pattern=r".*[.!?]\s*$",
+    )
     evidence_ids: list[str] = Field(min_length=1, max_length=1)
 
     @field_validator("text")
