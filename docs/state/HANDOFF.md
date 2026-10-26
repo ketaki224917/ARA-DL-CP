@@ -4,7 +4,7 @@ Updated: 2026-10-26 | Session #: 1
 Current task: user-requested relocation of ARA, Ollama, model data, and project tools to D: | Status: in progress
 Project task: Phase 7 / P7.5 - live full-report regression | Status: in progress under RUN-001
 
-Last task commit: `2098962 [P7.5] Bound CPU writer output and citations`.
+Last task commit: `ec1266b [P7.5] Bound CPU writer output and citations`.
 
 ## Do next (exact)
 1. Inspect destination and reparse-point layout before copying: verify `D:\DL CP` does not already contain user files, check `D:` free space, and inventory `C:\msys64`, the Ollama install/data folders, and any project junctions.
@@ -17,7 +17,7 @@ Windows 11, PowerShell, Python 3.12.15, uv 0.13.4, CPU-only, 18 logical processo
 Use `UV_SYSTEM_CERTS=true`, `UV_CACHE_DIR=.tools/uv-cache`, and `UV_PROJECT_ENVIRONMENT=.tools/reports-venv` for project commands. Set `ARA_LLM_REQUEST_TIMEOUT_SECONDS=300` for live model calls. Ollama and web search need a process that can read the Windows certificate store; keep TLS verification enabled.
 
 ## WIP / uncommitted
-No uncommitted source changes after `2098962`. The D: relocation has not started. P7.5 remains open; do not call the live report gate complete based on the isolated writer probe.
+No uncommitted source changes after `ec1266b`. The D: relocation has not started. P7.5 remains open; do not call the live report gate complete based on the isolated writer probe.
 
 ## Known failing tests / issues
 `make test UV=.tools/uv/uv.exe` passed 298 tests in 28.77s; `make lint UV=.tools/uv/uv.exe` passed; MyPy reported no issues in 55 source files. The direct writer probe over five MCP-topic chunks returned a valid abstention, not a full report. RUN-001 remains open. The four-way RAG evaluation is NOT RUN, and the required 20-case reranker error analysis remains short of its target.
