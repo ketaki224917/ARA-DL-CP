@@ -1,31 +1,28 @@
 # HANDOFF (overwritten after every task)
 
 Updated: 2026-10-26 | Session #: 1
-Current phase/task: Phase 7 / P7.7 - final acceptance audit | Status: audit complete; project blocked on ENV-002 and a larger held-out error set
+Current phase/task: Phase 7 / P7.5 - live full-report regression | Status: in progress; RUN-001 is open
 
-Last source commit: `e225232 [P7.4] Add reproducible example report bundles`; P7.5 blocker commit: `d3beada`; P7.6 decision commit: `cfdbd01`; final audit commit: `e5b871c`. The final acceptance audit is committed.
+Last committed audit: `e5b871c [P7.7] Audit final acceptance checklist`. This checkpoint has source and state changes pending commit.
 
 ## Do next (exact)
-1. Provide a host with GNU Make and Ollama 0.11.10 or newer installed/running; pull `qwen2.5:1.5b` and `embeddinggemma`, then download the pinned Piper voice.
-2. In a fresh clone, run `make setup && make ingest && make run TOPIC="Grid-scale battery storage"`; save the complete report bundle and trace, then run `make test` and `make lint`.
-3. Measure the fixed 52-question four-way RAG comparison and expand the held-out test set for the missing 20-case failure review; update each `[!]` row in `docs/state/PROGRESS.md` with real evidence.
+1. Inspect the writer's prompt and structured-output payload: `rg -n "class ReportDraft|def structured_output|writer_messages" src/ara/agents/writer.py src/ara/agents/prompts/writer.py src/ara/llm/client.py`; reduce CPU generation cost or add a bounded output setting, with tests.
+2. Re-run the live report after that change: set `ARA_LLM_REQUEST_TIMEOUT_SECONDS=300`, then run `make run TOPIC="MCP host client server responsibilities" ARGS="--max-revisions 0" UV=.tools/uv/uv.exe`; verify citations, Markdown/HTML/PDF, diagram, and WAV.
+3. Create a clean clone at the updated commit and repeat the literal gate: `git clone --shared --local . .tools/p7_5_current_clone`; from the clone run `make setup UV=../uv/uv.exe`, `make ingest UV=../uv/uv.exe`, `make tts-model UV=../uv/uv.exe`, and `make run TOPIC="MCP host client server responsibilities" UV=../uv/uv.exe`.
 
 ## Environment state
-Windows 11; PowerShell; Python 3.12.15; uv 0.13.4; CPU-only, 18 logical processors, 15.52 GiB RAM; GPU/VRAM details unknown. Workspace-local uv cache and `.tools/reports-venv` are active. A fresh clone/venv at `.tools/p7_5_clone/` installed 137 packages from `uv.lock`, and its CLI help succeeded. Pinned Piper voice and reranker weights are present in the main checkout's ignored `models/`, but absent from the fresh clone. Configured Ollama chat/embed models are not pulled, and no service is running. Poppler, Node, GNU Make, and Ollama were not found.
+Windows 11, PowerShell, Python 3.12.15, uv 0.13.4, CPU-only, 18 logical processors, 15.52 GiB RAM. GNU Make 4.4.1 is installed at `C:\msys64\usr\bin\make.exe`; that folder and `%LOCALAPPDATA%\Programs\Ollama` are in the user PATH (restart existing terminals). Ollama 0.40.11 is running at `http://localhost:11434`; `qwen2.5:1.5b` and `embeddinggemma` are pulled. The root checkout uses `.tools/reports-venv`, `.tools/uv-cache`, and the managed `.tools/uv/uv.exe`. `make setup` and `make ingest` passed; ingestion indexed 21 documents into 33 chunks. The pinned Piper voice already exists in the root `models/tts/`. Last disk check showed about 1.8 GB free.
 
 ## WIP / uncommitted
-P7.4 code and all three complete report bundles are committed. P7.5 blocker, P7.6 decision, and P7.7 final audit are committed. PDF QA previews and the fresh clone/venv remain ignored under `.tools/` and `outputs/generated/`. No product-code or state WIP is expected.
+Researcher tool-call history fix and regression assertions, README corrections, and updated ADR/progress/environment/handoff/blocker/TODO/session state files are pending commit. The incomplete abstention-only probe created before the tool-history fix has been removed; its trace remains as an ignored diagnostic artifact.
 
 ## Known failing tests / issues
-No known pytest, Ruff, or MyPy failures. Latest full suite: 295 passed in 62.19s; focused report tests: 12 passed; Ruff clean; MyPy clean for 61 source files. Fresh-clone `uv sync` and `ara --help` passed; direct `ara ingest` and `ara run --topic ... --until research` both failed because the local Ollama endpoint refused connections. P7.5 and the four-way 52-question RAG metrics remain NOT RUN. The 30-query internal SciFact split produced only four first-rank errors; the required 20-case review is incomplete. DL metrics remain descriptive. Claude Desktop UI was not launched.
+No known failing automated tests. `make test UV=.tools/uv/uv.exe` passed 295 tests in 60.71s; `make lint UV=.tools/uv/uv.exe` passed. The full live run completed research with six evidence chunks, but the writer returned an invalid structured draft and its retry exceeded a 300-second request timeout. P7.5 has not produced a complete live bundle or been verified in a clean clone. The 52-question four-way RAG evaluation remains NOT RUN. P5.5 has only four observed held-out ranking failures, short of the required 20. Live P4.5 and P5.1 measurements remain unrun. Web search from the restricted managed process could not access the Windows native certificate store; verified TLS search succeeded in the approved process context.
 
 ## Gotchas learned
-- Use `.tools/uv/uv.exe`; set `UV_SYSTEM_CERTS=true`, `UV_CACHE_DIR=.tools/uv-cache`, and `UV_PROJECT_ENVIRONMENT=.tools/reports-venv` in PowerShell. In `.tools/p7_5_clone/`, the uv executable and cache are one parent directory up.
-- GNU Make is absent; invoke corresponding uv commands directly where possible, but do not mark the literal `make` acceptance steps passed.
-- The configured `embeddinggemma` model page requires Ollama 0.11.10 or newer.
-- Hugging Face downloads need `truststore` before Transformers; keep TLS verification enabled. Symlinks are unavailable, so the cache uses copies.
-- Recreate the ignored reranker checkpoint/export with `python -m ara.dl.train` and `python -m ara.dl.export`.
-- Re-download the ignored Piper model with `python -m ara.generative.tts --download-voice`; reproduce controlled audio with `python scripts/tts_synthesis_smoke.py`.
-- `scripts/generate_example_reports.py` regenerates the checked-in curated report examples from production-chunked sample notes; it does not run Planner/Researcher/Writer or call Ollama. The untrusted-text note yields two chunks at the configured size, and both IDs are cited.
-- Poppler is absent; the example PDFs were rendered with the existing ignored QA-only `pypdfium2` install and visually inspected.
-- A fresh clone does not include ignored model files; download Ollama weights and the pinned Piper voice before claiming the complete output path.
+- Pass `UV=.tools/uv/uv.exe` to Make because uv is workspace-local; set `UV_SYSTEM_CERTS=true`, `UV_CACHE_DIR=.tools/uv-cache`, and `UV_PROJECT_ENVIRONMENT=.tools/reports-venv`.
+- Reopen the IDE terminal to load the updated user PATH for `make` and `ollama`.
+- `make setup` removes QA-only packages not declared in `pyproject.toml`; it removed `pypdfium2`, so use a separate QA environment for PDF rendering.
+- ADR-045 records that every Ollama tool turn must retain its assistant `tool_calls` message and the matching `role=tool` result, with retrieved content kept explicitly untrusted.
+- A live `ara run` with `--max-revisions 0` still needs planning, researcher tool selection, structured writer output, critique, and report rendering; the local CPU model can exceed 300 seconds on the writer retry.
+- The fresh clone `.tools/p7_5_clone/` is historical at P7.4 and lacks ignored model/voice assets. Use a new clone only after committing current changes.

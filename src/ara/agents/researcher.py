@@ -21,7 +21,11 @@ from pydantic import (
     field_validator,
 )
 
-from ara.agents.prompts.researcher import observation_message, researcher_messages
+from ara.agents.prompts.researcher import (
+    assistant_tool_call_message,
+    observation_messages,
+    researcher_messages,
+)
 from ara.agents.state import AgentState, EvidenceItem, PlanTask
 from ara.agents.trace import TraceEvent, TraceScalar, make_trace_event
 from ara.llm.client import ChatMessage, OllamaClient, ToolCall
@@ -527,7 +531,8 @@ class Researcher:
                                 result_summary="a research budget was exhausted",
                             )
                             break
-                        messages.append(observation_message(observations))
+                        messages.append(assistant_tool_call_message(calls))
+                        messages.extend(observation_messages(observations))
                 except Exception:
                     task.status = "blocked"
                     _emit_trace(

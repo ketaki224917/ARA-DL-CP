@@ -2,7 +2,7 @@
 
 ARA is a local-first research agent that searches local documents and the public web, gathers citation-ready evidence through MCP tools, drafts and critiques a report, then assembles Markdown, HTML, PDF, diagrams, and narrated audio. Reports preserve chunk IDs beside factual claims so readers can trace claims to retrieved passages.
 
-ARA is a research prototype. The components, offline workflows, and model experiments have been tested, but this host does not have Ollama, so a complete live-model run and the four-way RAG retrieval evaluation remain unverified. See [measured results](#measured-results) and [known limits](#known-limits).
+ARA is a research prototype. The components, offline workflows, and model experiments have been tested. On 2026-10-26 this Windows CPU host was provisioned with GNU Make and Ollama and completed model-backed planning and research; the writer timed out while retrying an invalid structured draft, so the complete live report path and the four-way RAG evaluation remain unverified. See [measured results](#measured-results) and [known limits](#known-limits).
 
 ## Architecture
 
@@ -31,11 +31,11 @@ The researcher calls tools through the MCP client. Retrieved documents and web t
 
 ## Known limits
 
-- Ollama is not installed on the development host, so a complete live-model research-to-report run has not been executed here.
+- The host has Ollama 0.40.11 with the configured Qwen2.5 and EmbeddingGemma models. A live run completed research with six evidence chunks, but the writer's structured-output retry exceeded 300 seconds on this CPU host; no complete live report bundle is claimed.
 - The 52-question dense/BM25/RRF/RRF-plus-reranker comparison is still unmeasured; the evaluation protocol leaves each metric as `NOT RUN`.
 - The DL model comparison covers 30 queries from an internal SciFact split. It is not the official test set, and the measured differences have no confidence intervals or significance tests.
 - MCP stdio startup and tool discovery were verified with the SDK client. The Claude Desktop UI was not launched.
-- GNU Make is unavailable on this Windows host; direct locked uv commands were used for validation.
+- GNU Make 4.4.1 is installed through MSYS2. The fresh-clone run and full report path still need verification.
 
 ## Quickstart
 
@@ -73,9 +73,9 @@ Three complete, curated examples exercise citation validation and the Markdown/H
 
 With GNU Make installed, `make setup`, `make ingest`, `make serve`, `make serve-web-search`, `make serve-dl-model`, `make run TOPIC="..."`, `make train`, `make eval`, `make test`, and `make lint` use locked uv commands. `make serve` starts the RAG server; each MCP server also has a separate target. Pass extra run, train, or eval flags with `ARGS`, for example `make run TOPIC="battery storage" ARGS="--until research"`.
 
-### Windows host without GNU Make
+### Windows fallback without GNU Make
 
-This development host has no GNU Make. Use the managed uv executable and a workspace-local cache:
+If GNU Make is unavailable, use the managed uv executable and a workspace-local cache:
 
 ```powershell
 $env:UV_SYSTEM_CERTS = 'true'
@@ -143,7 +143,7 @@ The controlled researcher A/B uses one synthetic two-passage fixture. With the s
 
 ### Test and MCP checks
 
-On the Windows CPU development host, the full suite passed **293 tests**; Ruff and MyPy were clean for 59 source files. The [stdio integration test record](docs/stdio_verification.md) covers the three MCP server processes. These checks verify component behavior and local protocol wiring; they do not substitute for the live Ollama run or the RAG metric table above.
+On the Windows CPU development host, the full suite passed **295 tests**; Ruff and MyPy were clean for 61 source files. The [stdio integration test record](docs/stdio_verification.md) covers the three MCP server processes. These checks verify component behavior and local protocol wiring; they do not substitute for a complete live report run or the RAG metric table above.
 
 ## Data, configuration, and artifacts
 

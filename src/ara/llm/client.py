@@ -14,7 +14,7 @@ from ara.config import Settings, load_settings
 
 logger = logging.getLogger(__name__)
 ModelT = TypeVar("ModelT", bound=BaseModel)
-ChatMessage = Mapping[str, str]
+ChatMessage = Mapping[str, Any]
 
 
 class LLMClientError(RuntimeError):
