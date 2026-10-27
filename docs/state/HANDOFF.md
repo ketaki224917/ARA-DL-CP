@@ -1,28 +1,28 @@
 # HANDOFF (overwritten after every task)
 
 Updated: 2026-10-26 | Session #: 1
-Current phase/task: P1.10 — run four-way retrieval evaluation | Status: in progress
+Current phase/task: P4.5 — measure live Writer/Critic quality on three topics | Status: in progress
 Environment task: ENV-006 — duplicate C: OneDrive checkout retirement remains blocked by inherited deny-child-delete ACL; D: project/runtime are canonical.
 
-Last committed task: `60efa17 [P7.5] Pass clean-clone report regression`.
+Last committed task: `8a02797 [P1.10] Measure four-way RAG retrieval`.
 
 ## Do next (exact)
-1. Inspect `src/ara/rag/eval.py`, the concrete retriever/index APIs, and `src/ara/dl/evaluate.py`; implement a resumable 52-query runner for dense, BM25, hybrid RRF, and hybrid+rerank without disturbing DL `ara eval`.
-2. Add focused tests for checkpoint/resume and metric semantics; expose a RAG evaluation command/Make target and save query-level predictions plus aggregate JSON/Markdown.
-3. Run all 52 queries on the 21-document/33-chunk sample corpus with recorded model/version/candidate depth, then update `docs/evaluation.md`, TODO, PROGRESS, and this handoff with measured results.
+1. Inspect `data/sample_corpus/` and existing live traces; select three distinct topics that have relevant local evidence.
+2. Run `make "TOPIC=<topic>" run` for each topic sequentially with D: Ollama/uv paths and a 300-second local LLM request timeout. Preserve each trace/run ID.
+3. Compare first and final critic unsupported-claim counts from each revision-loop trace; update the P4.5 results table, progress/TODO, and handoff.
 
 ## Environment state
-Windows 11, PowerShell, Python 3.12.15 CPU-only (18 logical processors, 15.52 GiB RAM). Canonical checkout `D:\DL CP`; uv 0.13.4 at `D:\DL CP\.tools\uv\uv.exe`, cache `.tools\uv-cache`, managed Python `.tools\uv-python`; GNU Make 4.4.1 at `D:\msys64\usr\bin\make.exe`. Ollama 0.40.11 is running at localhost:11434 with `qwen2.5:1.5b` and `embeddinggemma`. Main checkout tests last passed 308; Ruff and MyPy passed. Fresh clone `.tools\p7_5_clean` passed setup/ingest/full report run at `0dfd734`; its bundle was citation-checked and the PDF/audio verified.
+Windows 11, PowerShell, Python 3.12.15 CPU-only (18 logical processors, 15.52 GiB RAM). Canonical checkout `D:\DL CP`; uv 0.13.4/cache/Python under `D:\DL CP\.tools`; GNU Make 4.4.1 at `D:\msys64\usr\bin\make.exe`. Ollama 0.40.11 runs at localhost:11434 with `qwen2.5:1.5b` and `embeddinggemma`; Piper voice assets are on D:. Last full test suite: 311 passed; Ruff and MyPy clean. P7.5 fresh-clone report path and P1.10 52-query retrieval evaluation are complete. The measured RAG table and per-query rankings are committed in `outputs/rag_retrieval_evaluation/`.
 
 ## WIP / uncommitted
-None.
+Only this handoff refresh is pending commit.
 
 ## Known failing tests / issues
-No known failing tests. P1.10 four-system retrieval metrics are not yet run. P4.5 has a scripted three-topic demonstration but still needs a live-model effect over three topics. P5.5 has a 30-query held-out SciFact evaluation, but only four first-rank failures were available, fewer than the required 20-case review. ENV-006 remains open because Windows denies deleting the old C: OneDrive copy through an inherited deny-child-delete ACL; no permissions have been changed.
+No known failing tests. P4.5's scripted three-topic demo passes, but its live-model three-topic quality effect remains unmeasured; one live topic reduced unsupported claims from one to zero. P5.5's 30-query SciFact test split yielded only four first-rank failures, short of the requested 20-case review. ENV-006 remains open because Windows denies deleting the old C: OneDrive copy through an inherited deny-child-delete ACL; no permissions have been changed.
 
 ## Gotchas learned
-- Set `TEMP` and `TMP` to `D:\DL CP\.tools\pytest-tmp` for tests.
+- Set `TEMP`/`TMP` to `D:\DL CP\.tools\pytest-tmp` for tests.
 - Set `UV_SYSTEM_CERTS=true`; keep TLS verification enabled.
-- `ara eval` delegates to the custom DL evaluation. Add a separate RAG command or target so the existing behavior stays intact.
-- Set `OLLAMA_MODELS=D:\Ollama\user-data\models` before running local inference.
+- `ara eval` is for custom-DL evaluation; `ara rag-eval` runs the four-system RAG comparison.
+- Set `OLLAMA_MODELS=D:\Ollama\user-data\models` before local inference.
 - Keep PDF visual QA dependencies in `.tools\reports-venv`; `make setup` removes them from the project environment.
