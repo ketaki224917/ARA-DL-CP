@@ -1,10 +1,10 @@
 # HANDOFF (overwritten after every task)
 
 Updated: 2026-10-27 | Session #: 1
-Current phase/task: P5.5 - expand held-out reranker error analysis to 20 cases | Status: in progress
+Current phase/task: P0.6 - finalize hardware detection and model-selection record | Status: in progress
 Environment task: ENV-006 — duplicate C: OneDrive checkout retirement remains blocked by inherited deny-child-delete ACL; D: project/runtime are canonical.
 
-Last committed task: 5f7d59a [P4.5] Record live critic results on three topics.
+Last committed task: 571409e [P5.5] Evaluate reranker on expanded SciFact split.
 
 $11. Inspect src/ara/dl/public_data.py, src/ara/dl/evaluate.py, split manifests, and current P5.5 metrics/error output to identify legal held-out queries.
 2. Choose a deterministic expansion of the document-disjoint test split, retrain using only its train/validation documents, and rerun make eval with the expanded test set.
@@ -15,7 +15,7 @@ Windows 11, PowerShell, Python 3.12.15 CPU-only (18 logical processors, 15.52 Gi
 Only this handoff refresh is pending commit.
 
 ## Known failing tests / issues
-No known failing tests. P4.5 has three live runs: one reduced unsupported claims from one to zero, and two stopped clean at zero; this is a small demonstration. P5.5 current 30-query SciFact test split yielded only four first-rank failures, so the requested 20-case error analysis needs a larger deterministic held-out test set with document-level isolation. ENV-006 remains open because Windows denies deleting the old C: OneDrive copy through an inherited deny-child-delete ACL; no permissions have been changed.
+No known failing tests. P4.5 completed on three live topics (1->0, 0->0, 0->0 unsupported claims). P5.5 completed on 208 held-out SciFact queries with 20 actual first-rank failures; last suite: 311 passed, Ruff/MyPy clean. P0.6 hardware was detected by WMI but its environment/ADR record is not yet committed. ENV-006 remains open because Windows denies deleting the old C: OneDrive copy through an inherited deny-child-delete ACL; no permissions have been changed.
 
 ## Gotchas learned
 - Set `TEMP`/`TMP` to `D:\DL CP\.tools\pytest-tmp` for tests.
