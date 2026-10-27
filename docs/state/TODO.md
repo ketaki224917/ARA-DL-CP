@@ -12,7 +12,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P0.3 Write CONVENTIONS.md (style, naming, logging, error handling, commit format)
 - [x] P0.4 config.py (pydantic settings) + config.yaml + .env.example (tests pass)
 - [x] P0.5 logging_setup.py (tests pass)
-- [!] P0.6 Hardware detection + ENVIRONMENT.md + model choice ADR (CPU and RAM detected; supported GPU not detected; VRAM details remain unknown)
+- [x] P0.6 Hardware detection + ENVIRONMENT.md + model choice ADR (HP Laptop 14-gr1xxx; Ultra 5 125H, 14 cores/18 threads, 15.52 GiB RAM, integrated Intel Arc reported 2 GiB adapter memory; PyTorch CPU-only; ADR-062)
 - [x] P0.7 llm/client.py (chat, structured-output w/ pydantic retry, streaming, tool-call helper) + tests (tests pass)
 - [x] P0.8 Build/choose sample corpus (15–30 open-licensed docs on ONE niche topic; record sources & licenses in `data/sample_corpus/SOURCES.md`)
 

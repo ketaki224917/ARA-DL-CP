@@ -1,11 +1,11 @@
 # Environment
 
-Updated: 2026-10-26 (session 1; D: relocation and live run verification)
+Updated: 2026-10-27 (session 1; D: relocation, P5.5 evaluation, and hardware inventory)
 
-- OS/shell: Windows 11; PowerShell.
-- CPU: Intel64 Family 6 Model 170 Stepping 4, GenuineIntel; 18 logical processors.
-- RAM: 16,660,357,120 bytes (15.52 GiB), detected through `psutil.virtual_memory()`.
-- GPU/VRAM: No supported CUDA/MPS adapter detected; CPU PyTorch reports `torch.cuda.is_available() == False`. `nvidia-smi` is unavailable, so exact display adapter/VRAM details remain unknown.
+- OS/shell: Microsoft Windows 11 Home Single Language, build 26200 (64-bit); PowerShell.
+- System/CPU: HP Laptop 14-gr1xxx; Intel Core Ultra 5 125H, 14 cores and 18 logical processors.
+- RAM: 16,660,357,120 bytes (15.52 GiB), detected through psutil.virtual_memory().
+- GPU/VRAM: Win32_VideoController reports integrated Intel Arc Graphics with AdapterRAM 2,147,479,552 bytes (about 2 GiB; adapter/shared-memory report, not a dedicated-VRAM measurement) and Meta Virtual Monitor with no memory value. Installed PyTorch is 2.14.1+cpu; torch.cuda.is_available() is false and device_count() is 0.
 - Python: 3.12.15 managed by uv at `D:\DL CP\.tools\uv-python\cpython-3.12.15-windows-x86_64-none`.
 - uv: 0.13.4 at `D:\DL CP\.tools\uv\uv.exe`; package cache at `D:\DL CP\.tools\uv-cache`.
 - Project environments: `.venv` was rebuilt on D: with `uv sync --locked --extra dev --extra dl --extra tts`; it has the complete 137-package locked environment. `.tools/dl-venv`, `.tools/tts-venv`, and `.tools/reports-venv` were copied with the checkout. The D: uv Python runtime also keeps the old C: interpreter path working through a compatibility junction. `uv.lock` pins the full dependency graph.
@@ -26,7 +26,7 @@ Updated: 2026-10-26 (session 1; D: relocation and live run verification)
 
 ## Model choice
 
-Hardware probing found a CPU-only runtime with 18 logical processors and 15.52 GiB RAM. The supported GPU probe found no CUDA/MPS accelerator; the machine's display hardware and VRAM remain unknown. The default chat model remains `qwen2.5:1.5b` to keep the prescribed CPU laptop demo small. The embedding model remains `embeddinggemma`; both are installed, and the live report used Qwen for planning, research, writing, critique, diagram attempts, and narration attempts. The critic/revision path passed on the live run; see ADR-015 and resolved RUN-001. For the custom DL component, ADR-032 records the pinned MiniLM cross-encoder and CPU PyTorch choice.
+WMI reports an HP Laptop 14-gr1xxx with an Intel Core Ultra 5 125H (14 cores, 18 logical processors), 15.52 GiB RAM, and integrated Intel Arc Graphics with about 2 GiB adapter memory. The installed PyTorch wheel is CPU-only and reports no CUDA devices; no supported accelerator runtime is available to this project. The default chat model remains qwen2.5:1.5b to fit the CPU-first laptop policy, and embeddinggemma remains the configurable embedding model. Both are installed and live report runs succeeded. ADR-015 records the original model choice; ADR-062 records this hardware inventory.
 
 ## Commands
 

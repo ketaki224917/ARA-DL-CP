@@ -72,3 +72,5 @@
 - 2026-10-27 - Session 1 continuation checkpoint - P1.10 is committed. Finished P4.5 with three live local-model report runs: RRF 1->0 unsupported claims, candidate depth 0->0, and BM25+dense 0->0. Next: inspect the SciFact split/evaluation artifacts and expand P5.5 held-out error review to 20 cases without document leakage.
 
 - 2026-10-27 - Session 1 continuation checkpoint - P5.5 now uses all 693 eligible SciFact train/dev claims with a 415/70/208 document-disjoint split. Four-system evaluation on 208 test queries produced 20 genuine fine-tuned first-rank failures; 311 tests, Ruff, MyPy, and diff-check pass. Next: finish P0.6 hardware inventory and refresh ENVIRONMENT/model-selection records.
+
+- 2026-10-27 - Session 1 continuation checkpoint - P0.6 hardware inventory is complete: HP Laptop 14-gr1xxx, Ultra 5 125H, 15.52 GiB RAM, integrated Intel Arc reports about 2 GiB adapter memory, and PyTorch is CPU-only. ADR-062 retains the 1.5B Qwen choice. Next: final fresh-clone regression and acceptance audit.

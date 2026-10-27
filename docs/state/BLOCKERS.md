@@ -9,3 +9,5 @@
 - [RESOLVED 2026-10-22] ENV-003 Sandbox initially granted read-only access to `.git`; approved escalation was used to create the required P0.2 and P0.3 commits without changing global Git configuration.
 - [RESOLVED 2026-10-23] ENV-004 PyPI resolution and downloads succeeded with Windows system certificates and a workspace-local uv cache. `uv.lock` was generated and `.venv` was populated; the full suite, Ruff, and mypy now run successfully. The user confirmed no trusted internal mirror is available, but none was needed.
 
+
+- [RESOLVED 2026-10-27] P0.6 Hardware inventory completed with read-only WMI and PyTorch probes. HP Laptop 14-gr1xxx, Intel Core Ultra 5 125H (14 cores/18 logical), 15.52 GiB RAM, Intel Arc integrated adapter reports 2,147,479,552 bytes, and PyTorch 2.14.1+cpu has no CUDA devices. ADR-062 confirms the CPU-sized Qwen default.

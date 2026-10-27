@@ -544,3 +544,9 @@ Evidence:
 - Focused config/split tests -> 9 passed. Full pytest -> 311 passed in 45.34s. Ruff -> all checks passed. MyPy -> no issues in 56 files. git diff --check -> passed.
 Files: src/ara/dl/public_data.py, src/ara/config.py, config.yaml, tests/test_public_data.py, tests/test_config.py, data/dl_data/scifact_subset/, data/dl_data/SOURCES.md, outputs/dl_training_metrics*, outputs/dl_evaluation_metrics*, outputs/dl_error_analysis.json, docs/model_card.md, docs/design_decisions.md, README.md, and project state files.
 Notes: The internal split excludes the official SciFact test claims. The random-negative result means hard-negative training did not win its ablation; report that limitation directly. ADR-061 supersedes the original 200-claim / 30-query evaluation sizing decision while preserving the document-disjoint protocol.
+
+### 2026-10-27 - P0.6 - Complete the host hardware inventory
+Done: Recorded the host model, OS build, CPU, RAM, integrated graphics adapter report, and PyTorch accelerator capability. Confirmed the existing qwen2.5:1.5b CPU-first choice under ADR-062.
+Evidence: Read-only Get-CimInstance Win32_OperatingSystem -> Windows 11 Home Single Language, build 26200, 64-bit; Win32_ComputerSystem -> HP Laptop 14-gr1xxx, 16,660,357,120 bytes RAM; Win32_Processor -> Intel Core Ultra 5 125H, 14 cores/18 logical processors; Win32_VideoController -> Intel Arc Graphics AdapterRAM 2,147,479,552 bytes and Meta Virtual Monitor without a memory value; PyTorch 2.14.1+cpu -> torch.cuda.is_available() false, device_count() 0.
+Files: docs/state/ENVIRONMENT.md, docs/state/DECISIONS.md, docs/state/BLOCKERS.md, docs/state/TODO.md.
+Notes: WMI's integrated-adapter memory is not a dedicated-VRAM measurement. The Intel Arc runtime path was not tested; model selection follows the supported CPU runtime and the laptop acceptance policy.
