@@ -50,7 +50,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P4.2 Citation parser/validator (deterministic check that cited IDs exist; handles chunk/web markers, malformed syntax, and unknown IDs; 199 tests pass)
 - [x] P4.3 Critic (claim-level verification vs cited chunk, gap and contradiction checks, strict structured schema, state updates; 209 tests pass)
 - [x] P4.4 Revision loop + stopping logic + per-iteration stats (writer consumes bounded critic feedback; stops clean/abstained/unchanged/cap; 221 tests pass)
-- [>] P4.5 Loop-effect experiment on ≥ 3 topics; table in PROGRESS.md (scripted three-topic control passed; live-model effect still needs three topics; one live run measured unsupported claims 1 → 0)
+- [x] P4.5 Loop-effect experiment on >= 3 topics; live Qwen runs on RRF, candidate-depth, and BM25+dense topics: unsupported claims 1->0, 0->0, 0->0.
 
 ## Phase 5 — Custom DL model
 - [x] P5.1 Synthetic data generator (queries, positives, hard negatives via BM25/dense mining) + quality filtering (local-LLM path implemented and mocked; offline fallback dataset committed; live generation NOT RUN under ENV-002)
