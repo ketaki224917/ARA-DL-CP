@@ -33,8 +33,8 @@ The researcher calls tools through the MCP client. Retrieved documents and web t
 
 - The full report path passed both in the main checkout and in a fresh clone using Ollama 0.40.11, Qwen2.5, and EmbeddingGemma. The live run used validated fallbacks for invalid Mermaid and too-short narration; the local model's diagram and narration generation were not validated directly.
 - The four-way retrieval table is measured on 52 questions and 33 chunks, but the sample corpus is small. Citation precision is candidate-chunk precision; answer-level citation accuracy, answer rate, and abstention were not measured.
-- The DL model comparison covers 30 queries from an internal SciFact split. It is not the official test set, and the measured differences have no confidence intervals or significance tests.
-- The scripted three-topic revision demonstration is not a live three-topic quality experiment; one live report run reduced unsupported claims from one to zero. The required 20-case reranker error review also remains incomplete because the held-out split yielded only four first-rank failures.
+- The DL model comparison covers 208 queries from an internal SciFact split, not the official test set. Results have no confidence intervals or significance tests; the random-negative control slightly exceeds the fine-tuned model on MRR/nDCG.
+- Three live Writer/Critic runs covered distinct topics: one reduced unsupported claims from one to zero; two were clean on the first review. The 20-case reranker review now contains 20 observed first-rank failures, not padded successes.
 - MCP stdio startup and tool discovery were verified with the SDK client. The Claude Desktop UI was not launched.
 - GNU Make 4.4.1 is installed through MSYS2. A clean clone completed `make setup`, `make ingest`, and `make run`; the local Ollama service and ignored Piper voice files were reused.
 
@@ -118,18 +118,18 @@ The repository contains 52 labeled questions over the sample corpus: 34 factoid,
 
 ### Custom DL reranker
 
-The reported comparison is measured on a 30-query **internal SciFact test split**, not the official SciFact test set. BM25 and dense retrieval each supplied their top 20 candidates; the union had candidate recall@20 of 1.0000 and averaged 32.73 candidates per query. Metrics are macro averages. No confidence intervals or significance tests were computed.
+The reported comparison is measured on a 208-query **internal SciFact test split**, not the official SciFact test set. The checksum-pinned labeled train/dev subset has 693 queries split by evidence-document components into 415 train, 70 validation, and 208 test queries, with no document overlap. BM25 and dense retrieval each supplied their top 20 candidates; the union had candidate recall@20 of 0.9981 and averaged 33.38 candidates per query. Metrics are macro averages. No confidence intervals or significance tests were computed.
 
 | System | Recall@10 | MRR | nDCG@10 |
 |---|---:|---:|---:|
-| BM25 + dense RRF, no reranker | 0.9667 | 0.9026 | 0.9175 |
-| Generic MS MARCO cross-encoder | 0.9667 | 0.8854 | 0.9052 |
-| Fine-tuned cross-encoder | 0.9667 | 0.9194 | 0.9298 |
-| Random-negative control | 0.9667 | 0.9026 | 0.9175 |
+| BM25 + dense RRF, no reranker | 0.9923 | 0.9027 | 0.9236 |
+| Generic MS MARCO cross-encoder | 0.9933 | 0.9282 | 0.9433 |
+| Fine-tuned cross-encoder | 0.9933 | 0.9390 | 0.9504 |
+| Random-negative control | 0.9933 | 0.9424 | 0.9530 |
 
-The fine-tuned model ties recall@10 and has small MRR/nDCG gains on this split. The random-negative control matches RRF. Treat the result as descriptive, not as evidence of a reliable generalization gain. The full [evaluation table](outputs/dl_evaluation_metrics.md), [four observed ranking failures](outputs/dl_error_analysis.json), and [model card](docs/model_card.md) include setup and limitations.
+The fine-tuned model improves MRR/nDCG over RRF and the generic cross-encoder on this split, while the random-negative control scores slightly higher on both. Treat the result as descriptive, not as evidence of a reliable generalization gain. The full [evaluation table](outputs/dl_evaluation_metrics.md), [20 observed first-rank failures](outputs/dl_error_analysis.json), and [model card](docs/model_card.md) include setup and limitations.
 
-The main training run used 358 train pairs and 62 validation pairs, seed 42, and three CPU epochs. Best validation BCE was 0.309428 at epoch 3. Training loss is not a ranking-quality metric; the held-out comparison above is the relevant model comparison. The [loss curve](outputs/dl_training_loss.png) and [training metrics](outputs/dl_training_metrics.json) are tracked.
+The expanded main training run used 934 train pairs and 155 validation pairs, seed 42, and three CPU epochs with early stopping; best validation BCE was 0.407094 at epoch 1. Training loss is not a ranking-quality metric; the held-out comparison above is the relevant model comparison. The [loss curve](outputs/dl_training_loss.png) and [training metrics](outputs/dl_training_metrics.json) are tracked.
 
 ### Agent-loop and integration checks
 

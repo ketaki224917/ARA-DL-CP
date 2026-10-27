@@ -46,7 +46,7 @@ The three-topic reduction experiment used the production Writer, Critic, and Rev
 
 The custom ranker is a fine-tuned `cross-encoder/ms-marco-MiniLM-L6-v2` sequence-pair model. A cross-encoder scores a query and passage together, which is more suitable for reordering a bounded candidate list than embedding an entire corpus again. The base revision is pinned; training uses seeded AdamW and a small document-disjoint SciFact-derived set. CPU PyTorch supports the detected laptop environment. A separate credibility head is present as an option but remains disabled because no source-credibility labels were available.
 
-On 30 queries from an internal SciFact test split, the fine-tuned model tied BM25+dense RRF on recall@10 (0.9667) and had MRR 0.9194 versus 0.9026 and nDCG@10 0.9298 versus 0.9175. The generic cross-encoder scored lower on MRR/nDCG, while a random-negative control matched RRF. There are no confidence intervals or significance tests. The observed gains are small and descriptive; the correct conclusion is **ties recall, improves two ranking metrics on this split, and has not shown a reliable generalization gain**. The [model card](model_card.md) includes split construction, licenses, training details, error cases, and limitations.
+On 208 queries from the expanded internal SciFact test split, the fine-tuned model scored recall@10 0.9933, MRR 0.9390, and nDCG@10 0.9504; RRF scored 0.9923, 0.9027, and 0.9236. The generic cross-encoder scored 0.9933, 0.9282, and 0.9433. A random-negative control scored 0.9933, 0.9424, and 0.9530, slightly exceeding the fine-tuned model on MRR/nDCG. There are no confidence intervals or significance tests. The result shows ranking gains over RRF and the generic checkpoint on this split, but no advantage over the random-negative control and no reliable generalization claim. The [model card](model_card.md) includes split construction, licenses, training details, error cases, and limitations.
 
 The integration demo moved one synthetic gold passage from rank 2 to rank 1 and required one additional MCP call. It validates the scorer wiring and fallback path, not user-facing report quality. Relevance scores are uncalibrated and do not identify support versus contradiction.
 
@@ -60,11 +60,11 @@ This keeps the required generated report path runnable without a browser-based P
 
 | Experiment | Result | Interpretation |
 |---|---|---|
-| BM25 + dense RRF, no reranker | recall@10 0.9667, MRR 0.9026, nDCG@10 0.9175 | Baseline over 30 internal SciFact queries. |
-| Generic MS MARCO cross-encoder | recall@10 0.9667, MRR 0.8854, nDCG@10 0.9052 | Tied recall and ranked first relevant documents lower than RRF on average. |
-| Fine-tuned cross-encoder | recall@10 0.9667, MRR 0.9194, nDCG@10 0.9298 | Tied recall and had small MRR/nDCG gains on this split; uncertainty was not measured. |
-| Random-negative control | recall@10 0.9667, MRR 0.9026, nDCG@10 0.9175 | Matched RRF, so the fine-tuned differences are not evidence of a robust training win. |
-| Three-topic Writer/Critic loop | Scripted unsupported counts 1 to 0, one revision each | Verifies loop mechanics; not live-model quality. |
+| BM25 + dense RRF, no reranker | recall@10 0.9923, MRR 0.9027, nDCG@10 0.9236 | Baseline over 208 internal SciFact queries. |
+| Generic MS MARCO cross-encoder | recall@10 0.9933, MRR 0.9282, nDCG@10 0.9433 | Improved ranking over RRF on this split. |
+| Fine-tuned cross-encoder | recall@10 0.9933, MRR 0.9390, nDCG@10 0.9504 | Improved on RRF and generic ranking; uncertainty was not measured. |
+| Random-negative control | recall@10 0.9933, MRR 0.9424, nDCG@10 0.9530 | Slightly exceeded the fine-tuned model, so hard-negative training did not win this ablation. |
+| Three-topic Writer/Critic loop | Live unsupported counts 1 to 0, 0 to 0, and 0 to 0 | One claim was removed and re-reviewed; two topics were already clean. Small live demonstration, not a broad quality estimate. |
 | Researcher scorer A/B | Synthetic gold rank 2 to rank 1; MCP calls 1 to 2 | Verifies integration ordering; not a benchmark. |
 | Four-way RAG evaluation | 52 questions, 33 chunks; RRF MRR 0.989 vs. dense 0.924 and BM25 0.943; RRF+reranker MRR 1.000 | Small, CPU-only sample; citation precision is retrieved-candidate precision, and no statistical uncertainty was computed. |
 | Full local Ollama report run | Fresh-clone setup/ingest/run passed; generated cited MD/HTML/PDF/SVG/WAV | Used a structural report-heading diagram and citation-grounded narration after the small model returned invalid Mermaid and short scripts. |
@@ -78,9 +78,9 @@ For full result tables and reproduction details, see [`outputs/dl_evaluation_met
 - **Candidate precision vs. answer citations:** the retrieval table measures gold evidence among top-k chunks; answer-level citation accuracy and abstention need an answerer evaluation.
 - **Auditable citations vs. semantic uncertainty:** citation IDs and provenance are deterministic; whether a cited passage truly supports a claim still requires model critique and human review.
 - **Separate services vs. operational overhead:** MCP isolates tools and is protocol-tested, but each process and desktop-client path must be configured.
-- **Small reranker vs. broad generalization:** the CPU-friendly MiniLM run used a narrow 30-query internal SciFact split with no multi-seed analysis or statistical tests.
+- **Internal reranker split vs. broad generalization:** the CPU-friendly MiniLM run used 208 internal SciFact queries with no multi-seed analysis or statistical tests; the random-negative control slightly outscored the fine-tuned model.
 - **Optional features vs. default footprint:** the custom scorer and Piper synthesis add separate weights/dependencies. Stable Diffusion remains out of scope for this pass.
-- **Host validation gaps:** the live report and Make targets passed on Windows, but a live three-topic revision-quality experiment and Claude Desktop UI check remain open.
+- **Host validation gaps:** the live report, three-topic revision experiment, and Make targets passed on Windows; Claude Desktop's UI itself was not launched, though all MCP stdio servers were verified through the SDK.
 
 ## What I would do next
 

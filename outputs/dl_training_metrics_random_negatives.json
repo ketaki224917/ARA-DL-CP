@@ -1,9 +1,9 @@
 {
-  "best_epoch": 1,
-  "best_validation_loss": 0.0506736260656673,
-  "stopped_early": true,
-  "training_example_count": 358,
-  "validation_example_count": 62,
+  "best_epoch": 2,
+  "best_validation_loss": 0.01942711917030054,
+  "stopped_early": false,
+  "training_example_count": 934,
+  "validation_example_count": 155,
   "negative_strategy": "random",
   "smoke_batch_limit": null,
   "checkpoint_path": "models\\checkpoints\\reranker_random_negatives.pt",
@@ -12,18 +12,18 @@
   "history": [
     {
       "epoch": 1,
-      "training_loss": 0.11883450459913929,
-      "validation_loss": 0.0506736260656673
+      "training_loss": 0.09840926008738479,
+      "validation_loss": 0.04870118874607743
     },
     {
       "epoch": 2,
-      "training_loss": 0.02465033035383263,
-      "validation_loss": 0.06507729193441675
+      "training_loss": 0.030463413182416445,
+      "validation_loss": 0.01942711917030054
     },
     {
       "epoch": 3,
-      "training_loss": 0.008446991927017766,
-      "validation_loss": 0.05837597929184408
+      "training_loss": 0.014445271229973947,
+      "validation_loss": 0.02060270604758238
     }
   ]
 }

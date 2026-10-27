@@ -73,6 +73,11 @@ def test_subset_preserves_labels_and_groups_documents_without_leakage(
 
     assert metadata["selected_query_count"] == 12
     assert metadata["document_overlap"] is False
+    assert metadata["split_ratios"] == {
+        "train": 0.60,
+        "validation": 0.10,
+        "test": 0.30,
+    }
     assert metadata["query_counts"]["train"] > 0
     assert metadata["query_counts"]["validation"] > 0
     assert metadata["query_counts"]["test"] > 0

@@ -2,10 +2,13 @@
 
 ## SciFact subset
 
-ARA uses a deterministic 200-claim subset from the labeled `claims_train.jsonl` and
+ARA uses all 693 eligible claims from the labeled `claims_train.jsonl` and
 `claims_dev.jsonl` files in the official [AllenAI SciFact repository](https://github.com/allenai/scifact).
+Eligibility requires every annotated evidence document to be present in the pinned corpus.
 The archive URL, SHA-256 digest, selected query counts, split counts, and document counts are
-recorded in `scifact_subset/metadata.json`. The downloaded archive is not committed; run
+recorded in `scifact_subset/metadata.json`. The deterministic seed-42 split targets 60% train,
+10% validation, and 30% internal test; claims sharing evidence documents stay together, and
+the generated partitions have zero document overlap. The downloaded archive is not committed; run
 `uv run python -m ara.dl.public_data --download` to fetch and verify it, then prepare the
 same subset from the configured seed and query limit.
 

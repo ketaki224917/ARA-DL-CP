@@ -57,7 +57,7 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P5.2 Public dataset subset integration + doc-level splits (SciFact; 200 labeled queries; evidence-linked document splits validated with no overlap)
 - [x] P5.3 Dataset/Dataloader + model.py (split-safe pair batches, pinned MiniLM relevance scorer, optional masked credibility head; CPU inference verified)
 - [x] P5.4 train.py (config-driven AdamW/BCE training, seeded split loaders, validation early stopping, atomic best checkpoint, JSON metrics, PNG loss curve; 3-epoch CPU run completed)
-- [!] P5.5 evaluate.py vs baselines + ablations + error analysis (30-query internal SciFact test split; fine-tuned model ties recall and improves MRR/nDCG slightly over RRF; only four first-rank failures existed and all four were reviewed, so the required 20-case error analysis still needs a larger held-out set)
+- [x] P5.5 Expanded internal SciFact evaluation to 208 test queries; trained/evaluated RRF, generic, fine-tuned, and random-negative systems; reviewed 20 real fine-tuned first-rank failures.
 - [x] P5.6 export + load in dl_model_server (`score_chunks`) + tests (atomic inference bundle; lazy scorer; real MCP client smoke returned ordered relevance probabilities; 251 tests pass)
 - [x] P5.7 Integrate in researcher; A/B end-to-end comparison (optional MCP-only scoring with validated IDs/fallback; real local model moved gold evidence rank 2→1 on one controlled fixture)
 - [x] P5.8 docs/model_card.md (training, internal held-out evaluation, four observed ranking failures, integration fixture, and limitations documented; checks pass)

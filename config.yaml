@@ -42,7 +42,7 @@ dl:
   questions_per_chunk: 2
   candidate_k: 20
   negative_pool_size: 1
-  public_max_queries: 200
+  public_max_queries: 693
   model_revision: df500e56a59fc34f37322735a40eff666200312e
   max_length: 256
   batch_size: 4

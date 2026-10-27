@@ -1,9 +1,10 @@
 {
-  "best_epoch": 3,
-  "best_validation_loss": 0.30942759494627675,
-  "stopped_early": false,
-  "training_example_count": 358,
-  "validation_example_count": 62,
+  "best_epoch": 1,
+  "best_validation_loss": 0.4070941174222577,
+  "stopped_early": true,
+  "training_example_count": 934,
+  "validation_example_count": 155,
+  "negative_strategy": "bm25",
   "smoke_batch_limit": null,
   "checkpoint_path": "models\\checkpoints\\reranker.pt",
   "curves_path": "outputs\\dl_training_loss.png",
@@ -11,18 +12,18 @@
   "history": [
     {
       "epoch": 1,
-      "training_loss": 0.6848998771949187,
-      "validation_loss": 0.4161318920312389
+      "training_loss": 0.5938091069475869,
+      "validation_loss": 0.4070941174222577
     },
     {
       "epoch": 2,
-      "training_loss": 0.4370264100462365,
-      "validation_loss": 0.33547601608499406
+      "training_loss": 0.37078250106224664,
+      "validation_loss": 0.4183690753074423
     },
     {
       "epoch": 3,
-      "training_loss": 0.3213573022011938,
-      "validation_loss": 0.30942759494627675
+      "training_loss": 0.25606822929239376,
+      "validation_loss": 0.45941242797961157
     }
   ]
 }

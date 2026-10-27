@@ -9,163 +9,842 @@
         "6796297"
       ],
       "candidate_recall": 1.0,
-      "first_relevant_rank": 12,
+      "first_relevant_rank": 16,
       "failure_type": "gold_not_ranked_first",
       "top_five": [
         {
           "document_id": "27127885",
-          "relevance_score": -1.4479902982711792,
+          "relevance_score": -0.37045255303382874,
           "text": "An activator of the cAMP/PKA/CREB pathway promotes osteogenesis from human mesenchymal stem cells.\n\nMesenchymal stem cells (MSCs) are multipotent adult stem cells capable of differentiating along the osteoblast, adipocyte, and chondrocyte lineages. Regulation of MSCs differentiation may be a useful tool for regenerative medicine and cell-based therapy. The discovery of small molecule that activates the osteogenic differentiation of MSCs could aid in the development of a new anabolic drug for ost",
           "is_relevant": false
         },
         {
-          "document_id": "9301606",
-          "relevance_score": -1.5953518152236938,
-          "text": "Parathyroid hormone-induced E4BP4/NFIL3 down-regulates transcription in osteoblasts.\n\nParathyroid hormone (PTH), a major regulator of bone metabolism, activates the PTHR1 receptor on the osteoblast plasma membrane to initiate signaling and induce transcription of primary response genes. Subsequently, primary genes with transcriptional activity regulate expression of downstream PTH targets. We have identified the adenovirus E4 promoter-binding protein/nuclear factor regulated by IL-3 (E4bp4) as a",
-          "is_relevant": false
-        },
-        {
-          "document_id": "14863011",
-          "relevance_score": -1.786087989807129,
-          "text": "Bcl2 Regulation by the Melanocyte Master Regulator Mitf Modulates Lineage Survival and Melanoma Cell Viability\n\nKit/SCF signaling and Mitf-dependent transcription are both essential for melanocyte development and pigmentation. To identify Mitf-dependent Kit transcriptional targets in primary melanocytes, microarray studies were undertaken. Among identified targets was BCL2, whose germline deletion produces melanocyte loss and which exhibited phenotypic synergy with Mitf in mice. BCL2's regulatio",
+          "document_id": "12130067",
+          "relevance_score": -0.48553645610809326,
+          "text": "Osteoclasts promote the formation of hematopoietic stem cell niches in the bone marrow\n\nFormation of the hematopoietic stem cell (HSC) niche in bone marrow (BM) is tightly associated with endochondral ossification, but little is known about the mechanisms involved. We used the oc/oc mouse, a mouse model with impaired endochondral ossification caused by a loss of osteoclast (OCL) activity, to investigate the role of osteoblasts (OBLs) and OCLs in the HSC niche formation. The absence of OCL activi",
           "is_relevant": false
         },
         {
           "document_id": "11716783",
-          "relevance_score": -1.885527491569519,
+          "relevance_score": -0.8094321489334106,
           "text": "Multiple roles of vascular endothelial growth factor (VEGF) in skeletal development, growth, and repair.\n\nPublisher Summary This chapter discusses the developmental roles of vascular endothelial growth factor (VEGF) in skeletal morphogenesis, speculates on the future directions of research in this area, and describes some of the challenges in the field. VEGF regulates osteoclastic differentiation, migration, and activity. VEGF is, therefore, a key coordinator of the entire process. VEGF is neces",
           "is_relevant": false
         },
         {
-          "document_id": "21199527",
-          "relevance_score": -2.14669132232666,
-          "text": "Parathyroid hormone induces E4bp4 messenger ribonucleic acid expression primarily through cyclic adenosine 3',5'-monophosphate signaling in osteoblasts.\n\nPTH binding to its receptor activates protein kinase A (PKA), protein kinase C (PKC), and calcium signaling to induce transcription of primary response genes in osteoblasts. Adenovirus E4 promoter-binding protein/nuclear factor regulated by IL-3 (E4BP4/NFIL3), a transcriptional repressor, is a PTH-induced primary response gene in primary mouse ",
+          "document_id": "9301606",
+          "relevance_score": -0.812376856803894,
+          "text": "Parathyroid hormone-induced E4BP4/NFIL3 down-regulates transcription in osteoblasts.\n\nParathyroid hormone (PTH), a major regulator of bone metabolism, activates the PTHR1 receptor on the osteoblast plasma membrane to initiate signaling and induce transcription of primary response genes. Subsequently, primary genes with transcriptional activity regulate expression of downstream PTH targets. We have identified the adenovirus E4 promoter-binding protein/nuclear factor regulated by IL-3 (E4bp4) as a",
+          "is_relevant": false
+        },
+        {
+          "document_id": "58006489",
+          "relevance_score": -0.90041184425354,
+          "text": "Prostaglandin E2 mediates sensory nerve regulation of bone homeostasis\n\nWhether sensory nerve can sense bone density or metabolic activity to control bone homeostasis is unknown. Here we found prostaglandin E2 (PGE2) secreted by osteoblastic cells activates PGE2 receptor 4 (EP4) in sensory nerves to regulate bone formation by inhibiting sympathetic activity through the central nervous system. PGE2 secreted by osteoblasts increases when bone density decreases as demonstrated in osteoporotic anima",
           "is_relevant": false
         }
       ]
     },
     {
-      "query_id": "scifact:645",
-      "query": "Intake of folic acid (FA) and vitamin B6 (VB6) increases levels of homocysteine.",
+      "query_id": "scifact:463",
+      "query": "Genomic aberrations of metastases provide information for targeted therapy.",
       "gold_document_ids": [
-        "12810152"
+        "19736671"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 10,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "5649538",
+          "relevance_score": 0.07674271613359451,
+          "text": "Development of candidate genomic markers to select breast cancer patients for dasatinib therapy.\n\nPatient selection is important for targeted therapies, yet phase I/II trials are often underpowered for developing predictors of drug response. The goal of this research was to define genomic predictors for dasatinib that could be prospectively tested in early-phase clinical trials. Gene expression profiles of dasatinib-sensitive and dasatinib-resistant cell lines (n = 23) were compared to develop a",
+          "is_relevant": false
+        },
+        {
+          "document_id": "4325398",
+          "relevance_score": -0.1424648016691208,
+          "text": "Pancreatic cancer genomes reveal aberrations in axon guidance pathway genes\n\nPancreatic cancer is a highly lethal malignancy with few effective therapies. We performed exome sequencing and copy number analysis to define genomic aberrations in a prospectively accrued clinical cohort (n = 142) of early (stage I and II) sporadic pancreatic ductal adenocarcinoma. Detailed analysis of 99 informative tumours identified substantial heterogeneity with 2,016 non-silent mutations and 1,628 copy-number var",
+          "is_relevant": false
+        },
+        {
+          "document_id": "21692235",
+          "relevance_score": -0.24639102816581726,
+          "text": "Integrated genomic analysis identifies clinically relevant subtypes of glioblastoma characterized by abnormalities in PDGFRA, IDH1, EGFR, and NF1.\n\nThe Cancer Genome Atlas Network recently cataloged recurrent genomic abnormalities in glioblastoma multiforme (GBM). We describe a robust gene expression-based molecular classification of GBM into Proneural, Neural, Classical, and Mesenchymal subtypes and integrate multidimensional genomic data to establish patterns of somatic mutations and DNA copy ",
+          "is_relevant": false
+        },
+        {
+          "document_id": "41782935",
+          "relevance_score": -0.357602059841156,
+          "text": "Genetic diagnosis and prognosis of Alzheimer's disease: challenges and opportunities.\n\nAlzheimer's disease (AD), the most common form of dementia in western societies, is a pathologically and clinically heterogeneous disease with a strong genetic component. The recent advances in high-throughput genome technologies allowing for the rapid analysis of millions of polymorphisms in thousands of subjects has significantly advanced our understanding of the genomic underpinnings of AD susceptibility. D",
+          "is_relevant": false
+        },
+        {
+          "document_id": "6944800",
+          "relevance_score": -0.5769627094268799,
+          "text": "Microenvironmental regulation of tumor progression and metastasis\n\nCancers develop in complex tissue environments, which they depend on for sustained growth, invasion and metastasis. Unlike tumor cells, stromal cell types within the tumor microenvironment (TME) are genetically stable and thus represent an attractive therapeutic target with reduced risk of resistance and tumor recurrence. However, specifically disrupting the pro-tumorigenic TME is a challenging undertaking, as the TME has diverse",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:469",
+      "query": "Glial calcium waves influence seizures.",
+      "gold_document_ids": [
+        "1410197"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 7,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "15889329",
+          "relevance_score": -0.07495293766260147,
+          "text": "A JOURNAL OF NEUROLOGY\n\nBrain glial cells, five times more prevalent than neurons, have recently received attention for their potential involvement in epileptic seizures. Microglia and astrocytes, associated with inflammatory innate immune responses, are responsible for surveillance of brain damage that frequently results in seizures. Thus, an intriguing suggestion has been put forward that seizures may be facilitated and perhaps triggered by brain immune responses. Indeed, recent evidence stron",
+          "is_relevant": false
+        },
+        {
+          "document_id": "3085264",
+          "relevance_score": -1.7424877882003784,
+          "text": "Pituitary Adenylate Cyclase-Activating Polypeptide (PACAP), a Neuron-Derived Peptide Regulating Glial Glutamate Transport and Metabolism\n\nIn the brain, glutamatergic neurotransmission is terminated predominantly by the rapid uptake of synaptically released glutamate into astrocytes through the Na(+)-dependent glutamate transporters GLT-1 and GLAST and its subsequent conversion into glutamine by the enzyme glutamine synthetase (GS). To date, several factors have been identified that rapidly alter",
+          "is_relevant": false
+        },
+        {
+          "document_id": "3870062",
+          "relevance_score": -1.8143457174301147,
+          "text": "6-Sulphated Chondroitins Have a Positive Influence on Axonal Regeneration\n\nChondroitin sulphate proteoglycans (CSPGs) upregulated in the glial scar inhibit axon regeneration via their sulphated glycosaminoglycans (GAGs). Chondroitin 6-sulphotransferase-1 (C6ST-1) is upregulated after injury leading to an increase in 6-sulphated GAG. In this study, we ask if this increase in 6-sulphated GAG is responsible for the increased inhibition within the glial scar, or whether it represents a partial rever",
+          "is_relevant": false
+        },
+        {
+          "document_id": "23746332",
+          "relevance_score": -1.952934741973877,
+          "text": "Fast calcium and voltage-sensitive dye imaging in enteric neurones reveal calcium peaks associated with single action potential discharge.\n\nSlow changes in [Ca(2+)](i) reflect increased neuronal activity. Our study demonstrates that single-trial fast [Ca(2+)](i) imaging (≥200 Hz sampling rate) revealed peaks each of which are associated with single spike discharge recorded by consecutive voltage-sensitive dye (VSD) imaging in enteric neurones and nerve fibres. Fast [Ca(2+)](i) imaging also revea",
+          "is_relevant": false
+        },
+        {
+          "document_id": "4447055",
+          "relevance_score": -2.1725330352783203,
+          "text": "Modulation of the proteoglycan receptor PTPσ promotes recovery after spinal cord injury\n\nContusive spinal cord injury leads to a variety of disabilities owing to limited neuronal regeneration and functional plasticity. It is well established that an upregulation of glial-derived chondroitin sulphate proteoglycans (CSPGs) within the glial scar and perineuronal net creates a barrier to axonal regrowth and sprouting. Protein tyrosine phosphatase σ (PTPσ), along with its sister phosphatase leukocyte",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:1266",
+      "query": "The risk of breast cancer among parous women increases with placental weight of pregnancies, and this association is strongest for premenopausal breast cancer.",
+      "gold_document_ids": [
+        "37480103"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 4,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "13831842",
+          "relevance_score": 3.6593735218048096,
+          "text": "Pooled analysis of prospective cohort studies on height, weight, and breast cancer risk.\n\nThe association between anthropometric indices and the risk of breast cancer was analyzed using pooled data from seven prospective cohort studies. Together, these cohorts comprise 337,819 women and 4,385 incident invasive breast cancer cases. In multivariate analyses controlling for reproductive, dietary, and other risk factors, the pooled relative risk (RR) of breast cancer per height increment of 5 cm was",
+          "is_relevant": false
+        },
+        {
+          "document_id": "13765757",
+          "relevance_score": 3.025911569595337,
+          "text": "Timing of menarche and first full-term birth in relation to breast cancer risk.\n\nAges at menarche and first birth are established risk factors for breast cancer. The interval between these ages may also affect risk, since the breast is more susceptible to carcinogenic insults during this period than during the parous period. However, few investigators have studied this relation. Using logistic regression, the authors evaluated associations between the timing of reproductive events and breast can",
+          "is_relevant": false
+        },
+        {
+          "document_id": "4886637",
+          "relevance_score": 2.4450278282165527,
+          "text": "Diabetes, metabolic syndrome, and breast cancer: a review of the current evidence.\n\nIncidences of breast cancer, type 2 diabetes, and metabolic syndrome have increased over the past decades with the obesity epidemic, especially in industrialized countries. Insulin resistance, hyperinsulinemia, and changes in the signaling of growth hormones and steroid hormones associated with diabetes may affect the risk of breast cancer. We reviewed epidemiologic studies of the association between type 2 diabe",
+          "is_relevant": false
+        },
+        {
+          "document_id": "37480103",
+          "relevance_score": 1.970618724822998,
+          "text": "Pregnancy characteristics and maternal risk of breast cancer.\n\nCONTEXT During pregnancy, serum levels of estrogen, progesterone, and other hormones are markedly higher than during other periods of life. Pregnancy hormones primarily are produced in the placenta, and signs of placental impairment may serve as indirect markers of hormone exposures during pregnancy. During pregnancy, these markers have been inconsistently associated with subsequent risk of breast cancer in the mother.   \n OBJECTIVE ",
+          "is_relevant": true
+        },
+        {
+          "document_id": "16098747",
+          "relevance_score": 1.693076491355896,
+          "text": "Breast cancer risk factors in relation to breast density (United States)\n\nEvaluate known breast cancer risk factors in relation to breast density. We examined factors in relation to breast density in 144,018 New Hampshire (NH) women with at least one mammogram recorded in a statewide mammography registry. Mammographic breast density was measured by radiologists using the BI-RADS classification; risk factors of interest were obtained from patient intake forms and questionnaires. Initial analyses ",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:756",
+      "query": "Many proteins in human cells can be post-translationally modified at lysine residues via acetylation.",
+      "gold_document_ids": [
+        "2831620"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 4,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "27134527",
+          "relevance_score": 2.907529592514038,
+          "text": "The growing landscape of lysine acetylation links metabolism and cell signalling\n\nLysine acetylation is a conserved protein post-translational modification that links acetyl-coenzyme A metabolism and cellular signalling. Recent advances in the identification and quantification of lysine acetylation by mass spectrometry have increased our understanding of lysine acetylation, implicating it in many biological processes through the regulation of protein interactions, activity and localization. In a",
+          "is_relevant": false
+        },
+        {
+          "document_id": "17919731",
+          "relevance_score": 2.575042247772217,
+          "text": "BRIEFINGS IN FUNCTIONAL GENOMICS AND PROTEOMICS. VOL 5. NO 3. 209^221 doi:10.1093/bfgp/ell028 Histone acetylation in gene regulation\n\nGenetic information is packaged in the highly dynamic nucleoprotein structure called chromatin. Many biological processes are regulated via post-translational modifications of key proteins. Acetylation of lysine residues at the N-terminal histone tails is one of the most studied covalent modifications influencing gene regulation in eukaryotic cells. This review fo",
+          "is_relevant": false
+        },
+        {
+          "document_id": "21465696",
+          "relevance_score": 1.7252405881881714,
+          "text": "Acetylation controls Notch3 stability and function in T-cell leukemia\n\nPost-translational modifications of Notch3 and their functional role with respect to Notch3 overexpression in T-cell leukemia are still poorly understood. We identify here a specific novel property of Notch3 that is acetylated and deacetylated at lysines 1692 and 1731 by p300 and HDAC1, respectively, a balance impaired by HDAC inhibitors (HDACi) that favor hyperacetylation. By using HDACi and a non-acetylatable Notch3 mutant ",
+          "is_relevant": false
+        },
+        {
+          "document_id": "2831620",
+          "relevance_score": 1.5143295526504517,
+          "text": "Protein Lysine Acetylated/Deacetylated Enzymes and the Metabolism-Related Diseases\n\nLysine acetylation is a reversible posttranslational modifcation, an epigenetic phenomenon, referred to as transfer of an acetyl group from acetyl CoA to lysine e- amino group of targeted protein, which is modulated by acetyltransferases (histone/ lysine (K) acetyltransferases, HATs/KATs) and deacetylases (histone/lysine (K) deacetylases, HDACs/KDACs). Lysine acetylation regulates various metabolic processes, suc",
+          "is_relevant": true
+        },
+        {
+          "document_id": "3230361",
+          "relevance_score": 0.1969325989484787,
+          "text": "Generation and characterization of methyl-lysine histone antibodies.\n\nPublisher Summary This chapter summarizes the development and characterization of rabbit polyclonal antibodies named histone that are directed against the methylated H3-K9 position. It provides protocols for peptide design, rabbit immunizations, and quality controls of methyl-lysine histone antibodies, followed by their in vivo characterization using indirect IF of inter-and metaphase chromatin in wild-type (wt) and mutant mou",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:1265",
+      "query": "The risk of breast cancer among parous women decreases with placental weight of pregnancies.",
+      "gold_document_ids": [
+        "37480103"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 3,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "13831842",
+          "relevance_score": 3.4773621559143066,
+          "text": "Pooled analysis of prospective cohort studies on height, weight, and breast cancer risk.\n\nThe association between anthropometric indices and the risk of breast cancer was analyzed using pooled data from seven prospective cohort studies. Together, these cohorts comprise 337,819 women and 4,385 incident invasive breast cancer cases. In multivariate analyses controlling for reproductive, dietary, and other risk factors, the pooled relative risk (RR) of breast cancer per height increment of 5 cm was",
+          "is_relevant": false
+        },
+        {
+          "document_id": "13765757",
+          "relevance_score": 2.5894558429718018,
+          "text": "Timing of menarche and first full-term birth in relation to breast cancer risk.\n\nAges at menarche and first birth are established risk factors for breast cancer. The interval between these ages may also affect risk, since the breast is more susceptible to carcinogenic insults during this period than during the parous period. However, few investigators have studied this relation. Using logistic regression, the authors evaluated associations between the timing of reproductive events and breast can",
+          "is_relevant": false
+        },
+        {
+          "document_id": "37480103",
+          "relevance_score": 2.390087127685547,
+          "text": "Pregnancy characteristics and maternal risk of breast cancer.\n\nCONTEXT During pregnancy, serum levels of estrogen, progesterone, and other hormones are markedly higher than during other periods of life. Pregnancy hormones primarily are produced in the placenta, and signs of placental impairment may serve as indirect markers of hormone exposures during pregnancy. During pregnancy, these markers have been inconsistently associated with subsequent risk of breast cancer in the mother.   \n OBJECTIVE ",
+          "is_relevant": true
+        },
+        {
+          "document_id": "4886637",
+          "relevance_score": 1.2586504220962524,
+          "text": "Diabetes, metabolic syndrome, and breast cancer: a review of the current evidence.\n\nIncidences of breast cancer, type 2 diabetes, and metabolic syndrome have increased over the past decades with the obesity epidemic, especially in industrialized countries. Insulin resistance, hyperinsulinemia, and changes in the signaling of growth hormones and steroid hormones associated with diabetes may affect the risk of breast cancer. We reviewed epidemiologic studies of the association between type 2 diabe",
+          "is_relevant": false
+        },
+        {
+          "document_id": "16098747",
+          "relevance_score": 0.9769570827484131,
+          "text": "Breast cancer risk factors in relation to breast density (United States)\n\nEvaluate known breast cancer risk factors in relation to breast density. We examined factors in relation to breast density in 144,018 New Hampshire (NH) women with at least one mammogram recorded in a statewide mammography registry. Mammographic breast density was measured by radiologists using the BI-RADS classification; risk factors of interest were obtained from patient intake forms and questionnaires. Initial analyses ",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:22",
+      "query": "76-85% of people with severe mental disorder receive no treatment in low and middle income countries.",
+      "gold_document_ids": [
+        "6490571"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 3,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "14682243",
+          "relevance_score": 1.294734001159668,
+          "text": "Dementia incidence and mortality in middle-income countries, and associations with indicators of cognitive reserve: a 10/66 Dementia Research Group population-based cohort study\n\nBACKGROUND Results of the few cohort studies from countries with low incomes or middle incomes suggest a lower incidence of dementia than in high-income countries. We assessed incidence of dementia according to criteria from the 10/66 Dementia Research Group and Diagnostic and Statistical Manual of Mental Disorders (DSM",
+          "is_relevant": false
+        },
+        {
+          "document_id": "73473433",
+          "relevance_score": 0.9411507844924927,
+          "text": "Mental health difficulties across childhood and mental health service use: findings from a longitudinal population-based study.\n\nBACKGROUND Over the past 20 years the prevalence of child and adolescent mental disorders in high-income countries has not changed despite increased investment in mental health services. Insufficient contact with mental health services may be a contributing factor; however, it is not known what proportion of children have sufficient contact with health professionals to",
+          "is_relevant": false
+        },
+        {
+          "document_id": "6490571",
+          "relevance_score": 0.9293581247329712,
+          "text": "Prevalence, severity, and unmet need for treatment of mental disorders in the World Health Organization World Mental Health Surveys.\n\nCONTEXT Little is known about the extent or severity of untreated mental disorders, especially in less-developed countries.   \n OBJECTIVE To estimate prevalence, severity, and treatment of Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition (DSM-IV) mental disorders in 14 countries (6 less developed, 8 developed) in the World Health Organization ",
+          "is_relevant": true
+        },
+        {
+          "document_id": "21274919",
+          "relevance_score": 0.9094821214675903,
+          "text": "The association between common physical impairments and dementia in low and middle income countries, and, among people with dementia, their association with cognitive function and disability. A 10/66 Dementia Research Group population-based study.\n\nOBJECTIVE Chronic physical comorbidity is common in dementia. However, there is an absence of evidence to support good practice guidelines for attention to these problems. We aimed to study the extent of this comorbidity and its impact on cognitive fu",
+          "is_relevant": false
+        },
+        {
+          "document_id": "14319754",
+          "relevance_score": 0.29638057947158813,
+          "text": "The Antiretroviral Therapy in Lower Income Countries (ART-LINC) Collaboration and ART Cohort Collaboration (ART-CC) groups Summary\n\nBACKGROUND Highly active antiretroviral therapy (HAART) is being scaled up in developing countries. We compared baseline characteristics and outcomes during the first year of HAART between HIV-1-infected patients in low-income and high-income settings.   \n METHODS 18 HAART programmes in Africa, Asia, and South America (low-income settings) and 12 HIV cohort studies ",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:48",
+      "query": "A total of 1,000 people in the UK are asymptomatic carriers of vCJD infection.",
+      "gold_document_ids": [
+        "13734012"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 3,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "11349166",
+          "relevance_score": 1.0239251852035522,
+          "text": "Lack of evidence of transfusion transmission of Creutzfeldt-Jakob disease in a US surveillance study.\n\nBACKGROUND Since 2004, several reported transfusion transmissions of variant Creutzfeldt-Jakob disease (vCJD) in the United Kingdom have reawakened concerns about the possible risk of similar transmissions of nonvariant or classic forms of CJD.    STUDY DESIGN AND METHODS Patients with a CJD diagnosis and a history of donating blood were reported to the study coordinator. Through review of bloo",
+          "is_relevant": false
+        },
+        {
+          "document_id": "27063470",
+          "relevance_score": -1.0129598379135132,
+          "text": "Sporadic Creutzfeldt-Jakob disease in the United Kingdom: analysis of epidemiological surveillance data for 1970-96.\n\nOBJECTIVE To identify changes in the occurrence of Creutzfeldt-Jakob disease that might be related to the epidemic of bovine spongiform encephalopathy.   \n DESIGN Epidemiological surveillance of the United Kingdom population for Creutzfeldt-Jakob disease based on (a) referral of suspected cases by neurologists, neuropathologists, and neurophysiologists and (b) death certificates.",
+          "is_relevant": false
+        },
+        {
+          "document_id": "13734012",
+          "relevance_score": -2.066681146621704,
+          "text": "Prevalent abnormal prion protein in human appendixes after bovine spongiform encephalopathy epizootic: large scale survey\n\nOBJECTIVES To carry out a further survey of archived appendix samples to understand better the differences between existing estimates of the prevalence of subclinical infection with prions after the bovine spongiform encephalopathy epizootic and to see whether a broader birth cohort was affected, and to understand better the implications for the management of blood and blood",
+          "is_relevant": true
+        },
+        {
+          "document_id": "18344910",
+          "relevance_score": -2.1522786617279053,
+          "text": "Thrombocytopenia as an Indicator of Malaria in Adult Population\n\nObjectives. To evaluate the predictive value of thrombocytopenia in malaria. Patients and Methods. It was a prospective observational study on all febrile patients with thrombocytopenia presenting to the Medical Unit of Hayat Abad Medical Complex during November 2008 to November 2010. Results. Of the total of 228 patients with fever and thrombocytopenia, 121 patients (53%) proved to be suffering from malaria. Of them 82 patients (6",
+          "is_relevant": false
+        },
+        {
+          "document_id": "23531592",
+          "relevance_score": -2.2561817169189453,
+          "text": "Paediatric HIV infection.\n\nBy the year 2000 there will be six million pregnant women and five to ten million children infected with HIV-1. Intervention strategies have been planned and in some instances already started. A timely and cost-effective strategy needs to take into account that most HIV-1 infected individuals reside in developing countries. Further studies are needed on immunological and virological factors affecting HIV-1 transmission from mother to child, on differential disease prog",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:1119",
+      "query": "Sympathetic nerve activity is elevated throughout normal pregnancy.",
+      "gold_document_ids": [
+        "13907928",
+        "18997216",
+        "5323845"
       ],
       "candidate_recall": 1.0,
       "first_relevant_rank": 2,
       "failure_type": "gold_not_ranked_first",
       "top_five": [
         {
-          "document_id": "33409100",
-          "relevance_score": 2.4317312240600586,
-          "text": "Effect of homocysteine lowering on mortality and vascular disease in advanced chronic kidney disease and end-stage renal disease: a randomized controlled trial.\n\nCONTEXT High plasma homocysteine levels are a risk factor for mortality and vascular disease in observational studies of patients with chronic kidney disease. Folic acid and B vitamins decrease homocysteine levels in this population but whether they lower mortality is unknown.   \n OBJECTIVE To determine whether high doses of folic acid ",
+          "document_id": "26710772",
+          "relevance_score": 5.14309549331665,
+          "text": "Sympathetic activation during early pregnancy in humans.\n\nSympathetic activity has been reported to increase in normotensive pregnant women, and to be even greater in women with gestational hypertension and preeclampsia at term. Whether sympathetic overactivity develops early during pregnancy, remaining high throughout gestation, or whether it only occurs at term providing the substrate for hypertensive disorders is unknown. We tested the hypothesis that sympathetic activation occurs early durin",
           "is_relevant": false
         },
         {
-          "document_id": "12810152",
-          "relevance_score": -0.7917382121086121,
-          "text": "Folate and vitamin B6 from diet and supplements in relation to risk of coronary heart disease among women.\n\nCONTEXT Hyperhomocysteinemia is caused by genetic and lifestyle influences, including low intakes of folate and vitamin B6. However, prospective data relating intake of these vitamins to risk of coronary heart disease (CHD) are not available.   \n OBJECTIVE To examine intakes of folate and vitamin B6 in relation to the incidence of nonfatal myocardial infarction (MI) and fatal CHD.   \n DESI",
+          "document_id": "18997216",
+          "relevance_score": 4.890495300292969,
+          "text": "Sympathetic baroreflex gain in normotensive pregnant women.\n\nMuscle sympathetic nerve activity is increased during normotensive pregnancy while mean arterial pressure is maintained or reduced, suggesting baroreflex resetting. We hypothesized spontaneous sympathetic baroreflex gain would be reduced in normotensive pregnant women relative to nonpregnant matched controls. Integrated muscle sympathetic burst incidence and total sympathetic activity (microneurography), blood pressure (Finometer), and",
           "is_relevant": true
         },
         {
-          "document_id": "20083834",
-          "relevance_score": -1.988796353340149,
-          "text": "Consumption of isoflavone-rich soy protein does not alter homocysteine or markers of inflammation in postmenopausal women\n\nBackground/Objective:To investigate the effect of soy protein containing isoflavones on homocysteine (Hcy), C-reactive protein (CRP), soluble E-selectin (sE-selectin), soluble vascular adhesion molecule-1 (sVCAM-1) and soluble intercellular adhesion molecule-1 (sICAM-1).Subject/Methods:In a randomized crossover design, 34 postmenopausal women consumed soy protein isolate (26",
-          "is_relevant": false
+          "document_id": "5323845",
+          "relevance_score": 4.486011505126953,
+          "text": "Sympathetic neural mechanisms in normal and hypertensive pregnancy in humans.\n\nBACKGROUND Direct recordings from peripheral sympathetic nerves have shown an increased sympathetic drive in pregnancy-induced hypertension (PIH) and preeclampsia (PE). It is unknown whether sympathetic drive is altered in normal pregnancy, when arterial blood pressure can be normal or relatively low. The aim of this study was to measure and compare peripheral sympathetic discharge, its vasoconstrictor effect and its ",
+          "is_relevant": true
         },
         {
-          "document_id": "25439264",
-          "relevance_score": -2.416315793991089,
-          "text": "Homocysteine Induces Trophoblast Cell Death with Apoptotic Features1\n\nAbstract Hyperhomocysteinemia has been suggested as a possible risk factor in women suffering from habitual abortions, placental abruption or infarcts, preeclampsia, and/or intrauterine growth retardation. However, little is known about the pathogenic mechanisms underlying the action of homocysteine. The present study investigated the in vitro ability of homocysteine to affect trophoblast gonadotropin secretion and to induce c",
-          "is_relevant": false
+          "document_id": "13907928",
+          "relevance_score": 3.321516752243042,
+          "text": "Regulation of sympathetic nerve activity during the cold pressor test in normotensive pregnant and nonpregnant women.\n\nBaseline neurovascular transduction is reduced in normotensive pregnancy; however, little is known about changes to neurovascular transduction during periods of heightened sympathetic activation. We tested the hypothesis that, despite an exacerbated muscle sympathetic nerve activity (microneurography) response to cold pressor stimulation, the blunting of neurovascular transducti",
+          "is_relevant": true
         },
         {
-          "document_id": "9813098",
-          "relevance_score": -2.4242303371429443,
-          "text": "Plasma homocysteine is a risk factor for recurrent vascular events in young patients with an ischaemic stroke or TIA\n\nYoung patients with an ischaemic stroke or transient ischaemic attack (TIA) often have no vascular risk factors. Hyperhomocysteinaemia is an established risk factor for stroke in elderly patients but it is uncertain whether it is also important for the prognosis of young ischaemic stroke and TIA patients. We examined the possible effect of the plasma homocysteine level on the ris",
+          "document_id": "8596837",
+          "relevance_score": 1.876585602760315,
+          "text": "Sympathetic neural and cardiovascular responses during static handgrip exercise in women with a history of hypertensive pregnancy\n\nWomen with a history of hypertensive pregnancy are at greater risk for future cardiovascular events; however, the mechanisms for this increased risk are unknown. Evidence suggests that an exercise stimulus unmasks latent hypertensive tendencies, identifying individuals at the greatest risk for developing cardiovascular disease. The current study examined the hypothes",
           "is_relevant": false
         }
       ]
     },
     {
-      "query_id": "scifact:646",
-      "query": "Intake of folic acid (FA) and vitamin B6 (VB6) reduces levels of homocysteine.",
+      "query_id": "scifact:1169",
+      "query": "The M2-phenotype in brown adipose tissue macrophages increases brown adipose tissue thermogenic activity.",
       "gold_document_ids": [
-        "12810152"
+        "4319174"
       ],
       "candidate_recall": 1.0,
       "first_relevant_rank": 2,
       "failure_type": "gold_not_ranked_first",
       "top_five": [
         {
-          "document_id": "33409100",
-          "relevance_score": 2.585731267929077,
-          "text": "Effect of homocysteine lowering on mortality and vascular disease in advanced chronic kidney disease and end-stage renal disease: a randomized controlled trial.\n\nCONTEXT High plasma homocysteine levels are a risk factor for mortality and vascular disease in observational studies of patients with chronic kidney disease. Folic acid and B vitamins decrease homocysteine levels in this population but whether they lower mortality is unknown.   \n OBJECTIVE To determine whether high doses of folic acid ",
+          "document_id": "1568684",
+          "relevance_score": 0.7015981674194336,
+          "text": "The Bile Acid Chenodeoxycholic Acid Increases Human Brown Adipose Tissue Activity.\n\nThe interest in brown adipose tissue (BAT) as a target to combat metabolic disease has recently been renewed with the discovery of functional BAT in humans. In rodents, BAT can be activated by bile acids, which activate type 2 iodothyronine deiodinase (D2) in BAT via the G-coupled protein receptor TGR5, resulting in increased oxygen consumption and energy expenditure. Here we examined the effects of oral suppleme",
           "is_relevant": false
         },
         {
-          "document_id": "12810152",
-          "relevance_score": -1.0146269798278809,
-          "text": "Folate and vitamin B6 from diet and supplements in relation to risk of coronary heart disease among women.\n\nCONTEXT Hyperhomocysteinemia is caused by genetic and lifestyle influences, including low intakes of folate and vitamin B6. However, prospective data relating intake of these vitamins to risk of coronary heart disease (CHD) are not available.   \n OBJECTIVE To examine intakes of folate and vitamin B6 in relation to the incidence of nonfatal myocardial infarction (MI) and fatal CHD.   \n DESI",
+          "document_id": "4319174",
+          "relevance_score": 0.4382501244544983,
+          "text": "Alternatively activated macrophages produce catecholamines to sustain adaptive thermogenesis\n\nAll homeotherms use thermogenesis to maintain their core body temperature, ensuring that cellular functions and physiological processes can continue in cold environments. In the prevailing model of thermogenesis, when the hypothalamus senses cold temperatures it triggers sympathetic discharge, resulting in the release of noradrenaline in brown adipose tissue and white adipose tissue. Acting via the β(3)",
           "is_relevant": true
         },
         {
-          "document_id": "20083834",
-          "relevance_score": -1.7339166402816772,
-          "text": "Consumption of isoflavone-rich soy protein does not alter homocysteine or markers of inflammation in postmenopausal women\n\nBackground/Objective:To investigate the effect of soy protein containing isoflavones on homocysteine (Hcy), C-reactive protein (CRP), soluble E-selectin (sE-selectin), soluble vascular adhesion molecule-1 (sVCAM-1) and soluble intercellular adhesion molecule-1 (sICAM-1).Subject/Methods:In a randomized crossover design, 34 postmenopausal women consumed soy protein isolate (26",
+          "document_id": "29691654",
+          "relevance_score": 0.001163278124295175,
+          "text": "Uncoupling Mitochondrial Respiration for Diabesity.\n\nUntil recently, the mechanism of adaptive thermogenesis was ascribed to the expression of uncoupling protein 1 (UCP1) in brown and beige adipocytes. UCP1 is known to catalyze a proton leak of the inner mitochondrial membrane, resulting in uncoupled oxidative metabolism with no production of adenosine triphosphate and increased energy expenditure. Thus increasing brown and beige adipose tissue with augmented UCP1 expression is a viable target f",
           "is_relevant": false
         },
         {
-          "document_id": "25439264",
-          "relevance_score": -2.771085262298584,
-          "text": "Homocysteine Induces Trophoblast Cell Death with Apoptotic Features1\n\nAbstract Hyperhomocysteinemia has been suggested as a possible risk factor in women suffering from habitual abortions, placental abruption or infarcts, preeclampsia, and/or intrauterine growth retardation. However, little is known about the pathogenic mechanisms underlying the action of homocysteine. The present study investigated the in vitro ability of homocysteine to affect trophoblast gonadotropin secretion and to induce c",
+          "document_id": "26902591",
+          "relevance_score": -0.30585822463035583,
+          "text": "A switch from white to brown fat increases energy expenditure in cancer-associated cachexia.\n\nCancer-associated cachexia (CAC) is a wasting syndrome characterized by systemic inflammation, body weight loss, atrophy of white adipose tissue (WAT) and skeletal muscle. Limited therapeutic options are available and the underlying mechanisms are poorly defined. Here we show that a phenotypic switch from WAT to brown fat, a phenomenon termed WAT browning, takes place in the initial stages of CAC, befor",
           "is_relevant": false
         },
         {
-          "document_id": "9813098",
-          "relevance_score": -3.003185749053955,
-          "text": "Plasma homocysteine is a risk factor for recurrent vascular events in young patients with an ischaemic stroke or TIA\n\nYoung patients with an ischaemic stroke or transient ischaemic attack (TIA) often have no vascular risk factors. Hyperhomocysteinaemia is an established risk factor for stroke in elderly patients but it is uncertain whether it is also important for the prognosis of young ischaemic stroke and TIA patients. We examined the possible effect of the plasma homocysteine level on the ris",
+          "document_id": "40232172",
+          "relevance_score": -0.472570538520813,
+          "text": "Triglyceride depletion of brown adipose tissue enables analysis of mitochondrial respiratory function in permeabilized biopsies.\n\nThe research on mitochondrial functions in adipocytes has increasingly evidenced that mitochondria plays an important role in the onset and/or progression of obesity and related pathologies. Mitochondrial function in brown adipose tissue (BAT) has been classically assessed by measuring either the levels/activity of mitochondrial enzymes, or the respiration in isolated",
           "is_relevant": false
         }
       ]
     },
     {
-      "query_id": "scifact:765",
-      "query": "Medications to treat obesity do not have side effects.",
+      "query_id": "scifact:1221",
+      "query": "The genomic aberrations found in matasteses are very similar to those found in the primary tumor.",
       "gold_document_ids": [
-        "7552215"
+        "19736671"
       ],
       "candidate_recall": 1.0,
       "first_relevant_rank": 2,
       "failure_type": "gold_not_ranked_first",
       "top_five": [
         {
-          "document_id": "5839365",
-          "relevance_score": 3.2617945671081543,
-          "text": "Anti-obesity drugs: past, present and future\n\nThe ideal anti-obesity drug would produce sustained weight loss with minimal side effects. The mechanisms that regulate energy balance have substantial built-in redundancy, overlap considerably with other physiological functions, and are influenced by social, hedonic and psychological factors that limit the effectiveness of pharmacological interventions. It is therefore unsurprising that anti-obesity drug discovery programmes have been littered with ",
+          "document_id": "4325398",
+          "relevance_score": -0.2552948594093323,
+          "text": "Pancreatic cancer genomes reveal aberrations in axon guidance pathway genes\n\nPancreatic cancer is a highly lethal malignancy with few effective therapies. We performed exome sequencing and copy number analysis to define genomic aberrations in a prospectively accrued clinical cohort (n = 142) of early (stage I and II) sporadic pancreatic ductal adenocarcinoma. Detailed analysis of 99 informative tumours identified substantial heterogeneity with 2,016 non-silent mutations and 1,628 copy-number var",
           "is_relevant": false
         },
         {
-          "document_id": "7552215",
-          "relevance_score": 0.31909993290901184,
-          "text": "Long term pharmacotherapy for obesity and overweight: updated meta-analysis.\n\nOBJECTIVE To summarise the long term efficacy of anti-obesity drugs in reducing weight and improving health status.   \n DESIGN Updated meta-analysis of randomised trials.   \n DATA SOURCES Medline, Embase, the Cochrane controlled trials register, the Current Science meta-register of controlled trials, and reference lists of identified articles. All data sources were searched from December 2002 (end date of last search) ",
+          "document_id": "19736671",
+          "relevance_score": -0.2750542461872101,
+          "text": "Evolution of metastasis revealed by mutational landscapes of chemically induced skin cancers\n\nHuman tumors show a high level of genetic heterogeneity, but the processes that influence the timing and route of metastatic dissemination of the subclones are unknown. Here we have used whole-exome sequencing of 103 matched benign, malignant and metastatic skin tumors from genetically heterogeneous mice to demonstrate that most metastases disseminate synchronously from the primary tumor, supporting par",
           "is_relevant": true
         },
         {
-          "document_id": "5864770",
-          "relevance_score": -1.8391371965408325,
-          "text": "Estrogens, progestogens, normal breast cell proliferation, and breast cancer risk.\n\nEpidemiologic studies suggest that ovarian hormones contribute to the development of breast cancer at all stages. Early menopause and premenopausal obesity reduces the risk while postmenopausal obesity and menopausal estrogen replacement therapy increases the risk. Combined oral contraceptives and Depo-Provera do not reduce the risk. It appears that estrogens and progestogens act through and with proto-oncogenes ",
+          "document_id": "21479575",
+          "relevance_score": -0.4180874228477478,
+          "text": "High prevalence of evolutionarily conserved and species-specific genomic aberrations in mouse pluripotent stem cells.\n\nMouse pluripotent stem cells (PSCs) are the best studied pluripotent system and are regarded as the \"gold standard\" to which human PSCs are compared. However, while the genomic integrity of human PSCs has recently drawn much attention, mouse PSCs have not been systematically evaluated in this regard. The genomic stability of PSCs is a matter of profound significance, as it affec",
           "is_relevant": false
         },
         {
-          "document_id": "28845338",
-          "relevance_score": -2.863860607147217,
-          "text": "Increased lean body mass as an early indicator of olanzapine-induced weight gain in healthy men.\n\nOne of the primary limitations of many psychiatric medications is weight gain, the mechanism of which remains to be fully elucidated. We conducted a 2-week double-blind placebo-controlled study on weight gain with olanzapine, which is frequently but unpredictably associated with this side effect, to address the possible mechanisms of weight gain independent of changes in the psychiatric condition fo",
+          "document_id": "21692235",
+          "relevance_score": -1.6554011106491089,
+          "text": "Integrated genomic analysis identifies clinically relevant subtypes of glioblastoma characterized by abnormalities in PDGFRA, IDH1, EGFR, and NF1.\n\nThe Cancer Genome Atlas Network recently cataloged recurrent genomic abnormalities in glioblastoma multiforme (GBM). We describe a robust gene expression-based molecular classification of GBM into Proneural, Neural, Classical, and Mesenchymal subtypes and integrate multidimensional genomic data to establish patterns of somatic mutations and DNA copy ",
           "is_relevant": false
         },
         {
-          "document_id": "24625323",
-          "relevance_score": -3.9217491149902344,
-          "text": "Comorbidity between ADHD and obesity: exploring shared mechanisms and clinical implications.\n\nRecent studies suggest an association between attention-deficit/hyperactivity disorder (ADHD) and obesity. In this article, we systematically review and critically discuss evidence on the prevalence of ADHD in obese patients as well as the weight status of individuals with ADHD. Relevant articles were searched in PubMed, PsychInfo, and ISI Web of Science (January 1980 to June 2010). We found that curren",
+          "document_id": "16732790",
+          "relevance_score": -1.9253528118133545,
+          "text": "A Teratocarcinoma-Like Human Embryonic Stem Cell (hESC) Line and Four hESC Lines Reveal Potentially Oncogenic Genomic Changes\n\nThe first Swiss human embryonic stem cell (hESC) line, CH-ES1, has shown features of a malignant cell line. It originated from the only single blastomere that survived cryopreservation of an embryo, and it more closely resembles teratocarcinoma lines than other hESC lines with respect to its abnormal karyotype and its formation of invasive tumors when injected into SCID ",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:1224",
+      "query": "The latent infection of myeloid cells with human cytomegalovirus induces a number of changes in gene expression.",
+      "gold_document_ids": [
+        "21932050",
+        "34016987"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 2,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "26873988",
+          "relevance_score": 3.258906602859497,
+          "text": "Viral interleukin-10 expressed by human cytomegalovirus during the latent phase of infection modulates latently infected myeloid cell differentiation.\n\nThe human cytomegalovirus UL111A gene is expressed during latent and productive infections, and it codes for homologs of interleukin-10 (IL-10). We examined whether viral IL-10 expressed during latency altered differentiation of latently infected myeloid progenitors. In comparison to infection with parental virus or mock infection, latent infecti",
+          "is_relevant": false
+        },
+        {
+          "document_id": "21932050",
+          "relevance_score": 2.778564453125,
+          "text": "Microarrays for the study of viral gene expression during human cytomegalovirus latent infection.\n\nHuman cytomegalovirus (HCMV) is one of the largest known DNA viruses. It is ubiquitous, and following resolution of primary productive infection, it persists in the human host by establishing a lifelong latent infection in myeloid lineage cells such as monocytes and their progenitors. Most adults with HCMV infection are healthy but it can cause neurologic deficits in infants, and remains an importa",
+          "is_relevant": true
+        },
+        {
+          "document_id": "5372773",
+          "relevance_score": 1.8145074844360352,
+          "text": "Enhanced monocyte Fc phagocytosis by a homologue of interleukin-10 encoded by human cytomegalovirus.\n\nHuman cytomegalovirus (HCMV) expresses several homologues of human interleukin 10 (hIL-10) possessing immunomodulatory properties which may promote viral infection by modulating the function of myeloid cells. We examined the phenotype and phagocytic capability of human monocytes exposed to hIL-10, an HCMV-encoded hIL-10 homologue expressed during the productive phase of infection (cmvIL-10), and",
+          "is_relevant": false
+        },
+        {
+          "document_id": "23305884",
+          "relevance_score": 0.09568913280963898,
+          "text": "Analysis of Epstein-Barr virus-regulated host gene expression changes through primary B-cell outgrowth reveals delayed kinetics of latent membrane protein 1-mediated NF-κB activation.\n\nEpstein-Barr virus (EBV) is an oncogenic human herpesvirus that dramatically reorganizes host gene expression to immortalize primary B cells. In this study, we analyzed EBV-regulated host gene expression changes following primary B-cell infection, both during initial proliferation and through transformation into l",
+          "is_relevant": false
+        },
+        {
+          "document_id": "8247469",
+          "relevance_score": -0.478746622800827,
+          "text": "The Viral and Cellular MicroRNA Targetome in Lymphoblastoid Cell Lines\n\nEpstein-Barr virus (EBV) is a ubiquitous human herpesvirus linked to a number of B cell cancers and lymphoproliferative disorders. During latent infection, EBV expresses 25 viral pre-microRNAs (miRNAs) and induces the expression of specific host miRNAs, such as miR-155 and miR-21, which potentially play a role in viral oncogenesis. To date, only a limited number of EBV miRNA targets have been identified; thus, the role of EB",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:342",
+      "query": "Diabetic patients with acute coronary syndrome experience decreased short-term and long-term risk for bleeding events.",
+      "gold_document_ids": [
+        "5884524"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 2,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "23783727",
+          "relevance_score": 1.3285936117172241,
+          "text": "Ticagrelor vs. clopidogrel in patients with acute coronary syndromes and diabetes: a substudy from the PLATelet inhibition and patient Outcomes (PLATO) trial\n\nAIMS patients with diabetes mellitus (DM) have high platelet reactivity and are at increased risk of ischaemic events and bleeding post-acute coronary syndromes (ACS). In the PLATelet inhibition and patient Outcomes (PLATO) trial, ticagrelor reduced the primary composite endpoint of cardiovascular death, myocardial infarction, or stroke, b",
+          "is_relevant": false
+        },
+        {
+          "document_id": "5884524",
+          "relevance_score": 1.158415675163269,
+          "text": "Impact of diabetes on long-term prognosis in patients with unstable angina and non-Q-wave myocardial infarction: results of the OASIS (Organization to Assess Strategies for Ischemic Syndromes) Registry.\n\nBACKGROUND Although unstable coronary artery disease is the most common reason for admission to a coronary care unit, the long-term prognosis of patients with this diagnosis is unknown. This is particularly true for patients with diabetes mellitus, who are known to have a high morbidity and mort",
+          "is_relevant": true
+        },
+        {
+          "document_id": "29253460",
+          "relevance_score": 0.6349793076515198,
+          "text": "Sex-related differences in the presentation, treatment and outcomes among patients with acute coronary syndromes: the Global Registry of Acute Coronary Events.\n\nOBJECTIVE To assess whether sex differences exist in the angiographic severity, management and outcomes of acute coronary syndromes (ACS).   \n METHODS The study comprised 7638 women and 19 117 men with ACS who underwent coronary angiography and were included in GRACE (Global Registry of Acute Coronary Events) from 1999-2006. Normal vesse",
+          "is_relevant": false
+        },
+        {
+          "document_id": "43483151",
+          "relevance_score": -0.6248670816421509,
+          "text": "QT and QTc dispersion are accurate predictors of cardiac death in newly diagnosed non-insulin dependent diabetes: cohort study.\n\nPatients with non-insulin dependent diabetes mellitus have an excess risk of dying from cardiovascular disease. One small study suggested that a prolonged QT interval could predict cardiac death in patients with diabetic nephropathy who have received insulin treatment. The question now is whether the same is true in newly diagnosed diabetes in patients who have no appa",
+          "is_relevant": false
+        },
+        {
+          "document_id": "25451374",
+          "relevance_score": -0.787840723991394,
+          "text": "Cardiovascular risk and events in 17 low-, middle-, and high-income countries.\n\nBACKGROUND More than 80% of deaths from cardiovascular disease are estimated to occur in low-income and middle-income countries, but the reasons are unknown.   \n METHODS We enrolled 156,424 persons from 628 urban and rural communities in 17 countries (3 high-income, 10 middle-income, and 4 low-income countries) and assessed their cardiovascular risk using the INTERHEART Risk Score, a validated score for quantifying r",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:343",
+      "query": "Diabetic patients with acute coronary syndrome experience increased short-term and long-term risk for bleeding events.",
+      "gold_document_ids": [
+        "5884524"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 2,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "23783727",
+          "relevance_score": 1.6875231266021729,
+          "text": "Ticagrelor vs. clopidogrel in patients with acute coronary syndromes and diabetes: a substudy from the PLATelet inhibition and patient Outcomes (PLATO) trial\n\nAIMS patients with diabetes mellitus (DM) have high platelet reactivity and are at increased risk of ischaemic events and bleeding post-acute coronary syndromes (ACS). In the PLATelet inhibition and patient Outcomes (PLATO) trial, ticagrelor reduced the primary composite endpoint of cardiovascular death, myocardial infarction, or stroke, b",
+          "is_relevant": false
+        },
+        {
+          "document_id": "5884524",
+          "relevance_score": 1.2288401126861572,
+          "text": "Impact of diabetes on long-term prognosis in patients with unstable angina and non-Q-wave myocardial infarction: results of the OASIS (Organization to Assess Strategies for Ischemic Syndromes) Registry.\n\nBACKGROUND Although unstable coronary artery disease is the most common reason for admission to a coronary care unit, the long-term prognosis of patients with this diagnosis is unknown. This is particularly true for patients with diabetes mellitus, who are known to have a high morbidity and mort",
+          "is_relevant": true
+        },
+        {
+          "document_id": "29253460",
+          "relevance_score": 0.5913950204849243,
+          "text": "Sex-related differences in the presentation, treatment and outcomes among patients with acute coronary syndromes: the Global Registry of Acute Coronary Events.\n\nOBJECTIVE To assess whether sex differences exist in the angiographic severity, management and outcomes of acute coronary syndromes (ACS).   \n METHODS The study comprised 7638 women and 19 117 men with ACS who underwent coronary angiography and were included in GRACE (Global Registry of Acute Coronary Events) from 1999-2006. Normal vesse",
+          "is_relevant": false
+        },
+        {
+          "document_id": "43483151",
+          "relevance_score": -0.6075843572616577,
+          "text": "QT and QTc dispersion are accurate predictors of cardiac death in newly diagnosed non-insulin dependent diabetes: cohort study.\n\nPatients with non-insulin dependent diabetes mellitus have an excess risk of dying from cardiovascular disease. One small study suggested that a prolonged QT interval could predict cardiac death in patients with diabetic nephropathy who have received insulin treatment. The question now is whether the same is true in newly diagnosed diabetes in patients who have no appa",
+          "is_relevant": false
+        },
+        {
+          "document_id": "25451374",
+          "relevance_score": -0.7742624878883362,
+          "text": "Cardiovascular risk and events in 17 low-, middle-, and high-income countries.\n\nBACKGROUND More than 80% of deaths from cardiovascular disease are estimated to occur in low-income and middle-income countries, but the reasons are unknown.   \n METHODS We enrolled 156,424 persons from 628 urban and rural communities in 17 countries (3 high-income, 10 middle-income, and 4 low-income countries) and assessed their cardiovascular risk using the INTERHEART Risk Score, a validated score for quantifying r",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:385",
+      "query": "Epigenetic modulating agents (EMAs) modulate antitumor immune response in a cancer model system.",
+      "gold_document_ids": [
+        "9955779"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 2,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "9767444",
+          "relevance_score": 1.2118068933486938,
+          "text": "Epigenetic therapy activates type I interferon signaling in murine ovarian cancer to reduce immunosuppression and tumor burden.\n\nOvarian cancer is the most lethal of all gynecological cancers, and there is an urgent unmet need to develop new therapies. Epithelial ovarian cancer (EOC) is characterized by an immune suppressive microenvironment, and response of ovarian cancers to immune therapies has thus far been disappointing. We now find, in a mouse model of EOC, that clinically relevant doses o",
+          "is_relevant": false
+        },
+        {
+          "document_id": "9955779",
+          "relevance_score": 0.4931987524032593,
+          "text": "Epigenetic Therapy Ties MYC Depletion to Reversing Immune Evasion and Treating Lung Cancer\n\nCombining DNA-demethylating agents (DNA methyltransferase inhibitors [DNMTis]) with histone deacetylase inhibitors (HDACis) holds promise for enhancing cancer immune therapy. Herein, pharmacologic and isoform specificity of HDACis are investigated to guide their addition to a DNMTi, thus devising a new, low-dose, sequential regimen that imparts a robust anti-tumor effect for non-small-cell lung cancer (NS",
+          "is_relevant": true
+        },
+        {
+          "document_id": "15541119",
+          "relevance_score": 0.48081693053245544,
+          "text": "[New guidelines to evaluate the response to treatment in solid tumors].\n\nAnticancer agents go through a process by which their antitumor activity, on the basis of the amount of tumor shrinkage they could generate, has been investigated. In the late 1970s, the International Union Against Cancer and the World Health Organization (WHO) introduced specific criteria for the codification of tumor response evaluation. In 1994, several organizations involved in clinical cancer research joined together t",
+          "is_relevant": false
+        },
+        {
+          "document_id": "5991309",
+          "relevance_score": 0.15906940400600433,
+          "text": "Targeting tumor-necrosis factor receptor pathways for tumor immunotherapy\n\nWith the success of ipilimumab and promise of programmed death-1 pathway-targeted agents, the field of tumor immunotherapy is expanding rapidly. Newer targets for clinical development include select members of the tumor necrosis factor receptor (TNFR) family. Agonist antibodies to these co-stimulatory molecules target both T and B cells, modulating T-cell activation and enhancing immune responses. In vitro and in vivo pre",
+          "is_relevant": false
+        },
+        {
+          "document_id": "10852047",
+          "relevance_score": -0.2342066764831543,
+          "text": "WK175, a novel antitumor agent, decreases the intracellular nicotinamide adenine dinucleotide concentration and induces the apoptotic cascade in human leukemia cells.\n\nWe recently developed a class of novel antitumor agents that elicit a potent growth-inhibitory response in many tumor cells cultured in vitro. WK175, a member of this class, was chosen as a model compound that showed strong in vitro efficacy. WK175 interferes with the intracellular steady-state level of NAD(+), resulting in a decr",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:394",
+      "query": "Excess gestational weight gain is associated with obesity-related pregnancy outcomes.",
+      "gold_document_ids": [
+        "11360768"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 2,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "8842332",
+          "relevance_score": 1.9217332601547241,
+          "text": "Contemporary type 1 diabetes pregnancy outcomes: impact of obesity and glycaemic control.\n\nOBJECTIVE To compare contemporary pregnancy outcomes in women with and without type 1 diabetes, and to examine the effects of obesity and glycaemic control on these outcomes.   \n DESIGN AND SETTING Historical cohort study in a specialist diabetes and maternity network in Victoria.   \n PARTICIPANTS All singleton births (at least 20 weeks' gestation), 2010-2013, were analysed: 107 pregnancies to women with t",
+          "is_relevant": false
+        },
+        {
+          "document_id": "11360768",
+          "relevance_score": 1.7790117263793945,
+          "text": "Effects of interventions in pregnancy on maternal weight and obstetric outcomes: meta-analysis of randomised evidence\n\nOBJECTIVE To evaluate the effects of dietary and lifestyle interventions in pregnancy on maternal and fetal weight and to quantify the effects of these interventions on obstetric outcomes.   \n DESIGN Systematic review and meta-analysis.   \n DATA SOURCES Major databases from inception to January 2012 without language restrictions.    STUDY SELECTION Randomised controlled trials t",
+          "is_relevant": true
+        },
+        {
+          "document_id": "70455704",
+          "relevance_score": 1.3950389623641968,
+          "text": "Weight gain during pregnancy: reexamining the guidelines.\n\nAs women of childbearing age have become heavier, the trade-off between maternal and child health created by variation in gestational weight gain has become more difficult to reconcile. Weight Gain During Pregnancy responds to the need for a reexamination of the 1990 Institute of Medicine guidelines for weight gain during pregnancy. It builds on the conceptual framework that underscored the 1990 weight gain guidelines and addresses the n",
+          "is_relevant": false
+        },
+        {
+          "document_id": "4550036",
+          "relevance_score": 0.13958032429218292,
+          "text": "Risk of gestational hypertension in relation to folic acid supplementation during pregnancy.\n\nThe authors investigated the association between folic acid supplementation and gestational hypertension. The study population included women with nonmalformed infants in the United States and Canada who were participating in the Slone Epidemiology Center Birth Defects Study between 1993 and 2000. Women were interviewed within 6 months after delivery about sociodemographic and medical factors, the occur",
+          "is_relevant": false
+        },
+        {
+          "document_id": "37480103",
+          "relevance_score": -0.40095946192741394,
+          "text": "Pregnancy characteristics and maternal risk of breast cancer.\n\nCONTEXT During pregnancy, serum levels of estrogen, progesterone, and other hormones are markedly higher than during other periods of life. Pregnancy hormones primarily are produced in the placenta, and signs of placental impairment may serve as indirect markers of hormone exposures during pregnancy. During pregnancy, these markers have been inconsistently associated with subsequent risk of breast cancer in the mother.   \n OBJECTIVE ",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:568",
+      "query": "In a naive state, blocking Wingless-Int-1 secretion from mouse embryonic stem cells inhibits self-renewal of the mouse embryonic stem cells.",
+      "gold_document_ids": [
+        "23418635"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 2,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "4462419",
+          "relevance_score": 1.6965621709823608,
+          "text": "Derivation of novel human ground state naive pluripotent stem cells\n\nMouse embryonic stem (ES) cells are isolated from the inner cell mass of blastocysts, and can be preserved in vitro in a naive inner-cell-mass-like configuration by providing exogenous stimulation with leukaemia inhibitory factor (LIF) and small molecule inhibition of ERK1/ERK2 and GSK3β signalling (termed 2i/LIF conditions). Hallmarks of naive pluripotency include driving Oct4 (also known as Pou5f1) transcription by its distal",
+          "is_relevant": false
+        },
+        {
+          "document_id": "23418635",
+          "relevance_score": 1.5646306276321411,
+          "text": "Embryonic stem cells require Wnt proteins to prevent differentiation to epiblast stem cells\n\nPluripotent stem cells exist in naive and primed states, epitomized by mouse embryonic stem cells (ESCs) and the developmentally more advanced epiblast stem cells (EpiSCs; ref. ). In the naive state of ESCs, the genome has an unusual open conformation and possesses a minimum of repressive epigenetic marks. In contrast, EpiSCs have activated the epigenetic machinery that supports differentiation towards t",
+          "is_relevant": true
+        },
+        {
+          "document_id": "12152977",
+          "relevance_score": -0.061916500329971313,
+          "text": "SWI/SNF-Brg1 regulates self-renewal and occupies core pluripotency-related genes in embryonic stem cells.\n\nThe SWI/SNF-Brg1 chromatin remodeling protein plays critical roles in cell-cycle control and differentiation through regulation of gene expression. Loss of Brg1 in mice results in early embryonic lethality, and recent studies have implicated a role for Brg1 in somatic stem cell self-renewal and differentiation. However, little is known about Brg1 function in preimplantation embryos and embr",
+          "is_relevant": false
+        },
+        {
+          "document_id": "1381673",
+          "relevance_score": -0.2589211165904999,
+          "text": "Mouse Spermatogenic Stem Cells Continually Interconvert between Equipotent Singly Isolated and Syncytial States\n\nThe identity and behavior of mouse spermatogenic stem cells have been a long-standing focus of interest. In the prevailing \"As model,\" stem cell function is restricted to singly isolated (As) spermatogonia. By examining single-cell dynamics of GFRα1+ stem cells in vivo, we evaluate an alternative hypothesis that, through fragmentation, syncytial spermatogonia also contribute to stem c",
+          "is_relevant": false
+        },
+        {
+          "document_id": "4254064",
+          "relevance_score": -0.4890211224555969,
+          "text": "Para-aortic splanchnopleura from early mouse embryos contains B1a cell progenitors\n\nDEFINITIVE erythropoiesis in birds originates from stem cells that emerge in the splanchnopleural mesoderm near the embryonic aorta1–4. The yolk sac is still generally held to be the unique provider of haematopoietic stem cells during mammalian ontogeny5, although there may be an alternative intraembryonic source of stem cells in the mouse fetus6,7. Here we search for a possible non-yolk-sac source of stem cells ",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:79",
+      "query": "Active caspase-11 protein promotes pyroptosis.",
+      "gold_document_ids": [
+        "5099266"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 2,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "4407455",
+          "relevance_score": 3.3166003227233887,
+          "text": "Cleavage of GSDMD by inflammatory caspases determines pyroptotic cell death\n\nInflammatory caspases (caspase-1, -4, -5 and -11) are critical for innate defences. Caspase-1 is activated by ligands of various canonical inflammasomes, and caspase-4, -5 and -11 directly recognize bacterial lipopolysaccharide, both of which trigger pyroptosis. Despite the crucial role in immunity and endotoxic shock, the mechanism for pyroptosis induction by inflammatory caspases is unknown. Here we identify gasdermin",
+          "is_relevant": false
+        },
+        {
+          "document_id": "5099266",
+          "relevance_score": 2.5389926433563232,
+          "text": "Caspase-11 promotes the fusion of phagosomes harboring pathogenic bacteria with lysosomes by modulating actin polymerization.\n\nInflammasomes are multiprotein complexes that include members of the NLR (nucleotide-binding domain leucine-rich repeat containing) family and caspase-1. Once bacterial molecules are sensed within the macrophage, the inflammasome is assembled, mediating the activation of caspase-1. Caspase-11 mediates caspase-1 activation in response to lipopolysaccharide and bacterial t",
+          "is_relevant": true
+        },
+        {
+          "document_id": "14460402",
+          "relevance_score": 0.2950994074344635,
+          "text": "p63 Regulates adult neural precursor and newly born neuron survival to control hippocampal-dependent Behavior.\n\nThe molecular mechanisms that regulate adult neural precursor cell (NPC) survival, and thus maintain adult neurogenesis, are not well defined. Here, we investigate the role of p63, a p53 family member, in adult NPC function in mice. Conditional ablation of p63 in adult NPCs or p63 haploinsufficiency led to reduced numbers of NPCs and newborn neurons in the neurogenic zones of the hippo",
+          "is_relevant": false
+        },
+        {
+          "document_id": "10852047",
+          "relevance_score": -0.5336801409721375,
+          "text": "WK175, a novel antitumor agent, decreases the intracellular nicotinamide adenine dinucleotide concentration and induces the apoptotic cascade in human leukemia cells.\n\nWe recently developed a class of novel antitumor agents that elicit a potent growth-inhibitory response in many tumor cells cultured in vitro. WK175, a member of this class, was chosen as a model compound that showed strong in vitro efficacy. WK175 interferes with the intracellular steady-state level of NAD(+), resulting in a decr",
+          "is_relevant": false
+        },
+        {
+          "document_id": "17231273",
+          "relevance_score": -0.645222544670105,
+          "text": "Ionic mechanism of ouabain-induced concurrent apoptosis and necrosis in individual cultured cortical neurons\n\nEnergy deficiency and dysfunction of the Na+, K+-ATPase are common consequences of many pathological insults. The nature and mechanism of cell injury induced by impaired Na+, K+-ATPase, however, are not well defined. We used cultured cortical neurons to examine the hypothesis that blocking the Na+, K+-ATPase induces apoptosis by depleting cellular K+ and, concurrently, induces necrotic i",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:873",
+      "query": "Obesity is determined solely by environmental factors.",
+      "gold_document_ids": [
+        "1180972",
+        "19307912",
+        "27393799",
+        "29025270",
+        "3315558"
+      ],
+      "candidate_recall": 0.6,
+      "first_relevant_rank": 2,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "41310252",
+          "relevance_score": 1.5510183572769165,
+          "text": "Dietary fat and obesity: evidence from epidemiology.\n\nThe epidemiological evidence that a high-fat diet promotes the development of obesity is considered suggestive but not definitive. The purpose of this paper is to provide a review of various epidemiological methods that have been used to address this issue as well as an updated summary of the existing evidence. Ecological studies describing dietary fat intake and obesity at the population level provide mixed results and are likely to be biase",
+          "is_relevant": false
+        },
+        {
+          "document_id": "29025270",
+          "relevance_score": 0.5521304607391357,
+          "text": "An adoption study of human obesity.\n\nWe examined the contributions of genetic factors and the family environment to human fatness in a sample of 540 adult Danish adoptees who were selected from a population of 3580 and divided into four weight classes: thin, median weight, overweight, and obese. There was a strong relation between the weight class of the adoptees and the body-mass index of their biologic parents - for the mothers, P less than 0.0001; for the fathers, P less than 0.02. There was ",
+          "is_relevant": true
+        },
+        {
+          "document_id": "21641088",
+          "relevance_score": 0.06387565284967422,
+          "text": "Central obesity and hyperinsulinaemia in women are associated with polymorphism in the 5' flanking region of the human insulin gene.\n\nObesity is a multifactorial disease with a marked genetic component. The situation is further complicated by the heterogeneity of obesity demonstrated by the topographical distribution of body fat, e.g. upper body (central) and lower body (gluteal) obesity. Furthermore, the distribution of fat shows a stronger heritable tendency compared with total body fat. Centr",
+          "is_relevant": false
+        },
+        {
+          "document_id": "12658073",
+          "relevance_score": -0.11944902688264847,
+          "text": "Regulation of Serum Amyloid A3 (SAA3) in Mouse Colonic Epithelium and Adipose Tissue by the Intestinal Microbiota\n\nThe gut microbiota has been proposed as an environmental factor that affects the development of metabolic and inflammatory diseases in mammals. Recent reports indicate that gut bacteria-derived lipopolysaccharide (LPS) can initiate obesity and insulin resistance in mice; however, the molecular interactions responsible for microbial regulation of host metabolism and mediators of infl",
+          "is_relevant": false
+        },
+        {
+          "document_id": "3315558",
+          "relevance_score": -0.4161023497581482,
+          "text": "Genetic analysis of human obesity in an Italian sample.\n\nAn analysis of the genetic factors in obesity has been carried out on a sample of nuclear families from Aosta (N. Italy). The families consisted of the parents and sibs of all elementary school children considered to be obese during a preliminary screening and a similar sample of non-obese children and their nuclear families. The numbers of such families were 67 and 112, respectively. Several tests were applied in order to examine the gene",
+          "is_relevant": true
+        }
+      ]
+    },
+    {
+      "query_id": "scifact:942",
+      "query": "Phase information is useful for predicting donor-recipient matches in organ transplantation.",
+      "gold_document_ids": [
+        "11527199"
+      ],
+      "candidate_recall": 1.0,
+      "first_relevant_rank": 2,
+      "failure_type": "gold_not_ranked_first",
+      "top_five": [
+        {
+          "document_id": "7034001",
+          "relevance_score": -0.14861319959163666,
+          "text": "Outcome of multipair donor kidney exchange by a web-based algorithm.\n\nDonor kidney exchange is an established method to overcome incompatibility of donor-recipient pairs (DRP). A computerized algorithm was devised to exchange donor kidney and was tested in a multicenter setting. The algorithm was made according to the consensus of participating centers. It makes all possible exchange combinations not only between two incompatible DRP but also circularly among three DRP and selects an optimum set",
+          "is_relevant": false
+        },
+        {
+          "document_id": "11527199",
+          "relevance_score": -0.7391768097877502,
+          "text": "MHC Haplotype Matching for Unrelated Hematopoietic Cell Transplantation\n\nBackground  Current criteria for the selection of unrelated donors for hematopoietic cell transplantation (HCT) include matching for the alleles of each human leukocyte antigen (HLA) locus within the major histocompatibility complex (MHC). Graft-versus-host disease (GVHD), however, remains a significant and potentially life-threatening complication even after HLA-identical unrelated HCT. The MHC harbors more than 400 genes,",
+          "is_relevant": true
+        },
+        {
+          "document_id": "13914198",
+          "relevance_score": -1.1894277334213257,
+          "text": "Haplotype estimation using sequencing reads.\n\nHigh-throughput sequencing technologies produce short sequence reads that can contain phase information if they span two or more heterozygote genotypes. This information is not routinely used by current methods that infer haplotypes from genotype data. We have extended the SHAPEIT2 method to use phase-informative sequencing reads to improve phasing accuracy. Our model incorporates the read information in a probabilistic model through base quality sco",
+          "is_relevant": false
+        },
+        {
+          "document_id": "41774099",
+          "relevance_score": -2.0741500854492188,
+          "text": "Call to Develop a Standard Acquisition Charge Model for Kidney Paired Donation\n\nWe propose a Medicare Demonstration Project to develop a standard acquisition charge for kidney paired donation. A new payment strategy is required because Medicare and commercial insurance companies may not directly pay living donor costs intended to lead to transplantation of a beneficiary of a different insurance provider. Until the 1970s, when organ procurement organizations were empowered to serve as financial i",
+          "is_relevant": false
+        },
+        {
+          "document_id": "11349166",
+          "relevance_score": -2.09854793548584,
+          "text": "Lack of evidence of transfusion transmission of Creutzfeldt-Jakob disease in a US surveillance study.\n\nBACKGROUND Since 2004, several reported transfusion transmissions of variant Creutzfeldt-Jakob disease (vCJD) in the United Kingdom have reawakened concerns about the possible risk of similar transmissions of nonvariant or classic forms of CJD.    STUDY DESIGN AND METHODS Patients with a CJD diagnosis and a history of donating blood were reported to the study coordinator. Through review of bloo",
           "is_relevant": false
         }
       ]

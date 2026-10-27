@@ -94,7 +94,7 @@ class Settings(BaseSettings):
     dl_data_path: Path = Path("data/dl_data/synthetic_pairs_offline.jsonl")
     dl_public_data_dir: Path = Path("data/dl_data/scifact_subset")
     dl_public_archive_path: Path = Path("data/dl_data/cache/scifact.tar.gz")
-    dl_public_max_queries: int = Field(default=200, ge=3, le=1000)
+    dl_public_max_queries: int = Field(default=693, ge=3, le=1000)
     dl_model_revision: str = "df500e56a59fc34f37322735a40eff666200312e"
     dl_model_cache_dir: Path = Path("models/huggingface")
     dl_max_length: int = Field(default=256, ge=16, le=512)

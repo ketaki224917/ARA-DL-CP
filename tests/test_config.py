@@ -104,7 +104,7 @@ def test_missing_yaml_uses_defaults(tmp_path: Path) -> None:
     assert settings.dl_seed == 42
     assert settings.dl_data_path == Path("data/dl_data/synthetic_pairs_offline.jsonl")
     assert settings.dl_public_data_dir == Path("data/dl_data/scifact_subset")
-    assert settings.dl_public_max_queries == 200
+    assert settings.dl_public_max_queries == 693
     assert settings.dl_model_revision == "df500e56a59fc34f37322735a40eff666200312e"
     assert settings.dl_model_cache_dir == Path("models/huggingface")
     assert settings.dl_max_length == 256

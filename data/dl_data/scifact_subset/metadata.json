@@ -12,23 +12,23 @@
   "claim_license": "CC BY 4.0",
   "abstract_license": "ODC-By 1.0 (S2ORC corpus)",
   "seed": 42,
-  "requested_max_queries": 200,
-  "selected_query_count": 200,
+  "requested_max_queries": 693,
+  "selected_query_count": 693,
   "query_counts": {
-    "train": 140,
-    "validation": 30,
-    "test": 30
+    "train": 415,
+    "validation": 70,
+    "test": 208
   },
   "document_counts": {
-    "train": 3602,
-    "validation": 759,
-    "test": 822
+    "train": 3083,
+    "validation": 508,
+    "test": 1592
   },
-  "document_linked_component_count": 175,
+  "document_linked_component_count": 388,
   "split_ratios": {
-    "train": 0.7,
-    "validation": 0.15,
-    "test": 0.15
+    "train": 0.6,
+    "validation": 0.1,
+    "test": 0.3
   },
   "split_method": "Claims connected by shared evidence document IDs are kept in one split; remaining corpus documents are assigned by seeded SHA-256 bucket.",
   "relevance_mapping": "Documents annotated SUPPORT or CONTRADICT are both relevant for retrieval; the verdict and rationale sentence IDs are retained.",

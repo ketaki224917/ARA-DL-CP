@@ -27,7 +27,7 @@ SCIFACT_ARCHIVE_SHA256 = "11c621288d41ac144d29b13b0f8503b3820b7d6e8b1f6ff24dff33
 SCIFACT_REPOSITORY = "https://github.com/allenai/scifact"
 SCIFACT_PAPER = "https://aclanthology.org/2020.emnlp-main.609/"
 _MAX_ARCHIVE_BYTES = 50 * 1024 * 1024
-_SPLIT_RATIOS: dict[str, float] = {"train": 0.70, "validation": 0.15, "test": 0.15}
+_SPLIT_RATIOS: dict[str, float] = {"train": 0.60, "validation": 0.10, "test": 0.30}
 _SPLIT_NAMES = tuple(_SPLIT_RATIOS)
 
 
@@ -166,7 +166,7 @@ def prepare_scifact_subset(
     archive_path: Path | str,
     output_dir: Path | str,
     *,
-    max_queries: int = 200,
+    max_queries: int = 693,
     seed: int = 42,
 ) -> dict[str, Any]:
     """Build a deterministic, source-document-disjoint train/validation/test bundle."""
