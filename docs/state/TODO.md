@@ -75,5 +75,5 @@ Status: `[ ]` todo, `[>]` in progress, `[x]` done, `[!]` blocked, `[~]` dropped.
 - [x] P7.4 Three complete curated report bundles in outputs/examples/ (MD/HTML/PDF, Mermaid/SVG, Piper WAV, stored source chunks; four real chunk IDs validated; all PDFs visually inspected)
 - [x] P7.5 Full regression: fresh clone → `make setup && make ingest && make run TOPIC="..."` works (`.tools/p7_5_clean` at `0dfd734`; 137 packages installed, 21 documents/33 chunks indexed, and MD/HTML/PDF/SVG/WAV generated; citation references match; three-page PDF and 68.82-second WAV verified; see CLONE-001)
 - [~] P7.6 (stretch) LoRA fine-tune for report style, with before/after comparison - dropped for this CPU-only pass; no local chat model is available and LoRA is outside final acceptance (ADR-044)
-- [x] P7.7 Final Acceptance Checklist verification (audit recorded in PROGRESS.md; project remains incomplete on open environment/evaluation gates)
+- [>] P7.7 Final Acceptance Checklist verification (audit in progress; fresh-clone web outage fallback is implemented and validated locally; rerun the full D: clone acceptance before closing)
 

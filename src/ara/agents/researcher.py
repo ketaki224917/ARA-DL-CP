@@ -310,6 +310,7 @@ class Researcher:
                 task_had_web_search = False
                 task_had_local_search = False
                 forced_fallback_calls: list[ToolCall] | None = None
+                forced_fallback_reason: str | None = None
                 _emit_trace(
                     trace_callback,
                     state,
@@ -320,9 +321,13 @@ class Researcher:
                 try:
                     while True:
                         fallback_selected = forced_fallback_calls is not None
+                        fallback_reason = (
+                            forced_fallback_reason if fallback_selected else None
+                        )
                         if forced_fallback_calls is not None:
                             calls = forced_fallback_calls
                             forced_fallback_calls = None
+                            forced_fallback_reason = None
                         else:
                             calls = await asyncio.to_thread(
                                 self._llm.tool_calls,
@@ -344,6 +349,7 @@ class Researcher:
                                     )
                                 ]
                                 fallback_selected = True
+                                fallback_reason = "web_search_added_no_evidence"
                             else:
                                 task.status = "completed"
                                 completed_task_ids.append(task.task_id)
@@ -370,7 +376,7 @@ class Researcher:
                                 tool_arguments=_trace_arguments(call.arguments),
                                 result_summary=(
                                     "selected_by=local_evidence_fallback; "
-                                    "reason=web_search_added_no_evidence"
+                                    f"reason={fallback_reason}"
                                     if fallback_selected
                                     else None
                                 ),
@@ -389,7 +395,7 @@ class Researcher:
                                 tool_budget_exhausted = True
                                 budget_blocking = True
                                 break
-                            if validated_call.tool_name == "web_search":
+                            if validated_call.tool_name in {"web_search", "fetch_page"}:
                                 task_had_web_search = True
                             elif validated_call.tool_name == "search_knowledge_base":
                                 task_had_local_search = True
@@ -506,6 +512,11 @@ class Researcher:
                                     max_chars=self.max_evidence_chars,
                                 )
                             except Exception as exc:
+                                is_web_tool = validated_call.tool_name in {
+                                    "web_search",
+                                    "fetch_page",
+                                }
+                                can_fallback = is_web_tool and not task_had_local_search
                                 _emit_trace(
                                     trace_callback,
                                     state,
@@ -514,9 +525,39 @@ class Researcher:
                                     tool_name=validated_call.tool_name,
                                     server_name=validated_call.server_name,
                                     tool_arguments=_trace_arguments(validated_call.arguments),
-                                    result_summary=f"error_type={type(exc).__name__}",
+                                    result_summary=(
+                                        f"error_type={type(exc).__name__}; "
+                                        f"local_fallback={can_fallback}"
+                                    ),
                                     latency_ms=(time.perf_counter() - call_started) * 1_000,
                                 )
+                                if is_web_tool:
+                                    observations.append(
+                                        {
+                                            "tool": validated_call.tool_name,
+                                            "results": [],
+                                            "status": "unavailable",
+                                            "error_type": type(exc).__name__,
+                                            "is_untrusted": True,
+                                        }
+                                    )
+                                    has_local_call = any(
+                                        call.tool_name == "search_knowledge_base"
+                                        for call in validated_calls
+                                    )
+                                    if (
+                                        can_fallback
+                                        and not has_local_call
+                                        and tool_calls_made < self.max_tool_calls
+                                    ):
+                                        forced_fallback_calls = [
+                                            ToolCall(
+                                                name="search_knowledge_base",
+                                                arguments={"query": task.question},
+                                            )
+                                        ]
+                                        forced_fallback_reason = "web_tool_error"
+                                    continue
                                 raise
                             evidence_ids_added.extend(added)
                             evidence_budget_exhausted = (
@@ -582,7 +623,8 @@ class Researcher:
                             )
                             break
                         if (
-                            task_had_web_search
+                            forced_fallback_calls is None
+                            and task_had_web_search
                             and not task_had_local_search
                             and len(evidence_ids_added) == task_evidence_start
                             and state.evidence_store
@@ -594,6 +636,7 @@ class Researcher:
                                     arguments={"query": task.question},
                                 )
                             ]
+                            forced_fallback_reason = "web_search_added_no_evidence"
                 except Exception:
                     task.status = "blocked"
                     _emit_trace(

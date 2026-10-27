@@ -11,3 +11,4 @@
 
 
 - [RESOLVED 2026-10-27] P0.6 Hardware inventory completed with read-only WMI and PyTorch probes. HP Laptop 14-gr1xxx, Intel Core Ultra 5 125H (14 cores/18 logical), 15.52 GiB RAM, Intel Arc integrated adapter reports 2,147,479,552 bytes, and PyTorch 2.14.1+cpu has no CUDA devices. ADR-062 confirms the CPU-sized Qwen default.
+- [OPEN 2026-10-27] CLONE-002 The final clean-clone run at `.tools/p7_7_final` stopped when free web-search MCP calls returned provider 403/429/202 errors, despite a populated local corpus. `make setup` and `make ingest` succeeded. ADR-063 adds bounded MCP local-RAG fallback for `web_search`/`fetch_page` failures; required: rerun the full pipeline from a new clean clone and validate all artifacts before resolving.

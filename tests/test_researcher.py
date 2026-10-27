@@ -486,6 +486,66 @@ def test_web_search_without_citable_evidence_falls_back_to_local_rag() -> None:
     )
 
 
+@pytest.mark.parametrize(
+    ("tool_name", "arguments", "server_name"),
+    [
+        ("web_search", {"query": "public evidence"}, "web"),
+        ("fetch_page", {"url": "https://example.org/source"}, "web"),
+    ],
+)
+@pytest.mark.parametrize("has_existing_evidence", [False, True])
+def test_failed_web_tool_falls_back_to_local_rag(
+    tool_name: str,
+    arguments: dict[str, str],
+    server_name: str,
+    has_existing_evidence: bool,
+) -> None:
+    llm = FakeLLM([[_call(tool_name, arguments)]])
+    mcp = FakeMCPClient(
+        {
+            (server_name, tool_name): _result({}, is_error=True),
+            ("rag", "search_knowledge_base"): _local_result(),
+        }
+    )
+    state = _state()
+    for task in state.plan[1:]:
+        task.status = "completed"
+    if has_existing_evidence:
+        state.add_evidence(
+            EvidenceItem(
+                chunk_id="chunk:earlier",
+                text="Evidence from an earlier task.",
+                source="earlier.md",
+            )
+        )
+    traces: list[TraceEvent] = []
+
+    summary = asyncio.run(
+        Researcher(mcp, llm).research(state, trace_callback=traces.append)
+    )
+
+    assert summary.completed_task_ids == ["first"]
+    assert summary.blocked_task_ids == []
+    assert summary.evidence_ids_added == ["chunk:local-one"]
+    assert [call[1] for call in mcp.calls] == [
+        tool_name,
+        "search_knowledge_base",
+    ]
+    assert len(llm.requests) == 1
+    assert any(
+        event.event == "tool_selected"
+        and event.result_summary
+        == "selected_by=local_evidence_fallback; reason=web_tool_error"
+        for event in traces
+    )
+    assert any(
+        event.event == "tool_call"
+        and event.tool_name == tool_name
+        and event.result_summary == "error_type=ResearcherError; local_fallback=True"
+        for event in traces
+    )
+
+
 def test_existing_evidence_triggers_local_fallback_without_reasking_model() -> None:
     llm = FakeLLM(
         [
@@ -654,8 +714,10 @@ def test_researcher_rejects_evidence_id_conflicts() -> None:
 
 
 def test_researcher_rejects_mcp_error_results() -> None:
-    llm = FakeLLM([[_call("web_search", {"query": "research"})]])
-    mcp = FakeMCPClient({("web", "web_search"): _result({}, is_error=True)})
+    llm = FakeLLM([[_call("search_knowledge_base", {"query": "research"})]])
+    mcp = FakeMCPClient(
+        {("rag", "search_knowledge_base"): _result({}, is_error=True)}
+    )
     state = _state()
 
     with pytest.raises(ResearcherError, match="returned an error"):
