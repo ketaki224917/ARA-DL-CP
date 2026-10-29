@@ -42,9 +42,14 @@ The researcher calls tools through the MCP client. Retrieved documents and web t
 
 Requirements: Python 3.11 or newer, [uv](https://docs.astral.sh/uv/), and [Ollama](https://ollama.com/download). The configured chat model is `qwen2.5:1.5b`; the embedding model is `embeddinggemma`.
 
-From the repository root, install the locked runtime and development extras, pull the configured Ollama models, download the pinned Piper voice, index the sample corpus, and run a report:
+From the repository root, keep the uv cache, managed Python, and temporary files beside the checkout; then install the locked runtime and development extras, pull the configured Ollama models, download the pinned Piper voice, index the sample corpus, and run a report:
 
 ```powershell
+$env:UV_CACHE_DIR = "$PWD/.tools/uv-cache"
+$env:UV_PYTHON_INSTALL_DIR = "$PWD/.tools/uv-python"
+$env:TEMP = "$PWD/.tools/tmp"
+$env:TMP = $env:TEMP
+New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
 uv sync --locked --extra dev --extra dl --extra tts
 ollama pull qwen2.5:1.5b
 ollama pull embeddinggemma
@@ -78,7 +83,7 @@ With GNU Make installed, `make setup`, `make ingest`, `make serve`, `make serve-
 
 ### Local browser interface and document uploads
 
-Start the local interface with `make web` or `uv run --locked python -m ara.web_app`. It opens at `http://127.0.0.1:8765/` and accepts a research topic plus up to 20 PDF, DOCX, Markdown, TXT, or HTML files (20 MB per file, 50 MB total). Uploaded files are stored under ignored `data/web_sessions/` and combined with the sample corpus in an isolated per-run index; they do not modify the shared sample index. The app binds to loopback only, shows ingestion/research logs, and serves the generated report bundle for each completed run. Local Ollama handles model requests; topic-derived queries may go to the configured public search backend, so avoid entering sensitive details in the topic.
+Start the local interface with `make web`; the Makefile routes uv caches and temporary files to `.tools/` beside the checkout. It opens at `http://127.0.0.1:8765/` and accepts a research topic plus up to 20 PDF, DOCX, Markdown, TXT, or HTML files (20 MB per file, 50 MB total). Uploaded files are stored under ignored `data/web_sessions/` and combined with the sample corpus in an isolated per-run index; they do not modify the shared sample index. The app binds to loopback only, shows ingestion/research logs, and serves the generated report bundle for each completed run. Local Ollama handles model requests; topic-derived queries may go to the configured public search backend, so avoid entering sensitive details in the topic.
 
 ### Windows fallback without GNU Make
 
@@ -86,7 +91,11 @@ If GNU Make is unavailable, use the managed uv executable and a workspace-local 
 
 ```powershell
 $env:UV_SYSTEM_CERTS = 'true'
-$env:UV_CACHE_DIR = '.tools/uv-cache'
+$env:UV_CACHE_DIR = "$PWD/.tools/uv-cache"
+$env:UV_PYTHON_INSTALL_DIR = "$PWD/.tools/uv-python"
+$env:TEMP = "$PWD/.tools/tmp"
+$env:TMP = $env:TEMP
+New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
 .tools/uv/uv.exe sync --locked --extra dev --extra dl --extra tts
 .tools/uv/uv.exe run --locked ara ingest
 .tools/uv/uv.exe run --locked ara run --topic "Grid-scale battery storage" --until research

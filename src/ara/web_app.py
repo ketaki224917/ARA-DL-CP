@@ -492,6 +492,14 @@ def main() -> int:
         raise SystemExit("--host must be a loopback IP address.")
     if not 1 <= args.port <= 65535:
         raise SystemExit("--port must be between 1 and 65535.")
+    local_tools = PROJECT_ROOT / ".tools"
+    local_temp = local_tools / "tmp"
+    local_temp.mkdir(parents=True, exist_ok=True)
+    os.environ["UV_CACHE_DIR"] = str(local_tools / "uv-cache")
+    os.environ["UV_PYTHON_INSTALL_DIR"] = str(local_tools / "uv-python")
+    os.environ["TEMP"] = str(local_temp)
+    os.environ["TMP"] = str(local_temp)
+    os.environ["TMPDIR"] = str(local_temp)
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
