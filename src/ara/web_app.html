@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARA Research Studio</title>
+<style>
+:root{color-scheme:dark;--bg:#10151d;--panel:#18212c;--line:#2d3b4b;--text:#eef4fa;--muted:#a8b6c6;--accent:#69d4bd;--warn:#ffd27a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% 0,#1e3341 0,transparent 45%),var(--bg);color:var(--text);font:16px/1.55 Segoe UI,Arial,sans-serif}
+main{max-width:900px;margin:0 auto;padding:52px 24px 80px}.eyebrow{color:var(--accent);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+h1{font-size:clamp(34px,6vw,54px);line-height:1.05;letter-spacing:-.04em;margin:14px 0}p{color:var(--muted)}.lead{font-size:18px;max-width:680px}
+.card{background:rgba(24,33,44,.92);border:1px solid var(--line);border-radius:18px;padding:24px;margin-top:24px;box-shadow:0 20px 60px #0002}
+label{display:block;font-weight:650;margin:4px 0 8px}textarea,input[type=file]{width:100%;background:#101720;color:var(--text);border:1px solid #3b4c5e;border-radius:10px;padding:13px;font:inherit}
+textarea{min-height:120px;resize:vertical}input[type=file]{padding:12px}.hint{font-size:13px;margin:8px 0 18px}
+button{border:0;border-radius:10px;background:var(--accent);color:#09201c;padding:12px 18px;font:700 15px inherit;cursor:pointer}button:disabled{opacity:.5;cursor:wait}.secondary{background:#263646;color:var(--text);margin-left:8px}
+.status{display:flex;align-items:center;gap:10px;font-weight:700}.dot{height:10px;width:10px;border-radius:50%;background:var(--muted)}.dot.running{background:var(--warn);box-shadow:0 0 16px var(--warn)}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:330px;overflow:auto;background:#0c1118;border:1px solid var(--line);border-radius:10px;padding:14px;color:#c4d2df;font:12px/1.5 Consolas,monospace}
+a{color:var(--accent)}.links{display:flex;flex-wrap:wrap;gap:18px;margin-top:12px}.notice{border-left:3px solid var(--accent);padding:2px 0 2px 14px}.error{color:#ff9b9b}.small{font-size:13px}
+</style>
+</head>
+<body>
+<main>
+<div class="eyebrow">Local research agent</div>
+<h1>Research Studio</h1>
+<p class="lead">Give ARA a research topic and, optionally, a set of source documents. It plans the research, gathers cited evidence, reviews its draft, and builds a report bundle.</p>
+<section class="card">
+<form id="runForm">
+<label for="topic">Research topic</label>
+<textarea id="topic" name="topic" maxlength="2000" required placeholder="For example: How do grid-scale batteries support renewable electricity?"></textarea>
+<label for="documents">Choose documents (optional)</label>
+<input id="documents" name="documents" type="file" multiple accept=".pdf,.docx,.md,.markdown,.txt,.html,.htm">
+<label for="folderDocuments">Or choose a folder</label>
+<input id="folderDocuments" name="documents" type="file" webkitdirectory directory multiple accept=".pdf,.docx,.md,.markdown,.txt,.html,.htm">
+<p class="hint">Choose multiple files or a folder. Up to 20 files, 20 MB each and 50 MB total. Supported: PDF, DOCX, Markdown, TXT, and HTML. Uploaded documents stay on this computer and are indexed separately for this run, alongside ARA's sample corpus.</p>
+<button id="submitButton" type="submit">Start research</button>
+<button id="stopButton" class="secondary" type="button" hidden>Stop run</button>
+</form>
+</section>
+<section class="card" aria-live="polite">
+<div class="status"><span id="dot" class="dot"></span><span id="statusText">Ready</span></div>
+<p id="runInfo" class="small"></p>
+<div id="resultLinks" class="links"></div>
+<pre id="log">Enter a topic to start an ARA run.</pre>
+</section>
+<p class="notice small">This interface listens on 127.0.0.1 only. ARA's chat and embedding models run through your local Ollama service. Uploaded files are stored locally. ARA may send topic-derived search queries to its configured public web provider, so avoid entering sensitive details in the topic.</p>
+</main>
+<script>
+const form=document.getElementById("runForm");
+const button=document.getElementById("submitButton");
+const stopButton=document.getElementById("stopButton");
+const statusText=document.getElementById("statusText");
+const runInfo=document.getElementById("runInfo");
+const logBox=document.getElementById("log");
+const dot=document.getElementById("dot");
+const links=document.getElementById("resultLinks");
+let busy=false;
+function render(data){
+  const active=["preparing","indexing","researching","stopping"].includes(data.status);
+  busy=active;
+  button.disabled=active;
+  stopButton.hidden=!active;
+  dot.className=active?"dot running":"dot";
+  statusText.textContent=data.stage||"Ready";
+  runInfo.textContent=data.topic?(data.topic+" · "+(data.documents||[]).length+" uploaded document(s)"):"";
+  logBox.textContent=(data.logs&&data.logs.length)?data.logs.join(""):"Enter a topic to start an ARA run.";
+  links.replaceChildren();
+  if(data.report_url){
+    [["Open report","report.html"],["PDF","report.pdf"],["Markdown","report.md"],["Diagram","figures/diagram-01.svg"],["Audio","audio/narration.wav"]].forEach(([label,path])=>{
+      const a=document.createElement("a");a.href=data.report_url.replace("report.html",path);a.textContent=label;a.target="_blank";a.rel="noopener";links.append(a);
+    });
+  }
+}
+async function refresh(){
+  try{const response=await fetch("/api/status");if(response.ok)render(await response.json());}
+  catch(_error){statusText.textContent="Server disconnected";}
+}
+form.addEventListener("submit",async event=>{
+  event.preventDefault();
+  const files=document.getElementById("documents").files;
+  const data=new FormData(form);
+  button.disabled=true;
+  statusText.textContent="Uploading and starting…";
+  links.replaceChildren();
+  try{
+    const response=await fetch("/api/run",{method:"POST",body:data});
+    const result=await response.json();
+    if(!response.ok)throw new Error(result.error||"Could not start the run");
+    render(result);
+  }catch(error){
+    statusText.textContent="Could not start";
+    logBox.textContent=String(error);
+    button.disabled=false;
+  }
+});
+stopButton.addEventListener("click",async()=>{
+  await fetch("/api/stop",{method:"POST"});
+  await refresh();
+});
+refresh();
+setInterval(refresh,1500);
+</script>
+</body>
+</html>
+

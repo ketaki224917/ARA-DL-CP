@@ -68,12 +68,17 @@ Three complete, curated examples exercise citation validation and the Markdown/H
 | `ara ingest [--source PATH]` | Load supported local sources and update the dense and BM25 indexes idempotently. |
 | `ara ask QUESTION [--rerank]` | Answer from local hybrid retrieval with citations and abstention. `--rerank` needs the optional `rerank` extra and model weights. |
 | `ara run --topic TOPIC [--until research]` | Run planning and research; by default continue through writing, critique, diagram, narration, and report assembly. |
+| `python -m ara.web_app` | Open the local browser interface for a topic and optional multi-document upload. |
 | `ara serve-mcp --server {rag,web-search,dl-model}` | Start one MCP server over stdio. |
 | `ara rag-eval [OPTIONS]` | Compare dense, BM25, hybrid RRF, and reranked RRF retrieval; checkpoints each query for resume. |
 | `ara train [OPTIONS]` | Train the custom evidence cross-encoder. Options are forwarded to `ara.dl.train`. |
 | `ara eval [OPTIONS]` | Evaluate the custom cross-encoder against the retrieval baselines. Options are forwarded to `ara.dl.evaluate`. |
 
-With GNU Make installed, `make setup`, `make ingest`, `make serve`, `make serve-web-search`, `make serve-dl-model`, `make run TOPIC="..."`, `make train`, `make eval`, `make eval-rag`, `make test`, and `make lint` use locked uv commands. `make serve` starts the RAG server; each MCP server also has a separate target. Pass extra run, train, or eval flags with `ARGS`, for example `make run TOPIC="battery storage" ARGS="--until research"`; `make eval-rag ARGS=--fresh` starts a new 52-query evaluation and plain `make eval-rag` resumes it.
+With GNU Make installed, `make setup`, `make ingest`, `make serve`, `make serve-web-search`, `make serve-dl-model`, `make web`, `make run TOPIC="..."`, `make train`, `make eval`, `make eval-rag`, `make test`, and `make lint` use locked uv commands. `make serve` starts the RAG server; each MCP server also has a separate target. Pass extra run, train, or eval flags with `ARGS`, for example `make run TOPIC="battery storage" ARGS="--until research"`; `make eval-rag ARGS=--fresh` starts a new 52-query evaluation and plain `make eval-rag` resumes it.
+
+### Local browser interface and document uploads
+
+Start the local interface with `make web` or `uv run --locked python -m ara.web_app`. It opens at `http://127.0.0.1:8765/` and accepts a research topic plus up to 20 PDF, DOCX, Markdown, TXT, or HTML files (20 MB per file, 50 MB total). Uploaded files are stored under ignored `data/web_sessions/` and combined with the sample corpus in an isolated per-run index; they do not modify the shared sample index. The app binds to loopback only, shows ingestion/research logs, and serves the generated report bundle for each completed run. Local Ollama handles model requests; topic-derived queries may go to the configured public search backend, so avoid entering sensitive details in the topic.
 
 ### Windows fallback without GNU Make
 

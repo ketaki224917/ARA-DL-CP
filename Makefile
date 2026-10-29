@@ -1,4 +1,4 @@
-.PHONY: setup ingest serve serve-rag serve-web-search serve-dl-model run eval eval-rag train test lint tts-model tts-smoke
+.PHONY: setup ingest serve serve-rag serve-web-search serve-dl-model web run eval eval-rag train test lint tts-model tts-smoke
 
 UV ?= uv
 
@@ -19,6 +19,9 @@ serve-web-search:
 
 serve-dl-model:
 	$(UV) run --locked ara serve-mcp --server dl-model
+
+web:
+	$(UV) run --locked python -m ara.web_app
 
 run:
 	$(UV) run --locked ara run --topic "$(TOPIC)" $(ARGS)

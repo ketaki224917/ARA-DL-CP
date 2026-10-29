@@ -56,6 +56,9 @@ ara-dl-model-mcp = "ara.mcp_servers.dl_model_server:main"
 [tool.hatch.build.targets.wheel]
 packages = ["src/ara"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"src/ara/web_app.html" = "ara/web_app.html"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"

@@ -1,6 +1,6 @@
 # Environment
 
-Updated: 2026-10-27 (session 1; D: relocation, P5.5 evaluation, and hardware inventory)
+Updated: 2026-10-29 (session 1; localhost browser interface with local document uploads)
 
 - OS/shell: Microsoft Windows 11 Home Single Language, build 26200 (64-bit); PowerShell.
 - System/CPU: HP Laptop 14-gr1xxx; Intel Core Ultra 5 125H, 14 cores and 18 logical processors.
@@ -19,10 +19,10 @@ Updated: 2026-10-27 (session 1; D: relocation, P5.5 evaluation, and hardware inv
 - Evaluation artifacts: the pinned `sentence-transformers/all-MiniLM-L6-v2` encoder is cached under ignored `models/huggingface/` at revision `1110a243fdf4706b3f48f1d95db1a4f5529b4d41`; its 1,592-document test embedding cache is ignored at `data/indexes/dl_eval_test_embeddings.pt`. P5.5 compared all 208 internal held-out SciFact queries and wrote 20 observed first-rank failures. The random-negative control checkpoint is also ignored at `models/checkpoints/reranker_random_negatives.pt`; recreate it by running `python -m ara.dl.evaluate` with the configured default ablation.
 - Diagram tools: `dot`, Mermaid CLI (`mmdc`), Node, and npm were not found on PATH. ARA renders the constrained Mermaid subset with its standard-library SVG fallback; the optional Graphviz subprocess path is covered by a mocked test but has not been run against an installed Graphviz binary.
 - Audio smoke: `python scripts/tts_synthesis_smoke.py` synthesized a controlled 185-word narration to ignored `outputs/generated/p6_2_voice_smoke.wav`; the last run was 68.79 seconds, 22,050 Hz, mono, 3,033,644 bytes. The pinned voice is present under `models/tts/`. In live run `cb9bbc9da4d9495eb76f87fe1543d78c`, the short model script was replaced with citation-grounded report text and Piper produced a 73.28-second WAV.
-- Services/ports: the D: Ollama server is running and serves `localhost:11434`; `GET /api/version` returned `0.40.11`.
+- Services/ports: D: Ollama serves `localhost:11434` (version `0.40.11`). ARA Research Studio is running from the canonical checkout at `http://127.0.0.1:8765/`; it binds loopback only and currently returns HTTP 200 for `/` and `/api/status`.
 
 - Report generation: `.tools/reports-venv` has the locked `dev`, `dl`, and `tts` extras; Markdown-it `4.2.0`, ReportLab `5.1.0`, and svglib `2.3.2` are core locked dependencies. Poppler is not installed. `pypdfium2 5.14.0` is now installed only in `.tools/reports-venv` for visual QA; it is not a project dependency. The demo bundle remains ignored under `outputs/generated/p6_3_demo/`.
-- Fresh-clone regression probe: `.tools/p7_5_clone/` remains a historical local shared clone at P7.4, with 137 packages installed and `ara --help` verified. In the main checkout, `make setup UV=.tools/uv/uv.exe` and `make ingest UV=.tools/uv/uv.exe` pass; ingestion indexed 21 documents into 33 chunks. Live run `cb9bbc9da4d9495eb76f87fe1543d78c` completed report generation and produced MD/HTML/PDF/SVG/WAV; citations match references, the audio is 73.28 seconds, and the three-page PDF was rendered and visually inspected. A fresh clone at the current commit remains unverified under CLONE-001.
+- Fresh-clone regression: `.tools/p7_7_final_retry/` at commit `a70d09f` passed `make setup`, `make ingest`, and `make TOPIC="Explain reciprocal rank fusion and compare it with score-based fusion." run`; it generated MD/HTML/PDF/SVG/WAV with valid citations and completed all three research tasks. `make test` passed 315 tests there. P7.8 adds the browser interface after that clone; the current canonical source passes Ruff and single-module MyPy checks.
 
 ## Model choice
 
@@ -39,6 +39,7 @@ make test
 make lint
 uv run --locked mypy src/ara
 make ingest
+make web
 ```
 
 On this Windows host, Hugging Face HTTPS needed `truststore.inject_into_ssl()` before importing Transformers because `requests`' bundled CA store did not trust the available system chain. Keep certificate validation enabled. Hugging Face warns that symlinks are unavailable under the current permissions; its cache falls back to copies and remains usable.
@@ -47,7 +48,7 @@ GNU Make and Ollama are installed on this host. In a new PowerShell session, run
 
 ## D: relocation
 
-- Working tree and Git history: `D:\DL CP` (commit `a9acee5`). The original `C:\Users\ketaki more\OneDrive\Documents\DL CP` copy remains because Windows denies access to its `.pytest_cache`; `icacls` shows an inherited `Everyone` deny for deleting children on the OneDrive folder, and `Get-Acl` cannot read the cache. No ACL changes were made. The D: checkout is canonical and has no junction back into OneDrive; source retirement is tracked as ENV-006.
+- Working tree and Git history: `D:\DL CP` (canonical checkout; browser interface changes are in the current P7.8 task). The original `C:\Users\ketaki more\OneDrive\Documents\DL CP` copy remains because Windows denies access to its `.pytest_cache`; `icacls` shows an inherited `Everyone` deny for deleting children on the OneDrive folder, and `Get-Acl` cannot read the cache. No ACL changes were made. The D: checkout has no junction back into OneDrive; source retirement is tracked as ENV-006.
 - Ollama install: `D:\Ollama\app`; models, keys, and user data: `D:\Ollama\user-data`; app data: `D:\Ollama\appdata`.
 - GNU Make/MSYS2: `D:\msys64`; uv cache: `D:\DL CP\.tools\uv-cache`; uv Python: `D:\DL CP\.tools\uv-python`.
 - Compatibility junctions at the former C: Ollama, MSYS2, uv-cache, and uv-Python paths point to their D: locations. The user Ollama and MSYS2 shortcuts were changed to D: targets.
