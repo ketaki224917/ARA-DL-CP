@@ -2,7 +2,7 @@
 
 Updated: 2026-10-29 | Session #: 1
 Current phase/task: P7.8 - localhost browser interface with topic and document upload | Status: complete; user-submitted run active
-Last committed task: 914a0e3 [P7.8] Add local browser interface with document uploads
+Last committed task: 11fda2b [STATE] Record active browser research run (browser interface: 914a0e3)
 Canonical project/runtime: `D:\DL CP`; the old C: OneDrive duplicate remains blocked by its inherited deny-child-delete ACL (ENV-006).
 
 ## Do next (exact)
